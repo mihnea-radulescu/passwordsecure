@@ -5,9 +5,11 @@ using Xunit;
 using PasswordSecure.Application.Helpers;
 using PasswordSecure.DomainModel;
 using PasswordSecure.Infrastructure.Services;
+using PasswordSecure.Test.TestAttributes;
 
 namespace PasswordSecure.Test.Services;
 
+[UnitTestClass]
 public class JsonDataSerializationServiceTest
 {
 	public JsonDataSerializationServiceTest()
@@ -24,10 +26,10 @@ public class JsonDataSerializationServiceTest
 	public void Serialize_NoElementCollection_ReturnsExpectedResult()
 	{
 		// Arrange
-		var accountEntryCollection = new AccountEntryCollection();
+		var accountEntryCollectionReference = new AccountEntryCollection();
 		
 		// Act
-		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollectionReference);
 
 		// Assert
 		const string expectedData = @"{""NameToAccountEntryMapping"":{}}";
@@ -39,11 +41,11 @@ public class JsonDataSerializationServiceTest
 	{
 		// Arrange
 		var accountEntry = new AccountEntry("Google");
-		var accountEntryCollection = new AccountEntryCollection();
-		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
+		var accountEntryCollectionReference = new AccountEntryCollection();
+		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollectionReference);
 
 		// Assert
 		const string expectedData =
@@ -62,11 +64,11 @@ public class JsonDataSerializationServiceTest
 			Password = "123456**&&"
 		};
 		
-		var accountEntryCollection = new AccountEntryCollection();
-		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
+		var accountEntryCollectionReference = new AccountEntryCollection();
+		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollectionReference);
 
 		// Assert
 		const string expectedData =
@@ -92,12 +94,12 @@ public class JsonDataSerializationServiceTest
 			Password = "654321&&**"
 		};
 		
-		var accountEntryCollection = new AccountEntryCollection();
-		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry1, _dateTimeProvider.Now);
-		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry2, _dateTimeProvider.Now);
+		var accountEntryCollectionReference = new AccountEntryCollection();
+		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry1, _dateTimeProvider.Now);
+		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry2, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollectionReference);
 
 		// Assert
 		const string expectedData =
