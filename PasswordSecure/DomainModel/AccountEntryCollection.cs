@@ -43,8 +43,9 @@ public class AccountEntryCollection
 
 	private static AccountEntry CreateAccountEntry(AccountEntry accountEntry, string newAccountEntryName)
 	{
-		var newAccountEntry = new AccountEntry(newAccountEntryName)
+		var newAccountEntry = new AccountEntry
 		{
+			Name = newAccountEntryName,
 			Website = accountEntry.Website,
 			User = accountEntry.User,
 			Password = accountEntry.Password

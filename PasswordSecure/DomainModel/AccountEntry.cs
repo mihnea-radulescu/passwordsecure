@@ -2,14 +2,14 @@ using System;
 
 namespace PasswordSecure.DomainModel;
 
-public class AccountEntry
+public record AccountEntry
 {
-	public AccountEntry(string name)
+	public AccountEntry()
 	{
-		Name = name;
+		Name = "New Account Entry";
 	}
 	
-	public string Name { get; }
+	public string Name { get; set; }
 	
 	public string? Website { get; set; }
 	

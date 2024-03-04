@@ -9,9 +9,60 @@
 		Height="450"
         WindowStartupLocation="CenterScreen">
 
-	<Grid HorizontalAlignment="Stretch"
-		  VerticalAlignment="Stretch">
+	<Window.Styles>
+		<Style Selector="DataGrid">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="StackPanel">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+	</Window.Styles>
+	
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="60*"/>
+			<ColumnDefinition Width="40*"/>
+		</Grid.ColumnDefinitions>
 		
+		<DataGrid Grid.Column="0"
+		          AutoGenerateColumns="False"
+		          CanUserReorderColumns="True"
+		          CanUserResizeColumns="True"
+		          CanUserSortColumns="True"
+		          IsReadOnly="True"
+		          SelectionMode="Single"
+		          ItemsSource="{Binding AccountEntryViewModels}"
+		          SelectedItem="{Binding SelectedAccountEntryViewModel}">
+			
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+				<DataGridTextColumn Header="Website" Binding="{Binding Website}"/>
+				<DataGridTextColumn Header="User" Binding="{Binding User}"/>
+			</DataGrid.Columns>
+			
+		</DataGrid>
+		
+		<StackPanel Grid.Column="1"
+		            Orientation="Vertical">
+			<TextBlock Text="Name"/>
+			<TextBox Text="{Binding SelectedAccountEntryViewModel.Name}"/>
+			
+			<TextBlock Text="Website"/>
+			<TextBox Text="{Binding SelectedAccountEntryViewModel.Website}"/>
+			
+			<TextBlock Text="User"/>
+			<TextBox Text="{Binding SelectedAccountEntryViewModel.User}"/>
+			
+			<TextBlock Text="Password"/>
+			<TextBox PasswordChar="*"
+			         Text="{Binding SelectedAccountEntryViewModel.Password}"/>
+		</StackPanel>
 	</Grid>
 
 </Window>

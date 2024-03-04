@@ -52,8 +52,13 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionDefaultValues.data";
+		const string nameKey = "Google";
+
+		var accountEntry = new AccountEntry
+		{
+			Name = nameKey
+		};
 		
-		var accountEntry = new AccountEntry("Google");
 		var accountEntryCollectionReference = new AccountEntryCollection();
 		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
@@ -62,7 +67,6 @@ public class DataAccessServiceTest
 		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
 
 		// Assert
-		const string nameKey = "Google";
 		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
 		
 		accountEntryCollection.Should().NotBeNull();
@@ -84,9 +88,11 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionCustomValues.data";
+		const string nameKey = "Google";
 		
-		var accountEntry = new AccountEntry("Google")
+		var accountEntry = new AccountEntry
 		{
+			Name = nameKey,
 			Website = "https://mail.google.com",
 			User = "john.doe",
 			Password = "123456**&&"
@@ -100,7 +106,6 @@ public class DataAccessServiceTest
 		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
 
 		// Assert
-		const string nameKey = "Google";
 		const string website = "https://mail.google.com";
 		const string user = "john.doe";
 		const string password = "123456**&&";
@@ -124,17 +129,21 @@ public class DataAccessServiceTest
 	public void SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
+		const string nameKey1 = "Google";
+		const string nameKey2 = "Microsoft";
 		const string fileName = "Encrypted_TwoElementCollectionCustomValues.data";
 		
-		var accountEntry1 = new AccountEntry("Google")
+		var accountEntry1 = new AccountEntry
 		{
+			Name = nameKey1,
 			Website = "https://mail.google.com",
 			User = "john.doe",
 			Password = "123456**&&"
 		};
 		
-		var accountEntry2 = new AccountEntry("Microsoft")
+		var accountEntry2 = new AccountEntry
 		{
+			Name = nameKey2,
 			Website = "https://azure.microsoft.com",
 			User = "john_doe",
 			Password = "654321&&**"
@@ -151,12 +160,10 @@ public class DataAccessServiceTest
 		// Assert
 		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
 		
-		const string nameKey1 = "Google";
 		const string website1 = "https://mail.google.com";
 		const string user1 = "john.doe";
 		const string password1 = "123456**&&";
 		
-		const string nameKey2 = "Microsoft";
 		const string website2 = "https://azure.microsoft.com";
 		const string user2 = "john_doe";
 		const string password2 = "654321&&**";

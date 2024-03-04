@@ -40,7 +40,11 @@ public class JsonDataSerializationServiceTest
 	public void Serialize_OneElementCollectionDefaultValues_ReturnsExpectedResult()
 	{
 		// Arrange
-		var accountEntry = new AccountEntry("Google");
+		var accountEntry = new AccountEntry
+		{
+			Name = "Google"
+		};
+		
 		var accountEntryCollectionReference = new AccountEntryCollection();
 		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
@@ -57,8 +61,9 @@ public class JsonDataSerializationServiceTest
 	public void Serialize_OneElementCollectionCustomValues_ReturnsExpectedResult()
 	{
 		// Arrange
-		var accountEntry = new AccountEntry("Google")
+		var accountEntry = new AccountEntry
 		{
+			Name = "Google",
 			Website = "https://mail.google.com",
 			User = "john.doe",
 			Password = "123456**&&"
@@ -80,15 +85,17 @@ public class JsonDataSerializationServiceTest
 	public void Serialize_TwoElementCollectionCustomValues_ReturnsExpectedResult()
 	{
 		// Arrange
-		var accountEntry1 = new AccountEntry("Google")
+		var accountEntry1 = new AccountEntry
 		{
+			Name = "Google",
 			Website = "https://mail.google.com",
 			User = "john.doe",
 			Password = "123456**&&"
 		};
 		
-		var accountEntry2 = new AccountEntry("Microsoft")
+		var accountEntry2 = new AccountEntry
 		{
+			Name = "Microsoft",
 			Website = "https://azure.microsoft.com",
 			User = "john_doe",
 			Password = "654321&&**"

@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="PasswordSecure.Presentation.Views.AccountEntryView">
+
+	<Grid HorizontalAlignment="Stretch"
+	      VerticalAlignment="Stretch">
+		
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="20*"/>
+		</Grid.RowDefinitions>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="25*"/>
+			<ColumnDefinition Width="75*"/>
+		</Grid.ColumnDefinitions>
+		
+		<TextBlock Grid.Row="0"
+		           Grid.Column="0"
+		           Text="Name"/>
+		<TextBox Grid.Row="0"
+		         Grid.Column="1"
+		         Text="{Binding Name}"/>
+		
+		<TextBlock Grid.Row="1"
+		           Grid.Column="0"
+		           Text="Website"/>
+		<TextBox Grid.Row="1"
+		         Grid.Column="1"
+		         Text="{Binding Website}"/>
+		
+		<TextBlock Grid.Row="2"
+		           Grid.Column="0"
+		           Text="User"/>
+		<TextBox Grid.Row="2"
+		         Grid.Column="1"
+		         Text="{Binding User}"/>
+		
+		<TextBlock Grid.Row="3"
+		           Grid.Column="0"
+		           Text="Password"/>
+		<TextBox Grid.Row="3"
+		         Grid.Column="1"
+		         PasswordChar="*"
+		         Text="{Binding Password}"/>
+		
+		<Button Grid.Row="4"
+		        Grid.Column="0"
+		        Content="Reset"
+		        Command="{Binding ResetCommand}"/>
+		<Button Grid.Row="4"
+		        Grid.Column="1"
+		        Content="{Binding SaveCommand}"/>
+		
+	</Grid>
+
+</UserControl>

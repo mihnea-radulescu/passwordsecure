@@ -29,7 +29,7 @@ public class DataAccessService : IDataAccessService
 			var accountEntries = _dataSerializationService.Deserialize(serializedData);
 			return accountEntries;
 		}
-		catch (CryptographicException cEx)
+		catch (CryptographicException)
 		{
 			throw;
 		}
@@ -49,7 +49,7 @@ public class DataAccessService : IDataAccessService
 			
 			_fileAccessProvider.SaveData(filePath, encryptedData);
 		}
-		catch (CryptographicException cEx)
+		catch (CryptographicException)
 		{
 			throw;
 		}
