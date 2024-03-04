@@ -1,4 +1,4 @@
-namespace PasswordSecure.Controls;
+namespace PasswordSecure.Presentation;
 
 public interface IMainView
 {

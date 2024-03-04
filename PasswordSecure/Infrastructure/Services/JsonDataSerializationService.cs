@@ -1,9 +1,10 @@
 using System.Text.Json;
-using PasswordSecure.Model;
+using PasswordSecure.Application.Services;
+using PasswordSecure.DomainModel;
 
-namespace PasswordSecure.Logic.Implementation;
+namespace PasswordSecure.Infrastructure.Services;
 
-public class JsonDataSerializer : IDataSerializer
+public class JsonDataSerializationService : IDataSerializationService
 {
 	public string Serialize(AccountEntryCollection accountEntryCollection)
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace PasswordSecure.Model;
+namespace PasswordSecure.DomainModel;
 
 public class AccountEntry
 {

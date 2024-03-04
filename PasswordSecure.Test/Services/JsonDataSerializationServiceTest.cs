@@ -2,17 +2,17 @@ using System;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
-using PasswordSecure.Logic;
-using PasswordSecure.Logic.Implementation;
-using PasswordSecure.Model;
+using PasswordSecure.Application.Helpers;
+using PasswordSecure.DomainModel;
+using PasswordSecure.Infrastructure.Services;
 
-namespace PasswordSecure.Test.Logic;
+namespace PasswordSecure.Test.Services;
 
-public class JsonDataSerializerTest
+public class JsonDataSerializationServiceTest
 {
-	public JsonDataSerializerTest()
+	public JsonDataSerializationServiceTest()
 	{
-		_jsonDataSerializer = new JsonDataSerializer();
+		_jsonDataSerializationService = new JsonDataSerializationService();
 
 		_dateTimeProvider = Substitute.For<IDateTimeProvider>();
 		_dateTimeProvider.Now.Returns(DateTime.Parse("2024-01-01T15:30:00"));
@@ -27,7 +27,7 @@ public class JsonDataSerializerTest
 		var accountEntryCollection = new AccountEntryCollection();
 		
 		// Act
-		var serializedData = _jsonDataSerializer.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
 
 		// Assert
 		const string expectedData = @"{""NameToAccountEntryMapping"":{}}";
@@ -43,7 +43,7 @@ public class JsonDataSerializerTest
 		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializer.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
 
 		// Assert
 		const string expectedData =
@@ -66,7 +66,7 @@ public class JsonDataSerializerTest
 		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializer.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
 
 		// Assert
 		const string expectedData =
@@ -97,7 +97,7 @@ public class JsonDataSerializerTest
 		accountEntryCollection.AddOrUpdateAccountEntry(accountEntry2, _dateTimeProvider.Now);
 		
 		// Act
-		var serializedData = _jsonDataSerializer.Serialize(accountEntryCollection);
+		var serializedData = _jsonDataSerializationService.Serialize(accountEntryCollection);
 
 		// Assert
 		const string expectedData =
@@ -116,7 +116,7 @@ public class JsonDataSerializerTest
 		const string serializedData = @"{""NameToAccountEntryMapping"":{}}";
 		
 		// Act
-		var accountEntryCollection = _jsonDataSerializer.Deserialize(serializedData);
+		var accountEntryCollection = _jsonDataSerializationService.Deserialize(serializedData);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -132,7 +132,7 @@ public class JsonDataSerializerTest
 			@"{""NameToAccountEntryMapping"":{""Google"":{""Name"":""Google"",""Website"":null,""User"":null,""Password"":null,""DateAdded"":""2024-01-01T15:30:00"",""DateChanged"":null}}}";
 		
 		// Act
-		var accountEntryCollection = _jsonDataSerializer.Deserialize(serializedData);
+		var accountEntryCollection = _jsonDataSerializationService.Deserialize(serializedData);
 
 		// Assert
 		const string nameKey = "Google";
@@ -160,7 +160,7 @@ public class JsonDataSerializerTest
 			@"{""NameToAccountEntryMapping"":{""Google"":{""Name"":""Google"",""Website"":""https://mail.google.com"",""User"":""john.doe"",""Password"":""123456**\u0026\u0026"",""DateAdded"":""2024-01-01T15:30:00"",""DateChanged"":null}}}";
 
 		// Act
-		var accountEntryCollection = _jsonDataSerializer.Deserialize(serializedData);
+		var accountEntryCollection = _jsonDataSerializationService.Deserialize(serializedData);
 
 		// Assert
 		const string nameKey = "Google";
@@ -191,7 +191,7 @@ public class JsonDataSerializerTest
 			@"{""NameToAccountEntryMapping"":{""Google"":{""Name"":""Google"",""Website"":""https://mail.google.com"",""User"":""john.doe"",""Password"":""123456**\u0026\u0026"",""DateAdded"":""2024-01-01T15:30:00"",""DateChanged"":null},""Microsoft"":{""Name"":""Microsoft"",""Website"":""https://azure.microsoft.com"",""User"":""john_doe"",""Password"":""654321\u0026\u0026**"",""DateAdded"":""2024-01-01T15:30:00"",""DateChanged"":null}}}";
 
 		// Act
-		var accountEntryCollection = _jsonDataSerializer.Deserialize(serializedData);
+		var accountEntryCollection = _jsonDataSerializationService.Deserialize(serializedData);
 
 		// Assert
 		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
@@ -233,7 +233,7 @@ public class JsonDataSerializerTest
 	
 	#region Private
 
-	private readonly JsonDataSerializer _jsonDataSerializer;
+	private readonly JsonDataSerializationService _jsonDataSerializationService;
 	
 	private readonly IDateTimeProvider _dateTimeProvider;
 

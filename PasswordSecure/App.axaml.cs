@@ -1,10 +1,9 @@
-using Avalonia;
 using Avalonia.Markup.Xaml;
-using PasswordSecure.Controls;
+using PasswordSecure.Presentation;
 
 namespace PasswordSecure;
 
-public partial class App : Application
+public partial class App : Avalonia.Application
 {
     public override void Initialize()
     {

@@ -1,8 +1,8 @@
-using PasswordSecure.Model;
+using PasswordSecure.DomainModel;
 
-namespace PasswordSecure.Logic;
+namespace PasswordSecure.Application.Services;
 
-public interface IDataSerializer
+public interface IDataSerializationService
 {
 	string Serialize(AccountEntryCollection accountEntryCollection);
 

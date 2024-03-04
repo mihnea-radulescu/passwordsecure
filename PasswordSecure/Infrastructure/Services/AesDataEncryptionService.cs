@@ -2,8 +2,9 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using PasswordSecure.Application.Services;
 
-namespace PasswordSecure.Logic.Implementation;
+namespace PasswordSecure.Infrastructure.Services;
 
 public class AesDataEncryptionService : IDataEncryptionService
 {

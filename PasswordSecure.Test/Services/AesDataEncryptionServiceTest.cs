@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using FluentAssertions;
 using Xunit;
-using PasswordSecure.Logic.Implementation;
+using PasswordSecure.Infrastructure.Services;
 
-namespace PasswordSecure.Test.Logic;
+namespace PasswordSecure.Test.Services;
 
 public class AesDataEncryptionServiceTest
 {

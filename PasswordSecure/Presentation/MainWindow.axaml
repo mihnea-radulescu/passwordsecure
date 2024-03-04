@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="PasswordSecure.Controls.MainWindow"
+        x:Class="PasswordSecure.Presentation.MainWindow"
         Icon="/MainWindowIcon.ico"
         Title="Password Secure"
 		MinWidth="800"

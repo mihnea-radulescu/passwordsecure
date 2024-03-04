@@ -1,4 +1,4 @@
-namespace PasswordSecure.Logic;
+namespace PasswordSecure.Application.Services;
 
 public interface IDataEncryptionService
 {

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace PasswordSecure.Controls;
+namespace PasswordSecure.Presentation;
 
 public partial class MainWindow : Window, IMainView
 {

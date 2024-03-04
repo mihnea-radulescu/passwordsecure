@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PasswordSecure.Model;
+namespace PasswordSecure.DomainModel;
 
 public class AccountEntryCollection
 {

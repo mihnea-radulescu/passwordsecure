@@ -1,6 +1,7 @@
 using System;
+using PasswordSecure.Application.Helpers;
 
-namespace PasswordSecure.Logic.Implementation;
+namespace PasswordSecure.Infrastructure.Helpers;
 
 public class CurrentDateTimeProvider : IDateTimeProvider
 {

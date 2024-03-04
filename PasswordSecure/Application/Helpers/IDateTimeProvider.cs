@@ -1,6 +1,6 @@
 using System;
 
-namespace PasswordSecure.Logic;
+namespace PasswordSecure.Application.Helpers;
 
 public interface IDateTimeProvider
 {
