@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Avalonia.Markup.Xaml;
 using PasswordSecure.DomainModel;
-using PasswordSecure.Presentation;
 using PasswordSecure.Presentation.ViewModels;
+using PasswordSecure.Presentation.Views;
 
 namespace PasswordSecure;
 
