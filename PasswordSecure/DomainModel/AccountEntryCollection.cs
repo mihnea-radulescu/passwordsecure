@@ -1,58 +1,16 @@
-using System;
 using System.Collections.Generic;
 
 namespace PasswordSecure.DomainModel;
 
-public class AccountEntryCollection
+public class AccountEntryCollection : List<AccountEntry>
 {
 	public AccountEntryCollection()
+		: base()
 	{
-		NameToAccountEntryMapping = new SortedDictionary<string, AccountEntry>();
-	}
-	
-	public IDictionary<string, AccountEntry> NameToAccountEntryMapping { get; set; }
-
-	public void AddOrUpdateAccountEntry(AccountEntry accountEntry, DateTime now)
-	{
-		if (NameToAccountEntryMapping.ContainsKey(accountEntry.Name))
-		{
-			accountEntry.DateChanged = now;
-		}
-		else
-		{
-			accountEntry.DateAdded = now;
-		}
-		
-		NameToAccountEntryMapping[accountEntry.Name] = accountEntry;
 	}
 
-	public void DeleteAccountEntry(AccountEntry accountEntry)
-		=> NameToAccountEntryMapping.Remove(accountEntry.Name);
-
-	public AccountEntry UpdateName(AccountEntry accountEntry, string newAccountEntryName, DateTime now)
+	public AccountEntryCollection(ICollection<AccountEntry> accountEntries)
+		: base(accountEntries)
 	{
-		DeleteAccountEntry(accountEntry);
-
-		var newAccountEntry = CreateAccountEntry(accountEntry, newAccountEntryName);
-		AddOrUpdateAccountEntry(newAccountEntry, now);
-
-		return newAccountEntry;
 	}
-	
-	#region Private
-
-	private static AccountEntry CreateAccountEntry(AccountEntry accountEntry, string newAccountEntryName)
-	{
-		var newAccountEntry = new AccountEntry
-		{
-			Name = newAccountEntryName,
-			Website = accountEntry.Website,
-			User = accountEntry.User,
-			Password = accountEntry.Password
-		};
-
-		return newAccountEntry;
-	}
-	
-	#endregion
 }

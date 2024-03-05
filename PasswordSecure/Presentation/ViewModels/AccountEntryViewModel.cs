@@ -1,3 +1,4 @@
+using System;
 using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Presentation.ViewModels;
@@ -9,13 +10,17 @@ public class AccountEntryViewModel : ViewModelBase
 		_accountEntry = accountEntry;
 	}
 
+	public event EventHandler? NameChanged;
+
 	public string Name
 	{
 		get => _accountEntry.Name;
 		set
 		{
 			_accountEntry.Name = value;
+			
 			OnPropertyChanged();
+			NameChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -25,6 +30,7 @@ public class AccountEntryViewModel : ViewModelBase
 		set
 		{
 			_accountEntry.Website = value;
+			
 			OnPropertyChanged();
 		}
 	}
@@ -35,6 +41,7 @@ public class AccountEntryViewModel : ViewModelBase
 		set
 		{
 			_accountEntry.User = value;
+			
 			OnPropertyChanged();
 		}
 	}
@@ -45,6 +52,7 @@ public class AccountEntryViewModel : ViewModelBase
 		set
 		{
 			_accountEntry.Password = value;
+			
 			OnPropertyChanged();
 		}
 	}

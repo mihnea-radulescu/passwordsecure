@@ -1,12 +1,15 @@
-using System.Collections.Generic;
 using Avalonia.Markup.Xaml;
+using PasswordSecure.Application.Helpers;
+using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
+using PasswordSecure.Infrastructure.Helpers;
+using PasswordSecure.Infrastructure.Services;
 using PasswordSecure.Presentation.ViewModels;
 using PasswordSecure.Presentation.Views;
 
 namespace PasswordSecure;
 
-public partial class App : Avalonia.Application
+public class App : Avalonia.Application
 {
     public override void Initialize()
     {
@@ -30,9 +33,18 @@ public partial class App : Avalonia.Application
             User = "john_doe",
             Password = "654321&&**"
         };
+        
+        IDataSerializationService dataSerializationService = new JsonDataSerializationService();
+        IDataEncryptionService dataEncryptionService = new AesDataEncryptionService();
+        IFileAccessProvider fileAccessProvider = new FileAccessProvider();
 
-        var accountEntries = new List<AccountEntry> { accountEntry1, accountEntry2 };
-        var mainWindowViewModel = new AccountEntryCollectionViewModel(accountEntries);
+        IDataAccessService dataAccessService = new DataAccessService(
+            dataSerializationService,
+            dataEncryptionService,
+            fileAccessProvider);
+
+        var accountEntries = new AccountEntryCollection { accountEntry1, accountEntry2 };
+        var mainWindowViewModel = new AccountEntryCollectionViewModel(dataAccessService, accountEntries);
         
         var mainWindow = new MainWindow
         {

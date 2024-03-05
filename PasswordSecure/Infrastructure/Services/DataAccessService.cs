@@ -18,13 +18,14 @@ public class DataAccessService : IDataAccessService
 		_fileAccessProvider = fileAccessProvider;
 	}
 	
-	public AccountEntryCollection ReadAccountEntries(string filePath, string masterPassword)
+	public AccountEntryCollection ReadAccountEntries(AccessParams accessParams)
 	{
 		try
 		{
-			var encryptedData = _fileAccessProvider.ReadData(filePath);
+			var encryptedData = _fileAccessProvider.ReadData(accessParams.FilePath);
 
-			var serializedData = _dataEncryptionService.DecryptData(encryptedData, masterPassword);
+			var serializedData = _dataEncryptionService.DecryptData(
+				encryptedData, accessParams.MasterPassword);
 
 			var accountEntries = _dataSerializationService.Deserialize(serializedData);
 			return accountEntries;
@@ -35,19 +36,20 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileReadError(filePath), ex);
+			throw new ApplicationException(FileReadError(accessParams.FilePath), ex);
 		}
 	}
 
-	public void SaveAccountEntries(string filePath, string masterPassword, AccountEntryCollection accountEntries)
+	public void SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
 	{
 		try
 		{
-			var serializedData = _dataSerializationService.Serialize(accountEntries);
+			var serializedData = _dataSerializationService.Serialize(accountEntryCollection);
 
-			var encryptedData = _dataEncryptionService.EncryptData(serializedData, masterPassword);
+			var encryptedData = _dataEncryptionService.EncryptData(
+				serializedData, accessParams.MasterPassword);
 			
-			_fileAccessProvider.SaveData(filePath, encryptedData);
+			_fileAccessProvider.SaveData(accessParams.FilePath, encryptedData);
 		}
 		catch (CryptographicException)
 		{
@@ -55,7 +57,7 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileSaveError(filePath), ex);
+			throw new ApplicationException(FileSaveError(accessParams.FilePath), ex);
 		}
 	}
 	

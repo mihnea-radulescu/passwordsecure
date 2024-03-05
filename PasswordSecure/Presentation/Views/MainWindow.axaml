@@ -25,14 +25,29 @@
 	</Window.Styles>
 	
 	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+		
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="60*"/>
 			<ColumnDefinition Width="40*"/>
 		</Grid.ColumnDefinitions>
 		
-		<DataGrid Grid.Column="0"
+		<Button Grid.Row="0"
+		        Grid.Column="0"
+		        Content="Add new entry"
+		        Command="{Binding AddNewAccountEntryCommand}"/>
+		<Button Grid.Row="0"
+		        Grid.Column="1"
+		        Content="Delete entry"
+		        Command="{Binding DeleteAccountEntryCommand}"/>
+		
+		<DataGrid Grid.Row="1"
+				  Grid.Column="0"
 		          AutoGenerateColumns="False"
-		          CanUserReorderColumns="True"
+		          CanUserReorderColumns="False"
 		          CanUserResizeColumns="True"
 		          CanUserSortColumns="True"
 		          IsReadOnly="True"
@@ -48,7 +63,8 @@
 			
 		</DataGrid>
 		
-		<StackPanel Grid.Column="1"
+		<StackPanel Grid.Row="1"
+		            Grid.Column="1"
 		            Orientation="Vertical">
 			<TextBlock Text="Name"/>
 			<TextBox Text="{Binding SelectedAccountEntryViewModel.Name}"/>

@@ -4,7 +4,7 @@ namespace PasswordSecure.Application.Services;
 
 public interface IDataAccessService
 {
-	AccountEntryCollection ReadAccountEntries(string filePath, string masterPassword);
+	AccountEntryCollection ReadAccountEntries(AccessParams accessParams);
 	
-	void SaveAccountEntries(string filePath, string masterPassword, AccountEntryCollection accountEntries);
+	void SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection);
 }

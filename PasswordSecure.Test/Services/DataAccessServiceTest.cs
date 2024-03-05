@@ -1,6 +1,4 @@
-using System;
 using FluentAssertions;
-using NSubstitute;
 using Xunit;
 using PasswordSecure.Application.Helpers;
 using PasswordSecure.Application.Services;
@@ -24,9 +22,6 @@ public class DataAccessServiceTest
 			dataSerializationService,
 			dataEncryptionService,
 			fileAccessProvider);
-		
-		_dateTimeProvider = Substitute.For<IDateTimeProvider>();
-		_dateTimeProvider.Now.Returns(DateTime.Parse("2024-01-01T15:30:00"));
 	}
 	
 	[Fact]
@@ -34,17 +29,17 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_NoElementCollection.data";
+		var accessParams = new AccessParams(fileName, MasterPassword);
 		
 		var accountEntryCollectionReference = new AccountEntryCollection();
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(fileName, MasterPassword, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
+		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Count.Should().Be(0);
+		accountEntryCollection.Should().BeEmpty();
 	}
 	
 	[Fact]
@@ -52,35 +47,32 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionDefaultValues.data";
-		const string nameKey = "Google";
+		var accessParams = new AccessParams(fileName, MasterPassword);
 
+		const string name = "Google";
+		
 		var accountEntry = new AccountEntry
 		{
-			Name = nameKey
+			Name = name
 		};
 		
-		var accountEntryCollectionReference = new AccountEntryCollection();
-		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
+		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(fileName, MasterPassword, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
+		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
-		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
-		
 		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Count.Should().Be(1);
-
-		accountEntryCollection.NameToAccountEntryMapping.Should().ContainKey(nameKey);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Name.Should().Be(nameKey);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Website.Should().BeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].User.Should().BeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Password.Should().BeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].DateAdded.Should().Be(dateAdded);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].DateChanged.Should().BeNull();
+		accountEntryCollection.Count.Should().Be(1);
+		
+		var singleAccountEntry = accountEntryCollection[0];
+		
+		singleAccountEntry.Should().NotBeNull();
+		singleAccountEntry.Name.Should().Be(name);
+		singleAccountEntry.Website.Should().BeNull();
+		singleAccountEntry.User.Should().BeNull();
+		singleAccountEntry.Password.Should().BeNull();
 	}
 	
 	[Fact]
@@ -88,107 +80,98 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionCustomValues.data";
-		const string nameKey = "Google";
+		var accessParams = new AccessParams(fileName, MasterPassword);
 		
-		var accountEntry = new AccountEntry
-		{
-			Name = nameKey,
-			Website = "https://mail.google.com",
-			User = "john.doe",
-			Password = "123456**&&"
-		};
-		
-		var accountEntryCollectionReference = new AccountEntryCollection();
-		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry, _dateTimeProvider.Now);
-		
-		// Act
-		_dataAccessService.SaveAccountEntries(fileName, MasterPassword, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
-
-		// Assert
+		const string name = "Google";
 		const string website = "https://mail.google.com";
 		const string user = "john.doe";
 		const string password = "123456**&&";
-		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
 		
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Count.Should().Be(1);
+		var accountEntry = new AccountEntry
+		{
+			Name = name,
+			Website = website,
+			User = user,
+			Password = password
+		};
+		
+		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
+		
+		// Act
+		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
 
-		accountEntryCollection.NameToAccountEntryMapping.Should().ContainKey(nameKey);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Name.Should().Be(nameKey);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Website.Should().Be(website);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].User.Should().Be(user);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].Password.Should().Be(password);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].DateAdded.Should().Be(dateAdded);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey].DateChanged.Should().BeNull();
+		// Assert
+		accountEntryCollection.Should().NotBeNull();
+		accountEntryCollection.Count.Should().Be(1);
+		
+		var singleAccountEntry = accountEntryCollection[0];
+		
+		singleAccountEntry.Should().NotBeNull();
+		singleAccountEntry.Name.Should().Be(name);
+		singleAccountEntry.Website.Should().Be(website);
+		singleAccountEntry.User.Should().Be(user);
+		singleAccountEntry.Password.Should().Be(password);
 	}
 	
 	[Fact]
 	public void SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
-		const string nameKey1 = "Google";
-		const string nameKey2 = "Microsoft";
 		const string fileName = "Encrypted_TwoElementCollectionCustomValues.data";
+		var accessParams = new AccessParams(fileName, MasterPassword);
 		
-		var accountEntry1 = new AccountEntry
-		{
-			Name = nameKey1,
-			Website = "https://mail.google.com",
-			User = "john.doe",
-			Password = "123456**&&"
-		};
-		
-		var accountEntry2 = new AccountEntry
-		{
-			Name = nameKey2,
-			Website = "https://azure.microsoft.com",
-			User = "john_doe",
-			Password = "654321&&**"
-		};
-		
-		var accountEntryCollectionReference = new AccountEntryCollection();
-		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry1, _dateTimeProvider.Now);
-		accountEntryCollectionReference.AddOrUpdateAccountEntry(accountEntry2, _dateTimeProvider.Now);
-		
-		// Act
-		_dataAccessService.SaveAccountEntries(fileName, MasterPassword, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(fileName, MasterPassword);
-
-		// Assert
-		var dateAdded = DateTime.Parse("2024-01-01T15:30:00");
-		
+		const string name1 = "Google";
 		const string website1 = "https://mail.google.com";
 		const string user1 = "john.doe";
 		const string password1 = "123456**&&";
 		
+		var accountEntry1 = new AccountEntry
+		{
+			Name = name1,
+			Website = website1,
+			User = user1,
+			Password = password1
+		};
+		
+		const string name2 = "Microsoft";
 		const string website2 = "https://azure.microsoft.com";
 		const string user2 = "john_doe";
 		const string password2 = "654321&&**";
 		
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping.Count.Should().Be(2);
+		var accountEntry2 = new AccountEntry
+		{
+			Name = name2,
+			Website = website2,
+			User = user2,
+			Password = password2
+		};
 		
-		accountEntryCollection.NameToAccountEntryMapping.Should().ContainKey(nameKey1);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].Name.Should().Be(nameKey1);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].Website.Should().Be(website1);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].User.Should().Be(user1);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].Password.Should().Be(password1);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].DateAdded.Should().Be(dateAdded);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey1].DateChanged.Should().BeNull();
+		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry1, accountEntry2 };
+		
+		// Act
+		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
 
-		accountEntryCollection.NameToAccountEntryMapping.Should().ContainKey(nameKey2);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].Should().NotBeNull();
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].Name.Should().Be(nameKey2);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].Website.Should().Be(website2);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].User.Should().Be(user2);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].Password.Should().Be(password2);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].DateAdded.Should().Be(dateAdded);
-		accountEntryCollection.NameToAccountEntryMapping[nameKey2].DateChanged.Should().BeNull();
+		// Assert
+		accountEntryCollection.Should().NotBeNull();
+		accountEntryCollection.Count.Should().Be(2);
+		
+		var firstAccountEntry = accountEntryCollection[0];
+		
+		firstAccountEntry.Should().NotBeNull();
+		firstAccountEntry.Name.Should().Be(name1);
+		firstAccountEntry.Website.Should().Be(website1);
+		firstAccountEntry.User.Should().Be(user1);
+		firstAccountEntry.Password.Should().Be(password1);
+		
+		var secondAccountEntry = accountEntryCollection[1];
+		
+		secondAccountEntry.Should().NotBeNull();
+		secondAccountEntry.Name.Should().Be(name2);
+		secondAccountEntry.Website.Should().Be(website2);
+		secondAccountEntry.User.Should().Be(user2);
+		secondAccountEntry.Password.Should().Be(password2);
 	}
 
 	#region Private
@@ -196,8 +179,6 @@ public class DataAccessServiceTest
 	private const string MasterPassword = "Master Password";
 
 	private readonly DataAccessService _dataAccessService;
-	
-	private readonly IDateTimeProvider _dateTimeProvider;
 
 	#endregion
 }
