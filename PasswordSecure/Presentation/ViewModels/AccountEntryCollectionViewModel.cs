@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
 using PasswordSecure.Presentation.Commands;
 
@@ -9,23 +8,9 @@ namespace PasswordSecure.Presentation.ViewModels;
 
 public class AccountEntryCollectionViewModel : ViewModelBase
 {
-	public AccountEntryCollectionViewModel(
-		IDataAccessService dataAccessService,
-		AccountEntryCollection accountEntries)
+	public AccountEntryCollectionViewModel(AccountEntryCollection accountEntries)
 	{
-		_dataAccessService = dataAccessService;
-		
-		var accountEntryViewModelsAsList = accountEntries
-			.Select(anAccountEntry => new AccountEntryViewModel(anAccountEntry))
-			.ToList();
-
-		foreach (var anAccountEntryViewModel in accountEntryViewModelsAsList)
-		{
-			anAccountEntryViewModel.NameChanged += OnNameChanged;
-		}
-		
-		AccountEntryViewModels = new ObservableCollection<AccountEntryViewModel>(
-			accountEntryViewModelsAsList);
+		AccountEntryViewModels = FromAccountEntryCollection(accountEntries);
 
 		AddNewAccountEntryCommand = GetAddNewAccountEntryCommand();
 		DeleteAccountEntryCommand = GetDeleteAccountEntryCommand();
@@ -47,11 +32,37 @@ public class AccountEntryCollectionViewModel : ViewModelBase
 	public RelayCommand AddNewAccountEntryCommand { get; }
 	public RelayCommand DeleteAccountEntryCommand { get; }
 	
-	#region Private
+	public AccountEntryCollection ToAccountEntryCollection()
+	{
+		var accountEntries = AccountEntryViewModels
+			.Select(anAccountEntryViewModel => anAccountEntryViewModel.AccountEntry)
+			.ToList();
 
-	private readonly IDataAccessService _dataAccessService;
+		var accountEntryCollection = new AccountEntryCollection(accountEntries);
+		return accountEntryCollection;
+	}
+	
+	#region Private
 	
 	private AccountEntryViewModel? _selectedAccountEntryViewModel;
+	
+	private ObservableCollection<AccountEntryViewModel> FromAccountEntryCollection(
+		AccountEntryCollection accountEntries)
+	{
+		var accountEntryViewModelsAsList = accountEntries
+			.Select(anAccountEntry => new AccountEntryViewModel(anAccountEntry))
+			.ToList();
+
+		foreach (var anAccountEntryViewModel in accountEntryViewModelsAsList)
+		{
+			anAccountEntryViewModel.NameChanged += OnNameChanged;
+		}
+		
+		var accountEntryViewModels = new ObservableCollection<AccountEntryViewModel>(
+			accountEntryViewModelsAsList);
+
+		return accountEntryViewModels;
+	}
 
 	private RelayCommand GetAddNewAccountEntryCommand()
 		=> new RelayCommand(

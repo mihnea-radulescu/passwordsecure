@@ -2,8 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="PasswordSecure.App"
              RequestedThemeVariant="Default">
+	
 	<Application.Styles>
 		<FluentTheme/>
+		
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+		
+		<Style Selector="Button">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="DataGrid">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="StackPanel">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="Margin" Value="5"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Margin" Value="5"/>
+		</Style>
 	</Application.Styles>
+	
 </Application>

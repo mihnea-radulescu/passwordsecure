@@ -7,17 +7,19 @@ public class AccountEntryViewModel : ViewModelBase
 {
 	public AccountEntryViewModel(AccountEntry accountEntry)
 	{
-		_accountEntry = accountEntry;
+		AccountEntry = accountEntry;
 	}
+	
+	public AccountEntry AccountEntry { get; }
 
 	public event EventHandler? NameChanged;
 
 	public string Name
 	{
-		get => _accountEntry.Name;
+		get => AccountEntry.Name;
 		set
 		{
-			_accountEntry.Name = value;
+			AccountEntry.Name = value;
 			
 			OnPropertyChanged();
 			NameChanged?.Invoke(this, EventArgs.Empty);
@@ -26,10 +28,10 @@ public class AccountEntryViewModel : ViewModelBase
 
 	public string? Website
 	{
-		get => _accountEntry.Website;
+		get => AccountEntry.Website;
 		set
 		{
-			_accountEntry.Website = value;
+			AccountEntry.Website = value;
 			
 			OnPropertyChanged();
 		}
@@ -37,10 +39,10 @@ public class AccountEntryViewModel : ViewModelBase
 	
 	public string? User
 	{
-		get => _accountEntry.User;
+		get => AccountEntry.User;
 		set
 		{
-			_accountEntry.User = value;
+			AccountEntry.User = value;
 			
 			OnPropertyChanged();
 		}
@@ -48,18 +50,12 @@ public class AccountEntryViewModel : ViewModelBase
 	
 	public string? Password
 	{
-		get => _accountEntry.Password;
+		get => AccountEntry.Password;
 		set
 		{
-			_accountEntry.Password = value;
+			AccountEntry.Password = value;
 			
 			OnPropertyChanged();
 		}
 	}
-	
-	#region Private
-	
-	private readonly AccountEntry _accountEntry;
-	
-	#endregion
 }

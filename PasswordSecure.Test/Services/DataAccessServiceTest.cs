@@ -29,7 +29,7 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_NoElementCollection.data";
-		var accessParams = new AccessParams(fileName, MasterPassword);
+		var accessParams = new AccessParams(MasterPassword, fileName);
 		
 		var accountEntryCollectionReference = new AccountEntryCollection();
 		
@@ -47,7 +47,7 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionDefaultValues.data";
-		var accessParams = new AccessParams(fileName, MasterPassword);
+		var accessParams = new AccessParams(MasterPassword, fileName);
 
 		const string name = "Google";
 		
@@ -80,7 +80,7 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_OneElementCollectionCustomValues.data";
-		var accessParams = new AccessParams(fileName, MasterPassword);
+		var accessParams = new AccessParams(MasterPassword, fileName);
 		
 		const string name = "Google";
 		const string website = "https://mail.google.com";
@@ -119,7 +119,7 @@ public class DataAccessServiceTest
 	{
 		// Arrange
 		const string fileName = "Encrypted_TwoElementCollectionCustomValues.data";
-		var accessParams = new AccessParams(fileName, MasterPassword);
+		var accessParams = new AccessParams(MasterPassword, fileName);
 		
 		const string name1 = "Google";
 		const string website1 = "https://mail.google.com";

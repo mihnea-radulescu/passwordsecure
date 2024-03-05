@@ -1,3 +1,3 @@
 namespace PasswordSecure.DomainModel;
 
-public record AccessParams(string FilePath, string MasterPassword);
+public record AccessParams(string MasterPassword, string FilePath);

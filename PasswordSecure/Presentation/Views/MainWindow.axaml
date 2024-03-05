@@ -4,81 +4,114 @@
         Icon="/MainWindowIcon.ico"
         Title="Password Secure"
 		MinWidth="800"
-		MinHeight="450"
+		MinHeight="250"
 		Width="800"
-		Height="450"
+		Height="250"
         WindowStartupLocation="CenterScreen">
-
-	<Window.Styles>
-		<Style Selector="DataGrid">
-			<Setter Property="Margin" Value="5"/>
-		</Style>
-		<Style Selector="StackPanel">
-			<Setter Property="Margin" Value="5"/>
-		</Style>
-		<Style Selector="TextBlock">
-			<Setter Property="Margin" Value="5"/>
-		</Style>
-		<Style Selector="TextBox">
-			<Setter Property="Margin" Value="5"/>
-		</Style>
-	</Window.Styles>
 	
-	<Grid>
+	<Grid HorizontalAlignment="Stretch"
+	      VerticalAlignment="Stretch">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
+
+		<Menu Grid.Row="0">
+			<MenuItem Header="_File">
+				<MenuItem Header="_New"
+				          Click="OnMenuItemNewClick"/>
+				<MenuItem Header="_Open"
+				          Click="OnMenuItemOpenClick"/>
+				<Separator/>
+				<MenuItem Header="_Save"
+				          Click="OnMenuItemSaveClick"/>
+				<MenuItem Header="_Close"
+				          Click="OnMenuItemCloseClick"/>
+				<Separator/>
+				<MenuItem Header="E_xit"
+				          Click="OnMenuItemExitClick"/>
+			</MenuItem>
+			<MenuItem Header="_Edit">
+				<MenuItem Header="_Add New"
+				          Command="{Binding AddNewAccountEntryCommand}"/>
+				<MenuItem Header="_Delete"
+				          Command="{Binding DeleteAccountEntryCommand}"/>
+			</MenuItem>
+			<MenuItem Header="_Help"
+			          Click="OnMenuItemHelpClick"/>
+		</Menu>
 		
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="60*"/>
-			<ColumnDefinition Width="40*"/>
-		</Grid.ColumnDefinitions>
+		<Grid Grid.Row="1"
+		      HorizontalAlignment="Stretch"
+		      VerticalAlignment="Stretch">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="50*"/>
+				<ColumnDefinition Width="50*"/>
+			</Grid.ColumnDefinitions>
+			
+			<DataGrid Grid.Column="0"
+			          AutoGenerateColumns="False"
+			          CanUserReorderColumns="False"
+			          CanUserResizeColumns="True"
+			          CanUserSortColumns="True"
+			          IsReadOnly="True"
+			          SelectionMode="Single"
+			          ItemsSource="{Binding AccountEntryViewModels}"
+			          SelectedItem="{Binding SelectedAccountEntryViewModel}">
+			
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+					<DataGridTextColumn Header="Website" Binding="{Binding Website}"/>
+					<DataGridTextColumn Header="User" Binding="{Binding User}"/>
+				</DataGrid.Columns>
+			
+			</DataGrid>
+			
+			<Grid Grid.Column="1"
+			      HorizontalAlignment="Stretch"
+			      VerticalAlignment="Stretch">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"></RowDefinition>
+					<RowDefinition Height="Auto"></RowDefinition>
+					<RowDefinition Height="Auto"></RowDefinition>
+					<RowDefinition Height="Auto"></RowDefinition>
+				</Grid.RowDefinitions>
 		
-		<Button Grid.Row="0"
-		        Grid.Column="0"
-		        Content="Add new entry"
-		        Command="{Binding AddNewAccountEntryCommand}"/>
-		<Button Grid.Row="0"
-		        Grid.Column="1"
-		        Content="Delete entry"
-		        Command="{Binding DeleteAccountEntryCommand}"/>
-		
-		<DataGrid Grid.Row="1"
-				  Grid.Column="0"
-		          AutoGenerateColumns="False"
-		          CanUserReorderColumns="False"
-		          CanUserResizeColumns="True"
-		          CanUserSortColumns="True"
-		          IsReadOnly="True"
-		          SelectionMode="Single"
-		          ItemsSource="{Binding AccountEntryViewModels}"
-		          SelectedItem="{Binding SelectedAccountEntryViewModel}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"></ColumnDefinition>
+					<ColumnDefinition Width="*"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				
+				<TextBlock Grid.Row="0"
+				           Grid.Column="0"
+				           Text="Name"/>
+				<TextBox Grid.Row="0"
+				         Grid.Column="1"
+				         Text="{Binding SelectedAccountEntryViewModel.Name}"/>
 			
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-				<DataGridTextColumn Header="Website" Binding="{Binding Website}"/>
-				<DataGridTextColumn Header="User" Binding="{Binding User}"/>
-			</DataGrid.Columns>
+				<TextBlock Grid.Row="1"
+				           Grid.Column="0"
+				           Text="Website"/>
+				<TextBox Grid.Row="1"
+				         Grid.Column="1"
+				         Text="{Binding SelectedAccountEntryViewModel.Website}"/>
 			
-		</DataGrid>
-		
-		<StackPanel Grid.Row="1"
-		            Grid.Column="1"
-		            Orientation="Vertical">
-			<TextBlock Text="Name"/>
-			<TextBox Text="{Binding SelectedAccountEntryViewModel.Name}"/>
+				<TextBlock Grid.Row="2"
+				           Grid.Column="0"
+				           Text="User"/>
+				<TextBox Grid.Row="2"
+				         Grid.Column="1"
+				         Text="{Binding SelectedAccountEntryViewModel.User}"/>
 			
-			<TextBlock Text="Website"/>
-			<TextBox Text="{Binding SelectedAccountEntryViewModel.Website}"/>
-			
-			<TextBlock Text="User"/>
-			<TextBox Text="{Binding SelectedAccountEntryViewModel.User}"/>
-			
-			<TextBlock Text="Password"/>
-			<TextBox PasswordChar="*"
-			         Text="{Binding SelectedAccountEntryViewModel.Password}"/>
-		</StackPanel>
+				<TextBlock Grid.Row="3"
+				           Grid.Column="0"
+				           Text="Password"/>
+				<TextBox Grid.Row="3"
+				         Grid.Column="1"
+				         PasswordChar="*"
+				         Text="{Binding SelectedAccountEntryViewModel.Password}"/>
+			</Grid>
+		</Grid>
 	</Grid>
 
 </Window>
