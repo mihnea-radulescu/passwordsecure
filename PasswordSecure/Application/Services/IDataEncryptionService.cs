@@ -2,7 +2,7 @@ namespace PasswordSecure.Application.Services;
 
 public interface IDataEncryptionService
 {
-	byte[] EncryptData(string serializedData, string password);
+	byte[] EncryptData(byte[] data, string password);
 	
-	string DecryptData(byte[] encryptedDataBytes, string password);
+	byte[] DecryptData(byte[] encryptedData, string password);
 }

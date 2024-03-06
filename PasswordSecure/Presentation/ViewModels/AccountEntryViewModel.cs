@@ -1,9 +1,10 @@
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
-public class AccountEntryViewModel : ViewModelBase
+public class AccountEntryViewModel : ObservableObject
 {
 	public AccountEntryViewModel(AccountEntry accountEntry)
 	{
@@ -19,9 +20,12 @@ public class AccountEntryViewModel : ViewModelBase
 		get => AccountEntry.Name;
 		set
 		{
-			AccountEntry.Name = value;
+			SetProperty(
+				AccountEntry.Name,
+				value,
+				AccountEntry,
+				(accountEntry, propertyValue) => accountEntry.Name = propertyValue);
 			
-			OnPropertyChanged();
 			NameChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -31,9 +35,11 @@ public class AccountEntryViewModel : ViewModelBase
 		get => AccountEntry.Website;
 		set
 		{
-			AccountEntry.Website = value;
-			
-			OnPropertyChanged();
+			SetProperty(
+				AccountEntry.Website,
+				value,
+				AccountEntry,
+				(accountEntry, propertyValue) => accountEntry.Website = propertyValue);
 		}
 	}
 	
@@ -42,9 +48,11 @@ public class AccountEntryViewModel : ViewModelBase
 		get => AccountEntry.User;
 		set
 		{
-			AccountEntry.User = value;
-			
-			OnPropertyChanged();
+			SetProperty(
+				AccountEntry.User,
+				value,
+				AccountEntry,
+				(accountEntry, propertyValue) => accountEntry.User = propertyValue);
 		}
 	}
 	
@@ -53,9 +61,11 @@ public class AccountEntryViewModel : ViewModelBase
 		get => AccountEntry.Password;
 		set
 		{
-			AccountEntry.Password = value;
-			
-			OnPropertyChanged();
+			SetProperty(
+				AccountEntry.Password,
+				value,
+				AccountEntry,
+				(accountEntry, propertyValue) => accountEntry.Password = propertyValue);
 		}
 	}
 }

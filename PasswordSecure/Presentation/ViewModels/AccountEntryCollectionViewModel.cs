@@ -1,12 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PasswordSecure.DomainModel;
-using PasswordSecure.Presentation.Commands;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
-public class AccountEntryCollectionViewModel : ViewModelBase
+public class AccountEntryCollectionViewModel : ObservableObject
 {
 	public AccountEntryCollectionViewModel(AccountEntryCollection accountEntries)
 	{
@@ -21,16 +23,11 @@ public class AccountEntryCollectionViewModel : ViewModelBase
 	public AccountEntryViewModel? SelectedAccountEntryViewModel
 	{
 		get => _selectedAccountEntryViewModel;
-		set
-		{
-			_selectedAccountEntryViewModel = value;
-			
-			OnPropertyChanged();
-		}
+		set => SetProperty(ref _selectedAccountEntryViewModel, value);
 	}
 	
-	public RelayCommand AddNewAccountEntryCommand { get; }
-	public RelayCommand DeleteAccountEntryCommand { get; }
+	public ICommand AddNewAccountEntryCommand { get; }
+	public ICommand DeleteAccountEntryCommand { get; }
 	
 	public AccountEntryCollection ToAccountEntryCollection()
 	{
@@ -64,9 +61,9 @@ public class AccountEntryCollectionViewModel : ViewModelBase
 		return accountEntryViewModels;
 	}
 
-	private RelayCommand GetAddNewAccountEntryCommand()
+	private ICommand GetAddNewAccountEntryCommand()
 		=> new RelayCommand(
-			arg =>
+			() =>
 			{
 				var newAccountEntry = new AccountEntry();
 				var newAccountEntryViewModel = new AccountEntryViewModel(newAccountEntry);
@@ -77,9 +74,9 @@ public class AccountEntryCollectionViewModel : ViewModelBase
 				SortAccountEntryViewModels();
 			});
 
-	private RelayCommand GetDeleteAccountEntryCommand()
+	private ICommand GetDeleteAccountEntryCommand()
 		=> new RelayCommand(
-			arg =>
+			() =>
 			{
 				if (SelectedAccountEntryViewModel is not null)
 				{

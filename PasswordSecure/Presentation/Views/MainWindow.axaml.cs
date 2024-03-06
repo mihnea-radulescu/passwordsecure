@@ -22,6 +22,13 @@ public partial class MainWindow : Window, IMainView
 	public event EventHandler? CloseMenuClicked;
 	public event EventHandler? ExitMenuClicked;
 	public event EventHandler? HelpMenuClicked;
+
+	public void ClearData()
+	{
+		_accountEntryCollectionViewModel = null;
+
+		DataContext = _accountEntryCollectionViewModel;
+	}
 	
 	public void PopulateData(AccountEntryCollection accountEntries)
 	{

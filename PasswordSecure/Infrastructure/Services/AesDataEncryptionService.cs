@@ -1,23 +1,20 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using PasswordSecure.Application.Services;
 
 namespace PasswordSecure.Infrastructure.Services;
 
 public class AesDataEncryptionService : IDataEncryptionService
 {
-	public byte[] EncryptData(string serializedData, string password)
+	public byte[] EncryptData(byte[] data, string password)
 	{
 		try
 		{
-			var serializedDataBytes = Encoding.GetBytes(serializedData);
+			var encryptedData = ExecuteCryptoTransform(
+				data, password, aes => aes.CreateEncryptor());
 
-			var encryptedDataBytes = ExecuteCryptoTransform(
-				serializedDataBytes, password, aes => aes.CreateEncryptor());
-
-			return encryptedDataBytes;
+			return encryptedData;
 		}
 		catch (Exception ex)
 		{
@@ -25,16 +22,14 @@ public class AesDataEncryptionService : IDataEncryptionService
 		}
 	}
 
-	public string DecryptData(byte[] encryptedDataBytes, string password)
+	public byte[] DecryptData(byte[] encryptedData, string password)
 	{
 		try
 		{
-			var serializedDataBytes = ExecuteCryptoTransform(
-				encryptedDataBytes, password, aes => aes.CreateDecryptor());
-
-			var serializedData = Encoding.GetString(serializedDataBytes);
+			var data = ExecuteCryptoTransform(
+				encryptedData, password, aes => aes.CreateDecryptor());
 		
-			return serializedData;
+			return data;
 		}
 		catch (Exception ex)
 		{
@@ -62,10 +57,8 @@ public class AesDataEncryptionService : IDataEncryptionService
 		0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
 	};
 	
-	private static readonly Encoding Encoding = Encoding.UTF8;
-	
 	private static byte[] ExecuteCryptoTransform(
-		byte[] inputData, string password, Func<Aes, ICryptoTransform> createCryptoTransform)
+		byte[] data, string password, Func<Aes, ICryptoTransform> createCryptoTransform)
 	{
 		var passwordBytes = GetPasswordBytes(password);
 		
@@ -78,7 +71,7 @@ public class AesDataEncryptionService : IDataEncryptionService
 		using var encryptor = createCryptoTransform(aes);
 		using (var cryptoStream = new CryptoStream(dataStream, encryptor, CryptoStreamMode.Write))
 		{
-			cryptoStream.Write(inputData);
+			cryptoStream.Write(data);
 		}
 		
 		var resultData = dataStream.ToArray();

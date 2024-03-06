@@ -1,12 +1,11 @@
 using System.Security.Cryptography;
 using FluentAssertions;
+using PasswordSecure.Application.Extensions;
 using Xunit;
 using PasswordSecure.Infrastructure.Services;
-using PasswordSecure.Test.TestAttributes;
 
 namespace PasswordSecure.Test.Services;
 
-[UnitTestClass]
 public class AesDataEncryptionServiceTest
 {
 	public AesDataEncryptionServiceTest()
@@ -19,11 +18,14 @@ public class AesDataEncryptionServiceTest
 	{
 		// Arrange
 		const string serializedDataReference = "plain text";
+		var dataReference = serializedDataReference.ToByteArray();
+		
 		const string password = "password";
 
 		// Act
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(serializedDataReference, password);
-		var serializedData = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(dataReference, password);
+		var data = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var serializedData = data.ToText();
 
 		// Assert
 		serializedData.Should().Be(serializedDataReference);
@@ -34,11 +36,14 @@ public class AesDataEncryptionServiceTest
 	{
 		// Arrange
 		const string serializedDataReference = "plain text";
+		var dataReference = serializedDataReference.ToByteArray();
+		
 		const string password = "password_password_password_password";
 
 		// Act
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(serializedDataReference, password);
-		var serializedData = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(dataReference, password);
+		var data = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var serializedData = data.ToText();
 
 		// Assert
 		serializedData.Should().Be(serializedDataReference);
@@ -49,14 +54,16 @@ public class AesDataEncryptionServiceTest
 	{
 		// Arrange
 		const string serializedDataReference = "plain text";
+		var dataReference = serializedDataReference.ToByteArray();
+		
 		const string encryptionPassword = "encryption password";
 		const string decryptionPassword = "decryption password";
 
 		// Act and Assert
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(serializedDataReference, encryptionPassword);
+		var encryptedData = _aesDataEncryptionService.EncryptData(dataReference, encryptionPassword);
 		
 		Assert.Throws<CryptographicException>(() =>
-			_aesDataEncryptionService.DecryptData(encryptedDataBytes, decryptionPassword));
+			_aesDataEncryptionService.DecryptData(encryptedData, decryptionPassword));
 	}
 	
 	[Fact]
@@ -64,14 +71,16 @@ public class AesDataEncryptionServiceTest
 	{
 		// Arrange
 		const string serializedDataReference = "plain text";
+		var dataReference = serializedDataReference.ToByteArray();
+		
 		const string encryptionPassword = "encryption password_password_password_password";
 		const string decryptionPassword = "decryption password_password_password_password";
 
 		// Act and Assert
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(serializedDataReference, encryptionPassword);
+		var encryptedData = _aesDataEncryptionService.EncryptData(dataReference, encryptionPassword);
 		
 		Assert.Throws<CryptographicException>(() =>
-			_aesDataEncryptionService.DecryptData(encryptedDataBytes, decryptionPassword));
+			_aesDataEncryptionService.DecryptData(encryptedData, decryptionPassword));
 	}
 	
 	#region Private

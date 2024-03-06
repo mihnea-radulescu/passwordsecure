@@ -14,6 +14,7 @@ public interface IMainView
 	event EventHandler? ExitMenuClicked;
 	event EventHandler? HelpMenuClicked;
 
+	void ClearData();
 	void PopulateData(AccountEntryCollection accountEntries);
 	
 	void Show();

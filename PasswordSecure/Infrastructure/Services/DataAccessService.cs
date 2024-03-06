@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using PasswordSecure.Application.Extensions;
 using PasswordSecure.Application.Helpers;
 using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
@@ -22,10 +23,10 @@ public class DataAccessService : IDataAccessService
 	{
 		try
 		{
-			var encryptedData = _fileAccessProvider.ReadData(accessParams.FilePath);
+			var encryptedData = _fileAccessProvider.ReadData(accessParams.FilePath!);
 
-			var serializedData = _dataEncryptionService.DecryptData(
-				encryptedData, accessParams.MasterPassword);
+			var data = _dataEncryptionService.DecryptData(encryptedData, accessParams.MasterPassword!);
+			var serializedData = data.ToText();
 
 			var accountEntries = _dataSerializationService.Deserialize(serializedData);
 			return accountEntries;
@@ -36,7 +37,7 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileReadError(accessParams.FilePath), ex);
+			throw new ApplicationException(FileReadError(accessParams.FilePath!), ex);
 		}
 	}
 
@@ -45,11 +46,12 @@ public class DataAccessService : IDataAccessService
 		try
 		{
 			var serializedData = _dataSerializationService.Serialize(accountEntryCollection);
+			var data = serializedData.ToByteArray();
 
 			var encryptedData = _dataEncryptionService.EncryptData(
-				serializedData, accessParams.MasterPassword);
+				data, accessParams.MasterPassword!);
 			
-			_fileAccessProvider.SaveData(accessParams.FilePath, encryptedData);
+			_fileAccessProvider.SaveData(accessParams.FilePath!, encryptedData);
 		}
 		catch (CryptographicException)
 		{
@@ -57,7 +59,7 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileSaveError(accessParams.FilePath), ex);
+			throw new ApplicationException(FileSaveError(accessParams.FilePath!), ex);
 		}
 	}
 	
