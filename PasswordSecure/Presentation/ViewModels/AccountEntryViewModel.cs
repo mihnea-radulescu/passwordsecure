@@ -30,16 +30,16 @@ public class AccountEntryViewModel : ObservableObject
 		}
 	}
 
-	public string? Website
+	public string? Url
 	{
-		get => AccountEntry.Website;
+		get => AccountEntry.Url;
 		set
 		{
 			SetProperty(
-				AccountEntry.Website,
+				AccountEntry.Url,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.Website = propertyValue);
+				(accountEntry, propertyValue) => accountEntry.Url = propertyValue);
 		}
 	}
 	
@@ -66,6 +66,19 @@ public class AccountEntryViewModel : ObservableObject
 				value,
 				AccountEntry,
 				(accountEntry, propertyValue) => accountEntry.Password = propertyValue);
+		}
+	}
+	
+	public string? Notes
+	{
+		get => AccountEntry.Notes;
+		set
+		{
+			SetProperty(
+				AccountEntry.Notes,
+				value,
+				AccountEntry,
+				(accountEntry, propertyValue) => accountEntry.Notes = propertyValue);
 		}
 	}
 }

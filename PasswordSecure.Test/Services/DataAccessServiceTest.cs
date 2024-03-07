@@ -29,8 +29,8 @@ public class DataAccessServiceTest
 		const string fileName = "Encrypted_NoElementCollection.data";
 		var accessParams = new AccessParams
 		{
-			MasterPassword = MasterPassword,
 			FilePath = fileName,
+			Password = Password,
 			ShouldSaveBackup = ShouldSaveBackup
 		};
 		
@@ -52,8 +52,8 @@ public class DataAccessServiceTest
 		const string fileName = "Encrypted_OneElementCollectionDefaultValues.data";
 		var accessParams = new AccessParams
 		{
-			MasterPassword = MasterPassword,
 			FilePath = fileName,
+			Password = Password,
 			ShouldSaveBackup = ShouldSaveBackup
 		};
 
@@ -78,7 +78,7 @@ public class DataAccessServiceTest
 		
 		singleAccountEntry.Should().NotBeNull();
 		singleAccountEntry.Name.Should().Be(name);
-		singleAccountEntry.Website.Should().BeNull();
+		singleAccountEntry.Url.Should().BeNull();
 		singleAccountEntry.User.Should().BeNull();
 		singleAccountEntry.Password.Should().BeNull();
 	}
@@ -90,20 +90,20 @@ public class DataAccessServiceTest
 		const string fileName = "Encrypted_OneElementCollectionCustomValues.data";
 		var accessParams = new AccessParams
 		{
-			MasterPassword = MasterPassword,
 			FilePath = fileName,
+			Password = Password,
 			ShouldSaveBackup = ShouldSaveBackup
 		};
 		
 		const string name = "Google";
-		const string website = "https://mail.google.com";
+		const string url = "https://mail.google.com";
 		const string user = "john.doe";
 		const string password = "123456**&&";
 		
 		var accountEntry = new AccountEntry
 		{
 			Name = name,
-			Website = website,
+			Url = url,
 			User = user,
 			Password = password
 		};
@@ -122,7 +122,7 @@ public class DataAccessServiceTest
 		
 		singleAccountEntry.Should().NotBeNull();
 		singleAccountEntry.Name.Should().Be(name);
-		singleAccountEntry.Website.Should().Be(website);
+		singleAccountEntry.Url.Should().Be(url);
 		singleAccountEntry.User.Should().Be(user);
 		singleAccountEntry.Password.Should().Be(password);
 	}
@@ -134,33 +134,33 @@ public class DataAccessServiceTest
 		const string fileName = "Encrypted_TwoElementCollectionCustomValues.data";
 		var accessParams = new AccessParams
 		{
-			MasterPassword = MasterPassword,
 			FilePath = fileName,
+			Password = Password,
 			ShouldSaveBackup = ShouldSaveBackup
 		};
 		
 		const string name1 = "Google";
-		const string website1 = "https://mail.google.com";
+		const string url1 = "https://mail.google.com";
 		const string user1 = "john.doe";
 		const string password1 = "123456**&&";
 		
 		var accountEntry1 = new AccountEntry
 		{
 			Name = name1,
-			Website = website1,
+			Url = url1,
 			User = user1,
 			Password = password1
 		};
 		
 		const string name2 = "Microsoft";
-		const string website2 = "https://azure.microsoft.com";
+		const string url2 = "https://azure.microsoft.com";
 		const string user2 = "john_doe";
 		const string password2 = "654321&&**";
 		
 		var accountEntry2 = new AccountEntry
 		{
 			Name = name2,
-			Website = website2,
+			Url = url2,
 			User = user2,
 			Password = password2
 		};
@@ -179,7 +179,7 @@ public class DataAccessServiceTest
 		
 		firstAccountEntry.Should().NotBeNull();
 		firstAccountEntry.Name.Should().Be(name1);
-		firstAccountEntry.Website.Should().Be(website1);
+		firstAccountEntry.Url.Should().Be(url1);
 		firstAccountEntry.User.Should().Be(user1);
 		firstAccountEntry.Password.Should().Be(password1);
 		
@@ -187,14 +187,14 @@ public class DataAccessServiceTest
 		
 		secondAccountEntry.Should().NotBeNull();
 		secondAccountEntry.Name.Should().Be(name2);
-		secondAccountEntry.Website.Should().Be(website2);
+		secondAccountEntry.Url.Should().Be(url2);
 		secondAccountEntry.User.Should().Be(user2);
 		secondAccountEntry.Password.Should().Be(password2);
 	}
 
 	#region Private
 
-	private const string MasterPassword = "Master Password";
+	private const string Password = "Master Password";
 	private const bool ShouldSaveBackup = false;
 
 	private readonly DataAccessService _dataAccessService;

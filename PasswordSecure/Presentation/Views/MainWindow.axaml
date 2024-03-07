@@ -4,9 +4,9 @@
         Icon="/MainWindowIcon.ico"
         Title="Password Secure"
 		MinWidth="800"
-		MinHeight="250"
+		MinHeight="300"
 		Width="800"
-		Height="250"
+		Height="300"
         WindowStartupLocation="CenterScreen">
 	
 	<Grid HorizontalAlignment="Stretch"
@@ -61,7 +61,7 @@
 			
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-					<DataGridTextColumn Header="Website" Binding="{Binding Website}"/>
+					<DataGridTextColumn Header="URL" Binding="{Binding Url}"/>
 					<DataGridTextColumn Header="User" Binding="{Binding User}"/>
 				</DataGrid.Columns>
 			
@@ -71,6 +71,7 @@
 			      HorizontalAlignment="Stretch"
 			      VerticalAlignment="Stretch">
 				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"></RowDefinition>
 					<RowDefinition Height="Auto"></RowDefinition>
 					<RowDefinition Height="Auto"></RowDefinition>
 					<RowDefinition Height="Auto"></RowDefinition>
@@ -91,10 +92,10 @@
 			
 				<TextBlock Grid.Row="1"
 				           Grid.Column="0"
-				           Text="Website"/>
+				           Text="URL"/>
 				<TextBox Grid.Row="1"
 				         Grid.Column="1"
-				         Text="{Binding SelectedAccountEntryViewModel.Website}"/>
+				         Text="{Binding SelectedAccountEntryViewModel.Url}"/>
 			
 				<TextBlock Grid.Row="2"
 				           Grid.Column="0"
@@ -108,8 +109,16 @@
 				           Text="Password"/>
 				<TextBox Grid.Row="3"
 				         Grid.Column="1"
+				         IsReadOnly="True"
 				         PasswordChar="*"
 				         Text="{Binding SelectedAccountEntryViewModel.Password}"/>
+				
+				<TextBlock Grid.Row="4"
+				           Grid.Column="0"
+				           Text="Notes"/>
+				<TextBox Grid.Row="4"
+				         Grid.Column="1"
+				         Text="{Binding SelectedAccountEntryViewModel.Notes}"/>
 			</Grid>
 		</Grid>
 	</Grid>

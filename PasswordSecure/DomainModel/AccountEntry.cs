@@ -9,7 +9,9 @@ public record AccountEntry
 	
 	public string Name { get; set; }
 	
-	public string? Website { get; set; }
+	public string? Url { get; set; }
 	public string? User { get; set; }
 	public string? Password { get; set; }
+	
+	public string? Notes { get; set; }
 }

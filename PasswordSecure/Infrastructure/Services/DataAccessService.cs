@@ -25,7 +25,7 @@ public class DataAccessService : IDataAccessService
 		{
 			var encryptedData = _fileAccessProvider.ReadData(accessParams.FilePath!);
 
-			var data = _dataEncryptionService.DecryptData(encryptedData, accessParams.MasterPassword!);
+			var data = _dataEncryptionService.DecryptData(encryptedData, accessParams.Password!);
 			var serializedData = data.ToText();
 
 			var accountEntries = _dataSerializationService.Deserialize(serializedData);
@@ -49,7 +49,7 @@ public class DataAccessService : IDataAccessService
 			var data = serializedData.ToByteArray();
 
 			var encryptedData = _dataEncryptionService.EncryptData(
-				data, accessParams.MasterPassword!);
+				data, accessParams.Password!);
 			
 			_fileAccessProvider.SaveData(accessParams.FilePath!, encryptedData);
 		}

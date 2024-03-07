@@ -19,7 +19,9 @@ public class App : Avalonia.Application
     {
         IDataSerializationService dataSerializationService = new JsonDataSerializationService();
         IDataEncryptionService dataEncryptionService = new AesDataEncryptionService();
+        
         IFileAccessProvider fileAccessProvider = new FileAccessProvider();
+        IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
 
         IDataAccessService dataAccessService = new DataAccessService(
             dataSerializationService,
@@ -27,8 +29,8 @@ public class App : Avalonia.Application
             fileAccessProvider);
 
         var mainView = new MainWindow();
+        var mainPresenter = new MainPresenter(dataAccessService, assemblyVersionProvider, mainView);
         
-        var mainPresenter = new MainPresenter(dataAccessService, mainView);
         mainView.Show();
     }
 }
