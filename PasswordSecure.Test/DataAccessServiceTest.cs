@@ -6,7 +6,7 @@ using PasswordSecure.DomainModel;
 using PasswordSecure.Infrastructure.Helpers;
 using PasswordSecure.Infrastructure.Services;
 
-namespace PasswordSecure.Test.Services;
+namespace PasswordSecure.Test;
 
 public class DataAccessServiceTest
 {
@@ -30,8 +30,7 @@ public class DataAccessServiceTest
 		var accessParams = new AccessParams
 		{
 			FilePath = fileName,
-			Password = Password,
-			ShouldSaveBackup = ShouldSaveBackup
+			Password = Password
 		};
 		
 		var accountEntryCollectionReference = new AccountEntryCollection();
@@ -53,8 +52,7 @@ public class DataAccessServiceTest
 		var accessParams = new AccessParams
 		{
 			FilePath = fileName,
-			Password = Password,
-			ShouldSaveBackup = ShouldSaveBackup
+			Password = Password
 		};
 
 		const string name = "Google";
@@ -91,8 +89,7 @@ public class DataAccessServiceTest
 		var accessParams = new AccessParams
 		{
 			FilePath = fileName,
-			Password = Password,
-			ShouldSaveBackup = ShouldSaveBackup
+			Password = Password
 		};
 		
 		const string name = "Google";
@@ -135,8 +132,7 @@ public class DataAccessServiceTest
 		var accessParams = new AccessParams
 		{
 			FilePath = fileName,
-			Password = Password,
-			ShouldSaveBackup = ShouldSaveBackup
+			Password = Password
 		};
 		
 		const string name1 = "Google";
@@ -195,7 +191,6 @@ public class DataAccessServiceTest
 	#region Private
 
 	private const string Password = "Master Password";
-	private const bool ShouldSaveBackup = false;
 
 	private readonly DataAccessService _dataAccessService;
 

@@ -70,6 +70,8 @@ public class MainPresenter
 	}
 
 	#region Private
+
+	private const int MinimumPasswordLength = 8;
 	
 	private static readonly FilePickerSaveOptions EncryptedFileCreateOptions;
 	private static readonly FilePickerOpenOptions EncryptedFileOpenOptions;
@@ -85,7 +87,7 @@ public class MainPresenter
 	
 	private async void OnAccountEntryCollectionCreated(object? sender, EventArgs e)
 	{
-		ResetData(false);
+		ResetData();
 
 		try
 		{
@@ -93,7 +95,7 @@ public class MainPresenter
 		}
 		catch (Exception ex)
 		{
-			ResetData(false);
+			ResetData();
 
 			await DisplayErrorMessage(ex);
 		}
@@ -105,7 +107,7 @@ public class MainPresenter
 	
 	private async void OnAccountEntryCollectionLoaded(object? sender, EventArgs e)
 	{
-		ResetData(true);
+		ResetData();
 
 		try
 		{
@@ -113,7 +115,7 @@ public class MainPresenter
 		}
 		catch (Exception ex)
 		{
-			ResetData(false);
+			ResetData();
 
 			await DisplayErrorMessage(ex);
 		}
@@ -138,7 +140,7 @@ public class MainPresenter
 
 	private void OnCloseMenuClicked(object? sender, EventArgs e)
 	{
-		ResetData(false);
+		ResetData();
 		
 		_mainWindow.EnableControls();
 	}
@@ -165,7 +167,10 @@ public class MainPresenter
 			return;
 		}
 
-		var setMasterPasswordWindow = new SetMasterPasswordWindow();
+		var setMasterPasswordWindow = new SetMasterPasswordWindow
+		{
+			MinimumPasswordLength = MinimumPasswordLength
+		};
 		var setMasterPasswordViewModel = new SetMasterPasswordViewModel(
 			setMasterPasswordWindow, _accessParams);
 
@@ -245,11 +250,10 @@ public class MainPresenter
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 
-	private void ResetData(bool shouldSaveBackup)
+	private void ResetData()
 	{
 		_accessParams.Password = null;
 		_accessParams.FilePath = null;
-		_accessParams.ShouldSaveBackup = shouldSaveBackup;
 		
 		_mainWindow.ClearData();
 	}
