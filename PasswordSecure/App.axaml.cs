@@ -28,9 +28,9 @@ public class App : Avalonia.Application
             dataEncryptionService,
             fileAccessProvider);
 
-        var mainView = new MainWindow();
-        var mainPresenter = new MainPresenter(dataAccessService, assemblyVersionProvider, mainView);
+        var mainWindow = new MainWindow();
+        var mainPresenter = new MainPresenter(dataAccessService, assemblyVersionProvider, mainWindow);
         
-        mainView.Show();
+        mainWindow.Show();
     }
 }

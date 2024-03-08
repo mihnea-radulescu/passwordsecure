@@ -1,6 +1,6 @@
 namespace PasswordSecure.DomainModel;
 
-public record AccessParams : IPasswordContainer
+public record AccessParams
 {
 	public string? FilePath { get; set; }
 	

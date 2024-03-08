@@ -14,9 +14,6 @@
 		<Style Selector="DataGrid">
 			<Setter Property="Margin" Value="5"/>
 		</Style>
-		<Style Selector="StackPanel">
-			<Setter Property="Margin" Value="5"/>
-		</Style>
 		<Style Selector="TextBlock">
 			<Setter Property="Margin" Value="5"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>

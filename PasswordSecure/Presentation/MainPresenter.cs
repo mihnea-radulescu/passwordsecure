@@ -49,22 +49,24 @@ public class MainPresenter
 	public MainPresenter(
 		IDataAccessService dataAccessService,
 		IAssemblyVersionProvider assemblyVersionProvider,
-		MainWindow mainView)
+		MainWindow mainWindow)
 	{
 		_dataAccessService = dataAccessService;
 		_assemblyVersionProvider = assemblyVersionProvider;
 
-		_mainView = mainView;
-		_mainView.AccountEntryCollectionCreated += OnAccountEntryCollectionCreated;
-		_mainView.AccountEntryCollectionLoaded += OnAccountEntryCollectionLoaded;
-		_mainView.AccountEntryCollectionSaved += OnAccountEntryCollectionSaved;
+		_mainWindow = mainWindow;
+		
+		_mainWindow.VisualStateChanged += OnVisualStateChanged;
+		
+		_mainWindow.AccountEntryCollectionCreated += OnAccountEntryCollectionCreated;
+		_mainWindow.AccountEntryCollectionLoaded += OnAccountEntryCollectionLoaded;
+		_mainWindow.AccountEntryCollectionSaved += OnAccountEntryCollectionSaved;
 
-		_mainView.CloseMenuClicked += OnCloseMenuClicked;
-		_mainView.ExitMenuClicked += OnExitMenuClicked;
-		_mainView.HelpMenuClicked += OnHelpMenuClicked;
+		_mainWindow.CloseMenuClicked += OnCloseMenuClicked;
+		_mainWindow.ExitMenuClicked += OnExitMenuClicked;
+		_mainWindow.HelpMenuClicked += OnHelpMenuClicked;
 
 		_accessParams = new AccessParams();
-		_passwordViewModel = new PasswordViewModel(_accessParams);
 	}
 
 	#region Private
@@ -75,10 +77,11 @@ public class MainPresenter
 	private readonly IDataAccessService _dataAccessService;
 	private readonly IAssemblyVersionProvider _assemblyVersionProvider;
 
-	private readonly MainWindow _mainView;
-
+	private readonly MainWindow _mainWindow;
 	private readonly AccessParams _accessParams;
-	private readonly PasswordViewModel _passwordViewModel;
+
+	private void OnVisualStateChanged(object? sender, EventArgs e)
+		=> _mainWindow.EnableControls();
 	
 	private async void OnAccountEntryCollectionCreated(object? sender, EventArgs e)
 	{
@@ -93,6 +96,10 @@ public class MainPresenter
 			ResetData(false);
 
 			await DisplayErrorMessage(ex);
+		}
+		finally
+		{
+			_mainWindow.EnableControls();
 		}
 	}
 	
@@ -109,6 +116,10 @@ public class MainPresenter
 			ResetData(false);
 
 			await DisplayErrorMessage(ex);
+		}
+		finally
+		{
+			_mainWindow.EnableControls();
 		}
 	}
 
@@ -128,11 +139,15 @@ public class MainPresenter
 	private void OnCloseMenuClicked(object? sender, EventArgs e)
 	{
 		ResetData(false);
+		
+		_mainWindow.EnableControls();
 	}
 	
-	private void OnExitMenuClicked(object? sender, EventArgs e)
+	private async void OnExitMenuClicked(object? sender, EventArgs e)
 	{
-		_mainView.Close();
+		await _mainWindow.Clipboard!.ClearAsync();
+		
+		_mainWindow.Close();
 	}
 	
 	private async void OnHelpMenuClicked(object? sender, EventArgs e)
@@ -142,7 +157,7 @@ public class MainPresenter
 	
 	private async Task CreateEncryptedContainer()
 	{
-		var encryptedFile = await _mainView.StorageProvider.SaveFilePickerAsync(
+		var encryptedFile = await _mainWindow.StorageProvider.SaveFilePickerAsync(
 			EncryptedFileCreateOptions);
 		
 		if (encryptedFile is null)
@@ -150,11 +165,12 @@ public class MainPresenter
 			return;
 		}
 
-		var setMasterPasswordWindow = new SetMasterPasswordWindow
-		{
-			DataContext = _passwordViewModel
-		};
-		await setMasterPasswordWindow.ShowDialog(_mainView);
+		var setMasterPasswordWindow = new SetMasterPasswordWindow();
+		var setMasterPasswordViewModel = new SetMasterPasswordViewModel(
+			setMasterPasswordWindow, _accessParams);
+
+		setMasterPasswordWindow.DataContext = setMasterPasswordViewModel;
+		await setMasterPasswordWindow.ShowDialog(_mainWindow);
 
 		if (_accessParams.Password is null)
 		{
@@ -164,12 +180,12 @@ public class MainPresenter
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
 			
 		_dataAccessService.SaveAccountEntries(_accessParams, []);
-		_mainView.PopulateData([]);
+		_mainWindow.PopulateData([]);
 	}
 	
 	private async Task LoadEncryptedContainer()
 	{
-		var encryptedFile = (await _mainView.StorageProvider.OpenFilePickerAsync(
+		var encryptedFile = (await _mainWindow.StorageProvider.OpenFilePickerAsync(
 			EncryptedFileOpenOptions)).SingleOrDefault();
 
 		if (encryptedFile is null)
@@ -177,11 +193,12 @@ public class MainPresenter
 			return;
 		}
 
-		var inputMasterPasswordWindow = new InputMasterPasswordWindow
-		{
-			DataContext = _passwordViewModel
-		};
-		await inputMasterPasswordWindow.ShowDialog(_mainView);
+		var inputMasterPasswordWindow = new InputMasterPasswordWindow();
+		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(
+			inputMasterPasswordWindow, _accessParams);
+
+		inputMasterPasswordWindow.DataContext = inputMasterPasswordViewModel;
+		await inputMasterPasswordWindow.ShowDialog(_mainWindow);
 		
 		if (_accessParams.Password is null)
 		{
@@ -191,7 +208,7 @@ public class MainPresenter
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
 			
 		var accountEntryCollection = _dataAccessService.ReadAccountEntries(_accessParams);
-		_mainView.PopulateData(accountEntryCollection);
+		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
 	private void SaveEncryptedContainer(AccountEntryCollectionEventArgs e)
@@ -213,7 +230,7 @@ public class MainPresenter
 			Icon.Error,
 			WindowStartupLocation.CenterOwner);
 
-		await errorMessageBox.ShowWindowDialogAsync(_mainView);
+		await errorMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 	
 	private async Task DisplayHelpMessage()
@@ -225,7 +242,7 @@ public class MainPresenter
 			Icon.Info,
 			WindowStartupLocation.CenterOwner);
 
-		await helpMessageBox.ShowWindowDialogAsync(_mainView);
+		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 
 	private void ResetData(bool shouldSaveBackup)
@@ -234,7 +251,7 @@ public class MainPresenter
 		_accessParams.FilePath = null;
 		_accessParams.ShouldSaveBackup = shouldSaveBackup;
 		
-		_mainView.ClearData();
+		_mainWindow.ClearData();
 	}
 
 	#endregion

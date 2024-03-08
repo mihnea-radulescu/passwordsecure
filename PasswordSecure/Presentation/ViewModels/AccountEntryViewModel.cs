@@ -1,10 +1,9 @@
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
-public class AccountEntryViewModel : ObservableObject
+public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 {
 	public AccountEntryViewModel(AccountEntry accountEntry)
 	{
@@ -12,8 +11,6 @@ public class AccountEntryViewModel : ObservableObject
 	}
 	
 	public AccountEntry AccountEntry { get; }
-
-	public event EventHandler? NameChanged;
 
 	public string Name
 	{
@@ -25,8 +22,6 @@ public class AccountEntryViewModel : ObservableObject
 				value,
 				AccountEntry,
 				(accountEntry, propertyValue) => accountEntry.Name = propertyValue);
-			
-			NameChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 

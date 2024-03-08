@@ -7,7 +7,8 @@
 		MinHeight="300"
 		Width="800"
 		Height="300"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Focusable="True">
 	
 	<Grid HorizontalAlignment="Stretch"
 	      VerticalAlignment="Stretch">
@@ -18,26 +19,39 @@
 
 		<Menu Grid.Row="0">
 			<MenuItem Header="_File">
-				<MenuItem Header="_New"
+				<MenuItem Name="MenuItemNew"
+						  Header="_New"
 				          Click="OnMenuItemNewClick"/>
-				<MenuItem Header="_Open"
+				<MenuItem Name="MenuItemOpen"
+				          Header="_Open"
 				          Click="OnMenuItemOpenClick"/>
 				<Separator/>
-				<MenuItem Header="_Save"
+				<MenuItem Name="MenuItemSave"
+				          Header="_Save"
+				          IsEnabled="False"
 				          Click="OnMenuItemSaveClick"/>
-				<MenuItem Header="_Close"
+				<MenuItem Name="MenuItemClose"
+				          Header="_Close"
+				          IsEnabled="False"
 				          Click="OnMenuItemCloseClick"/>
 				<Separator/>
-				<MenuItem Header="E_xit"
+				<MenuItem Name="MenuItemExit"
+				          Header="E_xit"
 				          Click="OnMenuItemExitClick"/>
 			</MenuItem>
 			<MenuItem Header="_Edit">
-				<MenuItem Header="_Add New"
+				<MenuItem Name="MenuItemAddNewAccountEntry"
+				          Header="_Add New"
 				          Command="{Binding AddNewAccountEntryCommand}"/>
-				<MenuItem Header="_Delete"
+				<MenuItem Name="MenuItemDeleteAccountEntry"
+				          Header="_Delete"
 				          Command="{Binding DeleteAccountEntryCommand}"/>
+				<MenuItem Name="MenuItemSortAccountEntries"
+				          Header="_Sort"
+				          Command="{Binding SortAccountEntriesCommand}"/>
 			</MenuItem>
-			<MenuItem Header="_Help"
+			<MenuItem Name="MenuItemHelp"
+			          Header="_Help"
 			          Click="OnMenuItemHelpClick"/>
 		</Menu>
 		
@@ -50,6 +64,7 @@
 			</Grid.ColumnDefinitions>
 			
 			<DataGrid Grid.Column="0"
+			          Name="DataGridAccountEntries"
 			          AutoGenerateColumns="False"
 			          CanUserReorderColumns="False"
 			          CanUserResizeColumns="True"
@@ -88,6 +103,8 @@
 				           Text="Name"/>
 				<TextBox Grid.Row="0"
 				         Grid.Column="1"
+				         Name="TextBoxSelectedName"
+				         IsEnabled="False"
 				         Text="{Binding SelectedAccountEntryViewModel.Name}"/>
 			
 				<TextBlock Grid.Row="1"
@@ -95,6 +112,8 @@
 				           Text="URL"/>
 				<TextBox Grid.Row="1"
 				         Grid.Column="1"
+				         Name="TextBoxSelectedUrl"
+				         IsEnabled="False"
 				         Text="{Binding SelectedAccountEntryViewModel.Url}"/>
 			
 				<TextBlock Grid.Row="2"
@@ -102,22 +121,35 @@
 				           Text="User"/>
 				<TextBox Grid.Row="2"
 				         Grid.Column="1"
+				         Name="TextBoxSelectedUser"
+				         IsEnabled="False"
 				         Text="{Binding SelectedAccountEntryViewModel.User}"/>
 			
 				<TextBlock Grid.Row="3"
 				           Grid.Column="0"
 				           Text="Password"/>
-				<TextBox Grid.Row="3"
-				         Grid.Column="1"
-				         IsReadOnly="True"
-				         PasswordChar="*"
-				         Text="{Binding SelectedAccountEntryViewModel.Password}"/>
+				
+				<StackPanel Grid.Row="3"
+				            Grid.Column="1"
+				            Orientation="Horizontal"
+				            HorizontalAlignment="Stretch">
+					<Button Name="ButtonSelectedEditPassword"
+					        Content="Edit"
+					        IsEnabled="False"
+					        Command="{Binding EditPasswordCommand}"/>
+					<Button Name="ButtonSelectedCopyPassword"
+					        Content="Copy"
+					        IsEnabled="False"
+					        Command="{Binding CopyPasswordCommand}"/>
+				</StackPanel>
 				
 				<TextBlock Grid.Row="4"
 				           Grid.Column="0"
 				           Text="Notes"/>
 				<TextBox Grid.Row="4"
 				         Grid.Column="1"
+				         Name="TextBoxSelectedNotes"
+				         IsEnabled="False"
 				         Text="{Binding SelectedAccountEntryViewModel.Notes}"/>
 			</Grid>
 		</Grid>
