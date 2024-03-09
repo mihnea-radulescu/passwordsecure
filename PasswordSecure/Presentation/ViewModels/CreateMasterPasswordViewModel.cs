@@ -4,13 +4,13 @@ using PasswordSecure.Presentation.Views;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
-public class SetMasterPasswordViewModel : ObservableObject, IPasswordViewModel
+public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewModel
 {
-	public SetMasterPasswordViewModel(
-		SetMasterPasswordWindow setMasterPasswordWindow,
+	public CreateMasterPasswordViewModel(
+		CreateMasterPasswordWindow createMasterPasswordWindow,
 		AccessParams accessParams)
 	{
-		_setMasterPasswordWindow = setMasterPasswordWindow;
+		_createMasterPasswordWindow = createMasterPasswordWindow;
 		_accessParams = accessParams;
 	}
 	
@@ -29,7 +29,7 @@ public class SetMasterPasswordViewModel : ObservableObject, IPasswordViewModel
 	
 	#region Private
 
-	private readonly SetMasterPasswordWindow _setMasterPasswordWindow;
+	private readonly CreateMasterPasswordWindow _createMasterPasswordWindow;
 	private readonly AccessParams _accessParams;
 	
 	#endregion

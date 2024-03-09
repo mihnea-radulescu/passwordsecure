@@ -1,4 +1,4 @@
-namespace PasswordSecure.Application.Helpers;
+namespace PasswordSecure.Application.Providers;
 
 public interface IAssemblyVersionProvider
 {

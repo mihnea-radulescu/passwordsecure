@@ -8,9 +8,9 @@ using MsBox.Avalonia.Enums;
 
 namespace PasswordSecure.Presentation.Views;
 
-public partial class SetPasswordWindow : Window
+public partial class CreatePasswordWindow : Window
 {
-	public SetPasswordWindow()
+	public CreatePasswordWindow()
 	{
 		InitializeComponent();
 
@@ -123,7 +123,30 @@ public partial class SetPasswordWindow : Window
 	}
 
 	private bool IsPasswordMismatch
-		=> TextBoxPassword.Text != TextBoxConfirmPassword.Text;
+	{
+		get
+		{
+			var isPasswordMismatch = false;
+
+			if (TextBoxPassword.Text == string.Empty)
+			{
+				TextBoxPassword.Text = null;
+			}
+			
+			if (TextBoxConfirmPassword.Text == string.Empty)
+			{
+				TextBoxConfirmPassword.Text = null;
+			}
+
+			if (TextBoxPassword.Text is not null ||
+			    TextBlockConfirmPassword.Text is not null)
+			{
+				isPasswordMismatch = TextBoxPassword.Text != TextBoxConfirmPassword.Text;
+			}
+
+			return isPasswordMismatch;
+		}
+	}
 	
 	private async Task DisplayPasswordMismatchErrorMessage()
 	{

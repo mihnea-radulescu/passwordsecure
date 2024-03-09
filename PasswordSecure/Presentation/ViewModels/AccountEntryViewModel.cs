@@ -25,7 +25,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 		}
 	}
 
-	public string? Url
+	public string Url
 	{
 		get => AccountEntry.Url;
 		set
@@ -38,7 +38,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 		}
 	}
 	
-	public string? User
+	public string User
 	{
 		get => AccountEntry.User;
 		set
@@ -64,7 +64,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 		}
 	}
 	
-	public string? Notes
+	public string Notes
 	{
 		get => AccountEntry.Notes;
 		set

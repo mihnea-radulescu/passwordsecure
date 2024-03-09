@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using PasswordSecure.DomainModel;
@@ -12,6 +13,8 @@ public partial class MainWindow : Window
 	public MainWindow()
 	{
 		InitializeComponent();
+
+		_shouldAllowWindowClose = false;
 	}
 
 	public event EventHandler? VisualStateChanged;
@@ -21,6 +24,7 @@ public partial class MainWindow : Window
 	public event EventHandler<AccountEntryCollectionEventArgs>? SaveMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? CloseMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? ExitMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>? WindowClosing;
 	
 	public event EventHandler? HelpMenuClicked;
 
@@ -29,17 +33,17 @@ public partial class MainWindow : Window
 	
 	public void EnableControls()
 	{
-		var isFileLoaded = _accountEntryCollectionViewModel is not null;
-		var canDataBeSorted = isFileLoaded &&
-		                    _accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
+		var isContainerLoaded = _accountEntryCollectionViewModel is not null;
+		var canDataBeSorted = isContainerLoaded &&
+		                      _accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
 		
-		MenuItemSave.IsEnabled = isFileLoaded;
-		MenuItemClose.IsEnabled = isFileLoaded;
+		MenuItemSave.IsEnabled = isContainerLoaded;
+		MenuItemClose.IsEnabled = isContainerLoaded;
 		
 		var isAccountEntrySelected = false;
 		var canCopyPassword = false;
 
-		if (isFileLoaded)
+		if (isContainerLoaded)
 		{
 			var selectedAccountEntryViewModel = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
 			
@@ -67,6 +71,7 @@ public partial class MainWindow : Window
 		{
 			_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged -=
 				OnSelectedAccountEntryViewModelChanged;
+			_accountEntryCollectionViewModel.PasswordChanged -= OnPasswordChanged;
 			
 			_accountEntryCollectionViewModel.UnregisterEventHandlers();
 		}
@@ -82,6 +87,7 @@ public partial class MainWindow : Window
 
 		_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged +=
 			OnSelectedAccountEntryViewModelChanged;
+		_accountEntryCollectionViewModel.PasswordChanged += OnPasswordChanged;
 		
 		DataContext = _accountEntryCollectionViewModel;
 	}
@@ -93,13 +99,26 @@ public partial class MainWindow : Window
 			_accountEntryCollectionViewModel.HasChanged = false;
 		}
 	}
+
+	public async Task CloseWindow()
+	{
+		_shouldAllowWindowClose = true;
+		await Clipboard!.ClearAsync();
+		
+		Close();
+	}
 	
 	#region Private
+
+	private bool _shouldAllowWindowClose;
 
 	private AccountEntryCollectionViewModel? _accountEntryCollectionViewModel;
 
 	private void OnSelectedAccountEntryViewModelChanged(object? sender, EventArgs e)
 		=> VisualStateChanged?.Invoke(this, EventArgs.Empty);
+
+	private void OnPasswordChanged(object? sender, EventArgs e)
+		=> EnableControls();
 	
 	private void OnMenuItemNewClick(object? sender, RoutedEventArgs e)
 	{ 
@@ -134,6 +153,18 @@ public partial class MainWindow : Window
 		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
 		
 		ExitMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
+	}
+	
+	private void OnClosing(object? sender, WindowClosingEventArgs e)
+	{
+		if (!_shouldAllowWindowClose)
+		{
+			e.Cancel = true;
+			
+			var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+			WindowClosing?.Invoke(this, accountEntryCollectionEventArgs);
+		}
 	}
 	
 	private void OnMenuItemHelpClick(object? sender, RoutedEventArgs e)

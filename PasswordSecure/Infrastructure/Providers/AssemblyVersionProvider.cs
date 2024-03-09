@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
-using PasswordSecure.Application.Helpers;
+using PasswordSecure.Application.Providers;
 
-namespace PasswordSecure.Infrastructure.Helpers;
+namespace PasswordSecure.Infrastructure.Providers;
 
 public class AssemblyVersionProvider : IAssemblyVersionProvider
 {

@@ -1,10 +1,10 @@
 namespace PasswordSecure.Presentation.Views;
 
-public class SetMasterPasswordWindow : SetPasswordWindow
+public class CreateMasterPasswordWindow : CreatePasswordWindow
 {
-	public SetMasterPasswordWindow()
+	public CreateMasterPasswordWindow()
 	{
-		Title = "Set Master Password";
+		Title = "Create Master Password";
 		TextBlockPassword.Text = "Master password";
 		TextBlockConfirmPassword.Text = "Confirm master password";
 	}

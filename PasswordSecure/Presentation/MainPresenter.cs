@@ -6,7 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
-using PasswordSecure.Application.Helpers;
+using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
 using PasswordSecure.DomainModel.CustomEventArgs;
@@ -63,6 +63,7 @@ public class MainPresenter
 		_mainWindow.SaveMenuClicked += OnSaveMenuClicked;
 		_mainWindow.CloseMenuClicked += OnCloseMenuClicked;
 		_mainWindow.ExitMenuClicked += OnExitMenuClicked;
+		_mainWindow.WindowClosing += OnWindowClosing;
 		
 		_mainWindow.HelpMenuClicked += OnHelpMenuClicked;
 
@@ -87,7 +88,7 @@ public class MainPresenter
 	
 	private async void OnNewMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -113,7 +114,7 @@ public class MainPresenter
 	
 	private async void OnOpenMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -151,7 +152,7 @@ public class MainPresenter
 
 	private async void OnCloseMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -164,27 +165,33 @@ public class MainPresenter
 	
 	private async void OnExitMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
 		}
 		
-		await _mainWindow.Clipboard!.ClearAsync();
-		
-		_mainWindow.Close();
+		await _mainWindow.CloseWindow();
 	}
-	
+
+	private async void OnWindowClosing(object? sender, AccountEntryCollectionEventArgs e)
+	{
+		await SuggestSaveChanges(e, ButtonEnum.YesNo);
+		
+		await _mainWindow.CloseWindow();
+	}
+
 	private async void OnHelpMenuClicked(object? sender, EventArgs e)
 		=> await DisplayHelpMessage();
 	
-	private async Task<bool> SuggestSaveChanges(AccountEntryCollectionEventArgs e)
+	private async Task<bool> SuggestSaveChanges(
+		AccountEntryCollectionEventArgs e, ButtonEnum buttonEnum)
 	{
 		var shouldExitWithoutProcessing = false;
 		
 		if (e.HasChanged)
 		{
-			var buttonResult = await DisplayUnsavedChangesMessage();
+			var buttonResult = await DisplayUnsavedChangesMessage(buttonEnum);
 
 			if (buttonResult is ButtonResult.Yes)
 			{
@@ -209,15 +216,15 @@ public class MainPresenter
 			return;
 		}
 
-		var setMasterPasswordWindow = new SetMasterPasswordWindow
+		var createMasterPasswordWindow = new CreateMasterPasswordWindow
 		{
 			MinimumPasswordLength = MinimumMasterPasswordLength
 		};
-		var setMasterPasswordViewModel = new SetMasterPasswordViewModel(
-			setMasterPasswordWindow, _accessParams);
+		var createMasterPasswordViewModel = new CreateMasterPasswordViewModel(
+			createMasterPasswordWindow, _accessParams);
 
-		setMasterPasswordWindow.DataContext = setMasterPasswordViewModel;
-		await setMasterPasswordWindow.ShowDialog(_mainWindow);
+		createMasterPasswordWindow.DataContext = createMasterPasswordViewModel;
+		await createMasterPasswordWindow.ShowDialog(_mainWindow);
 
 		if (_accessParams.Password is null)
 		{
@@ -297,12 +304,12 @@ public class MainPresenter
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 	
-	private async Task<ButtonResult> DisplayUnsavedChangesMessage()
+	private async Task<ButtonResult> DisplayUnsavedChangesMessage(ButtonEnum buttonEnum)
 	{
 		var unsavedChangesMessageBox = MessageBoxManager.GetMessageBoxStandard(
-			"Unsaved Changes Present",
-			"There are unsaved changes present. Would you like to save them?",
-			ButtonEnum.YesNoCancel,
+			"Unsaved Changes",
+			"There are unsaved changes. Would you like to save them?",
+			buttonEnum,
 			Icon.Question,
 			WindowStartupLocation.CenterOwner);
 

@@ -1,7 +1,7 @@
 using System.IO;
-using PasswordSecure.Application.Helpers;
+using PasswordSecure.Application.Providers;
 
-namespace PasswordSecure.Infrastructure.Helpers;
+namespace PasswordSecure.Infrastructure.Providers;
 
 public class FileAccessProvider : IFileAccessProvider
 {
@@ -9,4 +9,7 @@ public class FileAccessProvider : IFileAccessProvider
 
 	public void SaveData(string filePath, byte[] data)
 		=> File.WriteAllBytes(filePath, data);
+
+	public void CopyFile(string sourceFilePath, string destinationFilePath)
+		=> File.Copy(sourceFilePath, destinationFilePath, true);
 }

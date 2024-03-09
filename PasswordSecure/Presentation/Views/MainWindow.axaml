@@ -8,7 +8,8 @@
 		Width="800"
 		Height="300"
         WindowStartupLocation="CenterScreen"
-        Focusable="True">
+        Focusable="True"
+        Closing="OnClosing">
 	
 	<Grid HorizontalAlignment="Stretch"
 	      VerticalAlignment="Stretch">

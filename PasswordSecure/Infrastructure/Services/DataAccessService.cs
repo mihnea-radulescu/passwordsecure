@@ -1,7 +1,8 @@
 using System;
 using System.Security.Cryptography;
+using PasswordSecure.Application.Exceptions;
 using PasswordSecure.Application.Extensions;
-using PasswordSecure.Application.Helpers;
+using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
 
@@ -10,13 +11,16 @@ namespace PasswordSecure.Infrastructure.Services;
 public class DataAccessService : IDataAccessService
 {
 	public DataAccessService(
+		IFileAccessProvider fileAccessProvider,
 		IDataSerializationService dataSerializationService,
 		IDataEncryptionService dataEncryptionService,
-		IFileAccessProvider fileAccessProvider)
+		IBackupService backupService)
 	{
+		_fileAccessProvider = fileAccessProvider;
+		
 		_dataSerializationService = dataSerializationService;
 		_dataEncryptionService = dataEncryptionService;
-		_fileAccessProvider = fileAccessProvider;
+		_backupService = backupService;
 	}
 	
 	public AccountEntryCollection ReadAccountEntries(AccessParams accessParams)
@@ -37,7 +41,7 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileReadError(accessParams.FilePath!), ex);
+			throw new DataAccessException(FileReadError(accessParams.FilePath!), ex);
 		}
 	}
 
@@ -45,6 +49,14 @@ public class DataAccessService : IDataAccessService
 	{
 		try
 		{
+			try
+			{
+				_backupService.BackupFile(accessParams.FilePath!);
+			}
+			catch (BackupException)
+			{
+			}
+			
 			var serializedData = _dataSerializationService.Serialize(accountEntryCollection);
 			var data = serializedData.ToByteArray();
 
@@ -53,21 +65,27 @@ public class DataAccessService : IDataAccessService
 			
 			_fileAccessProvider.SaveData(accessParams.FilePath!, encryptedData);
 		}
+		catch (BackupException)
+		{
+			throw;
+		}
 		catch (CryptographicException)
 		{
 			throw;
 		}
 		catch (Exception ex)
 		{
-			throw new ApplicationException(FileSaveError(accessParams.FilePath!), ex);
+			throw new DataAccessException(FileSaveError(accessParams.FilePath!), ex);
 		}
 	}
 	
 	#region Private
 	
+	private readonly IFileAccessProvider _fileAccessProvider;
+	
 	private readonly IDataSerializationService _dataSerializationService;
 	private readonly IDataEncryptionService _dataEncryptionService;
-	private readonly IFileAccessProvider _fileAccessProvider;
+	private readonly IBackupService _backupService;
 	
 	private static string FileReadError(string filePath) => $@"Could not read data from file ""{filePath}"".";
 	private static string FileSaveError(string filePath) => $@"Could not save data to file ""{filePath}"".";

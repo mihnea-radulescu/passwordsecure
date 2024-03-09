@@ -47,6 +47,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	}
 
 	public event EventHandler? SelectedAccountEntryViewModelChanged;
+	public event EventHandler? PasswordChanged;
 	
 	public ICommand AddNewAccountEntryCommand { get; }
 	public ICommand DeleteAccountEntryCommand { get; }
@@ -114,6 +115,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 				
 				AccountEntryViewModels.Add(newAccountEntryViewModel);
 				newAccountEntryViewModel.PropertyChanged += OnAccountEntryPropertyChanged;
+				
 				SelectedAccountEntryViewModel = newAccountEntryViewModel;
 			});
 
@@ -121,11 +123,12 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		=> new RelayCommand(
 			() =>
 			{
-				if (SelectedAccountEntryViewModel is not null)
+				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				
+				if (selectedAccountEntryViewModel is not null)
 				{
-					var existingAccountEntryViewModel = SelectedAccountEntryViewModel;
-					existingAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
-					AccountEntryViewModels.Remove(existingAccountEntryViewModel);
+					selectedAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
+					AccountEntryViewModels.Remove(selectedAccountEntryViewModel);
 				}
 			});
 	
@@ -136,13 +139,20 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		=> new RelayCommand(
 			async() =>
 			{
-				if (SelectedAccountEntryViewModel is not null)
+				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				
+				if (selectedAccountEntryViewModel is not null)
 				{
-					var setPasswordWindow = new SetPasswordWindow
+					var createPasswordWindow = new CreatePasswordWindow
 					{
-						DataContext = SelectedAccountEntryViewModel
+						DataContext = selectedAccountEntryViewModel
 					};
-					await setPasswordWindow.ShowDialog(_mainWindow);
+					createPasswordWindow.TextBoxConfirmPassword.Text =
+						selectedAccountEntryViewModel.Password;
+					
+					await createPasswordWindow.ShowDialog(_mainWindow);
+					
+					PasswordChanged?.Invoke(this, EventArgs.Empty);
 				}
 			});
 	
@@ -150,9 +160,11 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		=> new RelayCommand(
 			async() =>
 			{
-				if (SelectedAccountEntryViewModel is not null)
+				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				
+				if (selectedAccountEntryViewModel is not null)
 				{
-					var password = SelectedAccountEntryViewModel.Password;
+					var password = selectedAccountEntryViewModel.Password;
 					await _mainWindow.Clipboard!.SetTextAsync(password);
 				}
 			});

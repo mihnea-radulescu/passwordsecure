@@ -1,8 +1,10 @@
-namespace PasswordSecure.Application.Helpers;
+namespace PasswordSecure.Application.Providers;
 
 public interface IFileAccessProvider
 {
 	byte[] ReadData(string filePath);
 
 	void SaveData(string filePath, byte[] data);
+
+	void CopyFile(string sourceFilePath, string destinationFilePath);
 }
