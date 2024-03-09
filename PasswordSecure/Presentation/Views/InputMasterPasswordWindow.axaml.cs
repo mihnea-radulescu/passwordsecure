@@ -4,9 +4,9 @@ using Avalonia.Interactivity;
 
 namespace PasswordSecure.Presentation.Views;
 
-public partial class InputPasswordWindow : Window
+public partial class InputMasterPasswordWindow : Window
 {
-	public InputPasswordWindow()
+	public InputMasterPasswordWindow()
 	{
 		InitializeComponent();
 

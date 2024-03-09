@@ -90,6 +90,8 @@ public partial class MainWindow : Window
 		_accountEntryCollectionViewModel.PasswordChanged += OnPasswordChanged;
 		
 		DataContext = _accountEntryCollectionViewModel;
+		
+		_accountEntryCollectionViewModel.FocusOnFirstAccountEntryIfAvailable();
 	}
 
 	public void ResetHasChangedFlag()

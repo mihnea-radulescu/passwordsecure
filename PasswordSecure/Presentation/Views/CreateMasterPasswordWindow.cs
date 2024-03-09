@@ -1,6 +1,6 @@
 namespace PasswordSecure.Presentation.Views;
 
-public class CreateMasterPasswordWindow : CreatePasswordWindow
+public class CreateMasterPasswordWindow : EditPasswordWindow
 {
 	public CreateMasterPasswordWindow()
 	{

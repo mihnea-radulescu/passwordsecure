@@ -8,9 +8,9 @@ using MsBox.Avalonia.Enums;
 
 namespace PasswordSecure.Presentation.Views;
 
-public partial class CreatePasswordWindow : Window
+public partial class EditPasswordWindow : Window
 {
-	public CreatePasswordWindow()
+	public EditPasswordWindow()
 	{
 		InitializeComponent();
 
@@ -22,17 +22,23 @@ public partial class CreatePasswordWindow : Window
 	#region Private
 	
 	public int MinimumPasswordLength { get; set; }
-
+	
 	private bool _isPasswordAccepted;
-	
+
+	private string? _initialPassword;
+
 	private void OnLoaded(object? sender, RoutedEventArgs e)
-		=> TextBoxPassword.Focus();
-	
+	{
+		_initialPassword = TextBoxPassword.Text;
+		
+		TextBoxPassword.Focus();
+	}
+
 	private void OnClosing(object? sender, WindowClosingEventArgs e)
 	{
 		if (!_isPasswordAccepted)
 		{
-			TextBoxPassword.Text = null;
+			TextBoxPassword.Text = _initialPassword;
 		}
 	}
 	

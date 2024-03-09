@@ -67,6 +67,16 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		return accountEntryCollection;
 	}
 
+	public void FocusOnFirstAccountEntryIfAvailable()
+	{
+		var firstAccountEntryViewModel = AccountEntryViewModels.FirstOrDefault();
+
+		if (firstAccountEntryViewModel is not null)
+		{
+			SelectedAccountEntryViewModel = firstAccountEntryViewModel;
+		}
+	}
+
 	public void UnregisterEventHandlers()
 	{
 		AccountEntryViewModels.CollectionChanged -= OnCollectionChanged;
@@ -83,7 +93,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	
 	private AccountEntryViewModel? _selectedAccountEntryViewModel;
 	
-	private ObservableCollection<AccountEntryViewModel> FromAccountEntryCollection(
+	private static ObservableCollection<AccountEntryViewModel> FromAccountEntryCollection(
 		AccountEntryCollection accountEntries)
 	{
 		var accountEntryViewModelsAsList = accountEntries
@@ -143,14 +153,14 @@ public class AccountEntryCollectionViewModel : ObservableObject
 				
 				if (selectedAccountEntryViewModel is not null)
 				{
-					var createPasswordWindow = new CreatePasswordWindow
+					var editPasswordWindow = new EditPasswordWindow
 					{
 						DataContext = selectedAccountEntryViewModel
 					};
-					createPasswordWindow.TextBoxConfirmPassword.Text =
+					editPasswordWindow.TextBoxConfirmPassword.Text =
 						selectedAccountEntryViewModel.Password;
 					
-					await createPasswordWindow.ShowDialog(_mainWindow);
+					await editPasswordWindow.ShowDialog(_mainWindow);
 					
 					PasswordChanged?.Invoke(this, EventArgs.Empty);
 				}
