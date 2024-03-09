@@ -16,14 +16,16 @@ public partial class MainWindow : Window
 
 	public event EventHandler? VisualStateChanged;
 	
-	public event EventHandler? AccountEntryCollectionCreated;
-	public event EventHandler? AccountEntryCollectionLoaded;
+	public event EventHandler<AccountEntryCollectionEventArgs>? NewMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>? OpenMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>? SaveMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>? CloseMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>? ExitMenuClicked;
 	
-	public event EventHandler<AccountEntryCollectionEventArgs>? AccountEntryCollectionSaved;
-	
-	public event EventHandler? CloseMenuClicked;
-	public event EventHandler? ExitMenuClicked;
 	public event EventHandler? HelpMenuClicked;
+
+	public void SetActiveFilePath(string? filePath)
+		=> TextBlockActiveFilePath.Text = filePath;
 	
 	public void EnableControls()
 	{
@@ -35,11 +37,15 @@ public partial class MainWindow : Window
 		MenuItemClose.IsEnabled = isFileLoaded;
 		
 		var isAccountEntrySelected = false;
+		var canCopyPassword = false;
 
 		if (isFileLoaded)
 		{
-			isAccountEntrySelected = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel
-				is not null;
+			var selectedAccountEntryViewModel = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
+			
+			isAccountEntrySelected = selectedAccountEntryViewModel is not null;
+			canCopyPassword = isAccountEntrySelected &&
+			                  !string.IsNullOrEmpty(selectedAccountEntryViewModel!.Password);
 		}
 
 		MenuItemDeleteAccountEntry.IsEnabled = isAccountEntrySelected;
@@ -50,15 +56,19 @@ public partial class MainWindow : Window
 		TextBoxSelectedUser.IsEnabled = isAccountEntrySelected;
 		TextBoxSelectedNotes.IsEnabled = isAccountEntrySelected;
 		ButtonSelectedEditPassword.IsEnabled = isAccountEntrySelected;
-		ButtonSelectedCopyPassword.IsEnabled = isAccountEntrySelected;
+		ButtonSelectedCopyPassword.IsEnabled = canCopyPassword;
 	}
 
 	public void ClearData()
 	{
+		SetActiveFilePath(null);
+		
 		if (_accountEntryCollectionViewModel is not null)
 		{
 			_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged -=
 				OnSelectedAccountEntryViewModelChanged;
+			
+			_accountEntryCollectionViewModel.UnregisterEventHandlers();
 		}
 		
 		_accountEntryCollectionViewModel = null;
@@ -75,6 +85,14 @@ public partial class MainWindow : Window
 		
 		DataContext = _accountEntryCollectionViewModel;
 	}
+
+	public void ResetHasChangedFlag()
+	{
+		if (_accountEntryCollectionViewModel is not null)
+		{
+			_accountEntryCollectionViewModel.HasChanged = false;
+		}
+	}
 	
 	#region Private
 
@@ -84,33 +102,61 @@ public partial class MainWindow : Window
 		=> VisualStateChanged?.Invoke(this, EventArgs.Empty);
 	
 	private void OnMenuItemNewClick(object? sender, RoutedEventArgs e)
-		=> AccountEntryCollectionCreated?.Invoke(this, EventArgs.Empty);
+	{ 
+		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+		NewMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
+	}
 	
 	private void OnMenuItemOpenClick(object? sender, RoutedEventArgs e)
-		=> AccountEntryCollectionLoaded?.Invoke(this, EventArgs.Empty);
+	{ 
+		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+		OpenMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
+	}
 	
 	private void OnMenuItemSaveClick(object? sender, RoutedEventArgs e)
 	{
-		if (_accountEntryCollectionViewModel is not null)
-		{
-			var accountEntryCollection = _accountEntryCollectionViewModel
-				.ToAccountEntryCollection();
-
-			var accountEntryCollectionEventArgs = new AccountEntryCollectionEventArgs(
-				accountEntryCollection);
-			
-			AccountEntryCollectionSaved?.Invoke(this, accountEntryCollectionEventArgs);
-		}
+		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+		SaveMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
 	
 	private void OnMenuItemCloseClick(object? sender, RoutedEventArgs e)
-		=> CloseMenuClicked?.Invoke(this, EventArgs.Empty);
+	{ 
+		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+		CloseMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
+	}
 	
 	private void OnMenuItemExitClick(object? sender, RoutedEventArgs e)
-		=> ExitMenuClicked?.Invoke(this, EventArgs.Empty);
+	{ 
+		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		
+		ExitMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
+	}
 	
 	private void OnMenuItemHelpClick(object? sender, RoutedEventArgs e)
 		=> HelpMenuClicked?.Invoke(this, EventArgs.Empty);
+	
+	private AccountEntryCollectionEventArgs GetAccountEntryCollectionEventArgs()
+	{
+		AccountEntryCollection? accountEntryCollection = null;
+		var hasChanged = false;
+		
+		if (_accountEntryCollectionViewModel is not null)
+		{
+			accountEntryCollection = _accountEntryCollectionViewModel
+				.ToAccountEntryCollection();
+
+			hasChanged = _accountEntryCollectionViewModel.HasChanged;
+		}
+		
+		var accountEntryCollectionEventArgs = new AccountEntryCollectionEventArgs(
+			accountEntryCollection, hasChanged);
+
+		return accountEntryCollectionEventArgs;
+	}
 	
 	#endregion
 }

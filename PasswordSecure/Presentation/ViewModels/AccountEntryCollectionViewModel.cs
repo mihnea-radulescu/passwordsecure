@@ -1,5 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -18,6 +20,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		_mainWindow = mainWindow;
 		
 		AccountEntryViewModels = FromAccountEntryCollection(accountEntries);
+		
+		RegisterEventHandlers();
 
 		AddNewAccountEntryCommand = GetAddNewAccountEntryCommand();
 		DeleteAccountEntryCommand = GetDeleteAccountEntryCommand();
@@ -28,6 +32,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	}
 
 	public ObservableCollection<AccountEntryViewModel> AccountEntryViewModels { get; set; }
+	
+	public bool HasChanged { get; set; }
 
 	public AccountEntryViewModel? SelectedAccountEntryViewModel
 	{
@@ -53,10 +59,21 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	{
 		var accountEntries = AccountEntryViewModels
 			.Select(anAccountEntryViewModel => anAccountEntryViewModel.AccountEntry)
+			.OrderBy(anAccountEntry => anAccountEntry.Name)
 			.ToList();
 
 		var accountEntryCollection = new AccountEntryCollection(accountEntries);
 		return accountEntryCollection;
+	}
+
+	public void UnregisterEventHandlers()
+	{
+		AccountEntryViewModels.CollectionChanged -= OnCollectionChanged;
+
+		foreach (var anAccountEntryViewModel in AccountEntryViewModels)
+		{
+			anAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
+		}
 	}
 	
 	#region Private
@@ -77,6 +94,16 @@ public class AccountEntryCollectionViewModel : ObservableObject
 
 		return accountEntryViewModels;
 	}
+	
+	private void RegisterEventHandlers()
+	{
+		AccountEntryViewModels.CollectionChanged += OnCollectionChanged;
+
+		foreach (var anAccountEntryViewModel in AccountEntryViewModels)
+		{
+			anAccountEntryViewModel.PropertyChanged += OnAccountEntryPropertyChanged;
+		}
+	}
 
 	private ICommand GetAddNewAccountEntryCommand()
 		=> new RelayCommand(
@@ -86,9 +113,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 				var newAccountEntryViewModel = new AccountEntryViewModel(newAccountEntry);
 				
 				AccountEntryViewModels.Add(newAccountEntryViewModel);
+				newAccountEntryViewModel.PropertyChanged += OnAccountEntryPropertyChanged;
 				SelectedAccountEntryViewModel = newAccountEntryViewModel;
-				
-				SortAccountEntryViewModels();
 			});
 
 	private ICommand GetDeleteAccountEntryCommand()
@@ -97,9 +123,9 @@ public class AccountEntryCollectionViewModel : ObservableObject
 			{
 				if (SelectedAccountEntryViewModel is not null)
 				{
-					AccountEntryViewModels.Remove(SelectedAccountEntryViewModel);
-					
-					SortAccountEntryViewModels();
+					var existingAccountEntryViewModel = SelectedAccountEntryViewModel;
+					existingAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
+					AccountEntryViewModels.Remove(existingAccountEntryViewModel);
 				}
 			});
 	
@@ -133,6 +159,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	
 	private void SortAccountEntryViewModels()
 	{
+		UnregisterEventHandlers();
+		
 		var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
 		
 		var sortedAccountEntryViewModels = AccountEntryViewModels
@@ -150,7 +178,15 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		}
 
 		SelectedAccountEntryViewModel = selectedAccountEntryViewModel;
+		
+		RegisterEventHandlers();
 	}
+
+	private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		=> HasChanged = true;
+
+	private void OnAccountEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+		=> HasChanged = true;
 
 	#endregion
 }

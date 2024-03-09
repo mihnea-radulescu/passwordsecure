@@ -58,12 +58,12 @@ public class MainPresenter
 		
 		_mainWindow.VisualStateChanged += OnVisualStateChanged;
 		
-		_mainWindow.AccountEntryCollectionCreated += OnAccountEntryCollectionCreated;
-		_mainWindow.AccountEntryCollectionLoaded += OnAccountEntryCollectionLoaded;
-		_mainWindow.AccountEntryCollectionSaved += OnAccountEntryCollectionSaved;
-
+		_mainWindow.NewMenuClicked += OnNewMenuClicked;
+		_mainWindow.OpenMenuClicked += OnOpenMenuClicked;
+		_mainWindow.SaveMenuClicked += OnSaveMenuClicked;
 		_mainWindow.CloseMenuClicked += OnCloseMenuClicked;
 		_mainWindow.ExitMenuClicked += OnExitMenuClicked;
+		
 		_mainWindow.HelpMenuClicked += OnHelpMenuClicked;
 
 		_accessParams = new AccessParams();
@@ -71,7 +71,7 @@ public class MainPresenter
 
 	#region Private
 
-	private const int MinimumPasswordLength = 8;
+	private const int MinimumMasterPasswordLength = 8;
 	
 	private static readonly FilePickerSaveOptions EncryptedFileCreateOptions;
 	private static readonly FilePickerOpenOptions EncryptedFileOpenOptions;
@@ -85,8 +85,14 @@ public class MainPresenter
 	private void OnVisualStateChanged(object? sender, EventArgs e)
 		=> _mainWindow.EnableControls();
 	
-	private async void OnAccountEntryCollectionCreated(object? sender, EventArgs e)
+	private async void OnNewMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		if (shouldExitWithoutProcessing)
+		{
+			return;
+		}
+		
 		ResetData();
 
 		try
@@ -105,8 +111,14 @@ public class MainPresenter
 		}
 	}
 	
-	private async void OnAccountEntryCollectionLoaded(object? sender, EventArgs e)
+	private async void OnOpenMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		if (shouldExitWithoutProcessing)
+		{
+			return;
+		}
+		
 		ResetData();
 
 		try
@@ -125,12 +137,11 @@ public class MainPresenter
 		}
 	}
 
-	private async void OnAccountEntryCollectionSaved(
-		object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnSaveMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
 		try
 		{
-			SaveEncryptedContainer(e);
+			SaveEncryptedContainer(e.AccountEntryCollection);
 		}
 		catch (Exception ex)
 		{
@@ -138,23 +149,54 @@ public class MainPresenter
 		}
 	}
 
-	private void OnCloseMenuClicked(object? sender, EventArgs e)
+	private async void OnCloseMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		if (shouldExitWithoutProcessing)
+		{
+			return;
+		}
+		
 		ResetData();
 		
 		_mainWindow.EnableControls();
 	}
 	
-	private async void OnExitMenuClicked(object? sender, EventArgs e)
+	private async void OnExitMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(e);
+		if (shouldExitWithoutProcessing)
+		{
+			return;
+		}
+		
 		await _mainWindow.Clipboard!.ClearAsync();
 		
 		_mainWindow.Close();
 	}
 	
 	private async void OnHelpMenuClicked(object? sender, EventArgs e)
+		=> await DisplayHelpMessage();
+	
+	private async Task<bool> SuggestSaveChanges(AccountEntryCollectionEventArgs e)
 	{
-		await DisplayHelpMessage();
+		var shouldExitWithoutProcessing = false;
+		
+		if (e.HasChanged)
+		{
+			var buttonResult = await DisplayUnsavedChangesMessage();
+
+			if (buttonResult is ButtonResult.Yes)
+			{
+				SaveEncryptedContainer(e.AccountEntryCollection);
+			}
+			else if (buttonResult is ButtonResult.Cancel)
+			{
+				shouldExitWithoutProcessing = true;
+			}
+		}
+
+		return shouldExitWithoutProcessing;
 	}
 	
 	private async Task CreateEncryptedContainer()
@@ -169,7 +211,7 @@ public class MainPresenter
 
 		var setMasterPasswordWindow = new SetMasterPasswordWindow
 		{
-			MinimumPasswordLength = MinimumPasswordLength
+			MinimumPasswordLength = MinimumMasterPasswordLength
 		};
 		var setMasterPasswordViewModel = new SetMasterPasswordViewModel(
 			setMasterPasswordWindow, _accessParams);
@@ -183,9 +225,11 @@ public class MainPresenter
 		}
 
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
-			
-		_dataAccessService.SaveAccountEntries(_accessParams, []);
-		_mainWindow.PopulateData([]);
+		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
+
+		var accountEntryCollection = new AccountEntryCollection();
+		_dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
 	private async Task LoadEncryptedContainer()
@@ -211,18 +255,21 @@ public class MainPresenter
 		}
 		
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
+		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 			
 		var accountEntryCollection = _dataAccessService.ReadAccountEntries(_accessParams);
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
-	private void SaveEncryptedContainer(AccountEntryCollectionEventArgs e)
+	private void SaveEncryptedContainer(AccountEntryCollection? accountEntryCollection)
 	{
-		if (_accessParams.FilePath is not null && _accessParams.Password is not null)
+		if (_accessParams.FilePath is not null &&
+		    _accessParams.Password is not null &&
+		    accountEntryCollection is not null)
 		{
-			var accountEntryCollection = e.AccountEntryCollection;
-			
 			_dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+			
+			_mainWindow.ResetHasChangedFlag();
 		}
 	}
 
@@ -248,6 +295,18 @@ public class MainPresenter
 			WindowStartupLocation.CenterOwner);
 
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
+	}
+	
+	private async Task<ButtonResult> DisplayUnsavedChangesMessage()
+	{
+		var unsavedChangesMessageBox = MessageBoxManager.GetMessageBoxStandard(
+			"Unsaved Changes Present",
+			"There are unsaved changes present. Would you like to save them?",
+			ButtonEnum.YesNoCancel,
+			Icon.Question,
+			WindowStartupLocation.CenterOwner);
+
+		return await unsavedChangesMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 
 	private void ResetData()

@@ -94,9 +94,21 @@ public partial class SetPasswordWindow : Window
 
 		return true;
 	}
-	
+
 	private bool IsPasswordTooShort
-		=> TextBoxPassword.Text?.Length < MinimumPasswordLength;
+	{
+		get
+		{
+			var isPasswordTooShort = false;
+
+			if (TextBoxPassword.Text is not null)
+			{
+				isPasswordTooShort = TextBoxPassword.Text.Length < MinimumPasswordLength;
+			}
+
+			return isPasswordTooShort;
+		}
+	}
 	
 	private async Task DisplayPasswordTooShortErrorMessage()
 	{
