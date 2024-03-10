@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using PasswordSecure.Application.Exceptions;
 using PasswordSecure.Application.Extensions;
 using PasswordSecure.Application.Providers;
@@ -23,7 +24,7 @@ public class DataAccessService : IDataAccessService
 		_backupService = backupService;
 	}
 	
-	public AccountEntryCollection ReadAccountEntries(AccessParams accessParams)
+	public async Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams)
 	{
 		try
 		{
@@ -33,7 +34,7 @@ public class DataAccessService : IDataAccessService
 			var serializedData = data.ToText();
 
 			var accountEntries = _dataSerializationService.Deserialize(serializedData);
-			return accountEntries;
+			return await Task.FromResult(accountEntries);
 		}
 		catch (CryptographicException)
 		{
@@ -45,7 +46,7 @@ public class DataAccessService : IDataAccessService
 		}
 	}
 
-	public void SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
 	{
 		try
 		{
@@ -64,6 +65,7 @@ public class DataAccessService : IDataAccessService
 				data, accessParams.Password!);
 			
 			_fileAccessProvider.SaveData(accessParams.FilePath!, encryptedData);
+			await Task.CompletedTask;
 		}
 		catch (BackupException)
 		{

@@ -142,7 +142,7 @@ public class MainPresenter
 	{
 		try
 		{
-			SaveEncryptedContainer(e.AccountEntryCollection);
+			await SaveEncryptedContainer(e.AccountEntryCollection);
 		}
 		catch (Exception ex)
 		{
@@ -195,7 +195,7 @@ public class MainPresenter
 
 			if (buttonResult is ButtonResult.Yes)
 			{
-				SaveEncryptedContainer(e.AccountEntryCollection);
+				await SaveEncryptedContainer(e.AccountEntryCollection);
 			}
 			else if (buttonResult is ButtonResult.Cancel)
 			{
@@ -235,7 +235,7 @@ public class MainPresenter
 		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 
 		var accountEntryCollection = new AccountEntryCollection();
-		_dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+		await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
@@ -264,17 +264,17 @@ public class MainPresenter
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
 		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 			
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(_accessParams);
+		var accountEntryCollection = await _dataAccessService.ReadAccountEntries(_accessParams);
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
-	private void SaveEncryptedContainer(AccountEntryCollection? accountEntryCollection)
+	private async Task SaveEncryptedContainer(AccountEntryCollection? accountEntryCollection)
 	{
 		if (_accessParams.FilePath is not null &&
 		    _accessParams.Password is not null &&
 		    accountEntryCollection is not null)
 		{
-			_dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+			await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
 			
 			_mainWindow.ResetHasChangedFlag();
 		}

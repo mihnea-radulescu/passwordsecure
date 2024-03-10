@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 using PasswordSecure.Application.Providers;
@@ -9,9 +10,9 @@ using PasswordSecure.Infrastructure.Services;
 
 namespace PasswordSecure.Test;
 
-public class DataAccessServiceTest
+public class TaskDecoratorDataAccessServiceTest
 {
-	public DataAccessServiceTest()
+	public TaskDecoratorDataAccessServiceTest()
 	{
 		IFileAccessProvider fileAccessProvider = new FileAccessProvider();
 		IDateTimeProvider dateTimeProvider = new CurrentDateTimeProvider();
@@ -20,15 +21,17 @@ public class DataAccessServiceTest
 		IDataEncryptionService dataEncryptionService = new AesDataEncryptionService();
 		IBackupService backupService = new BackupService(fileAccessProvider, dateTimeProvider);
 
-		_dataAccessService = new DataAccessService(
+		IDataAccessService dataAccessService = new DataAccessService(
 			fileAccessProvider,
 			dataSerializationService,
 			dataEncryptionService,
 			backupService);
+
+		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(dataAccessService);
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_NoElementCollection_ReturnsInitialData()
+	public async Task SaveAccountEntriesReadAccountEntries_NoElementCollection_ReturnsInitialData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_NoElementCollection.encrypted";
@@ -43,8 +46,8 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection();
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -52,7 +55,7 @@ public class DataAccessServiceTest
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_OneElementCollectionDefaultValues_ReturnsInitialData()
+	public async Task SaveAccountEntriesReadAccountEntries_OneElementCollectionDefaultValues_ReturnsInitialData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_OneElementCollectionDefaultValues.encrypted";
@@ -74,8 +77,8 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -91,7 +94,7 @@ public class DataAccessServiceTest
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_OneElementCollectionCustomValues_ReturnsInitialData()
+	public async Task SaveAccountEntriesReadAccountEntries_OneElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_OneElementCollectionCustomValues.encrypted";
@@ -119,8 +122,8 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -136,7 +139,7 @@ public class DataAccessServiceTest
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValues_ReturnsInitialData()
+	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
@@ -177,8 +180,8 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry1, accountEntry2 };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -202,7 +205,7 @@ public class DataAccessServiceTest
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryModified_ReturnsChangedData()
+	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryModified_ReturnsChangedData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
@@ -248,16 +251,16 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry1, accountEntry2 };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		accountEntryCollection[0].Name = name1Changed;
 		accountEntryCollection[0].Url = url1Changed;
 		accountEntryCollection[0].User = user1Changed;
 		accountEntryCollection[0].Password = password1Changed;
 		
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollectionChanged.Should().NotBeNull();
@@ -281,7 +284,7 @@ public class DataAccessServiceTest
 	}
 	
 	[Fact]
-	public void SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryReplaced_ReturnsChangedData()
+	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryReplaced_ReturnsChangedData()
 	{
 		// Arrange
 		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
@@ -335,13 +338,13 @@ public class DataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry1, accountEntry2 };
 		
 		// Act
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		accountEntryCollection[0] = accountEntry1Changed;
 		
-		_dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged = _dataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		accountEntryCollectionChanged.Should().NotBeNull();
@@ -368,7 +371,7 @@ public class DataAccessServiceTest
 
 	private const string Password = "Master Password";
 
-	private readonly DataAccessService _dataAccessService;
+	private readonly TaskDecoratorDataAccessService _taskDecoratorDataAccessService;
 	
 	private static string GetFilePath(string fileName) => Path.GetFullPath(fileName);
 

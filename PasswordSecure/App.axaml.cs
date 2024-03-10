@@ -31,8 +31,11 @@ public class App : Avalonia.Application
             dataEncryptionService,
             backupService);
 
+        IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
+            dataAccessService);
+
         var mainWindow = new MainWindow();
-        var mainPresenter = new MainPresenter(dataAccessService, assemblyVersionProvider, mainWindow);
+        var mainPresenter = new MainPresenter(dataAccessServiceDecorated, assemblyVersionProvider, mainWindow);
         
         mainWindow.Show();
     }

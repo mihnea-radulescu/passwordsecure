@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Application.Services;
 
 public interface IDataAccessService
 {
-	AccountEntryCollection ReadAccountEntries(AccessParams accessParams);
+	Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams);
 	
-	void SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection);
+	Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection);
 }
