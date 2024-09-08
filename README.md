@@ -1,5 +1,5 @@
 # passwordsecure
-Password Secure is a cross-platform password manager that uses strong AES-256 encryption.
+Password Secure is a cross-platform, offline password manager, using strong AES-256 encryption.
 
 It is written in C#, and targets .NET 8 on Linux, Windows and macOS.
 
