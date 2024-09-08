@@ -23,7 +23,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		
 		RegisterEventHandlers();
 
-		AddNewAccountEntryCommand = GetAddNewAccountEntryCommand();
+		AddAccountEntryCommand = GetAddAccountEntryCommand();
 		DeleteAccountEntryCommand = GetDeleteAccountEntryCommand();
 		SortAccountEntriesCommand = GetSortAccountEntriesCommand();
 
@@ -49,7 +49,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	public event EventHandler? SelectedAccountEntryViewModelChanged;
 	public event EventHandler? PasswordChanged;
 	
-	public ICommand AddNewAccountEntryCommand { get; }
+	public ICommand AddAccountEntryCommand { get; }
 	public ICommand DeleteAccountEntryCommand { get; }
 	public ICommand SortAccountEntriesCommand { get; }
 	
@@ -116,7 +116,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		}
 	}
 
-	private ICommand GetAddNewAccountEntryCommand()
+	private ICommand GetAddAccountEntryCommand()
 		=> new RelayCommand(
 			() =>
 			{

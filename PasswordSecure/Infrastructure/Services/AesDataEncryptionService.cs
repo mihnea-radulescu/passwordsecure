@@ -43,7 +43,7 @@ public class AesDataEncryptionService : IDataEncryptionService
 	private const int KeySizeInBits = 256;
 	private const int PasswordSizeInBytes = KeySizeInBits / 8;
 	private const string EncryptionError = "Could not encrypt data.";
-	private const string DecryptionError = "Could not decrypt data. The probable cause is an incorrect password.";
+	private const string DecryptionError = "Could not decrypt data. The likely cause is an incorrect password.";
 	
 	private static readonly byte[] Salt =
 	{

@@ -43,8 +43,8 @@
 			</MenuItem>
 			<MenuItem Header="_Edit">
 				<MenuItem Name="MenuItemAddNewAccountEntry"
-				          Header="_Add New"
-				          Command="{Binding AddNewAccountEntryCommand}"/>
+				          Header="_Add"
+				          Command="{Binding AddAccountEntryCommand}"/>
 				<MenuItem Name="MenuItemDeleteAccountEntry"
 				          Header="_Delete"
 				          Command="{Binding DeleteAccountEntryCommand}"/>

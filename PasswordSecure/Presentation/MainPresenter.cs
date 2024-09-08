@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -19,31 +20,10 @@ public class MainPresenter
 {
 	static MainPresenter()
 	{
-		var encryptedFileTypes = new List<FilePickerFileType>
-		{
-			new FilePickerFileType("Encrypted files (*.encrypted)")
-			{
-				Patterns = new List<string>
-				{
-					"*.encrypted"
-				}
-			}
-		};
+		EncryptedDataFolderPath = GetEncryptedDataFolderPath();
+		CreateEncryptedDataFolderIfNecessary();
 
-		EncryptedFileCreateOptions = new FilePickerSaveOptions
-		{
-			DefaultExtension = ".encrypted",
-			FileTypeChoices = encryptedFileTypes,
-			ShowOverwritePrompt = true,
-			Title = "Select New Encrypted Container File"
-		};
-		
-		EncryptedFileOpenOptions = new FilePickerOpenOptions
-		{
-			AllowMultiple = false,
-			FileTypeFilter = encryptedFileTypes,
-			Title = "Select Encrypted Container File"
-		};
+		EncryptedFileTypes = GetEncryptedFileTypes();
 	}
 	
 	public MainPresenter(
@@ -72,10 +52,11 @@ public class MainPresenter
 
 	#region Private
 
-	private const int MinimumMasterPasswordLength = 8;
+	private static readonly string EncryptedDataFolderPath;
+	private static readonly IReadOnlyList<FilePickerFileType> EncryptedFileTypes;
 	
-	private static readonly FilePickerSaveOptions EncryptedFileCreateOptions;
-	private static readonly FilePickerOpenOptions EncryptedFileOpenOptions;
+	private const string EncryptedDataFolderName = "PasswordSecure";
+	private const int MinimumMasterPasswordLength = 8;
 	
 	private readonly IDataAccessService _dataAccessService;
 	private readonly IAssemblyVersionProvider _assemblyVersionProvider;
@@ -83,8 +64,7 @@ public class MainPresenter
 	private readonly MainWindow _mainWindow;
 	private readonly AccessParams _accessParams;
 
-	private void OnVisualStateChanged(object? sender, EventArgs e)
-		=> _mainWindow.EnableControls();
+	private void OnVisualStateChanged(object? sender, EventArgs e) => _mainWindow.EnableControls();
 	
 	private async void OnNewMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
@@ -181,11 +161,9 @@ public class MainPresenter
 		await _mainWindow.CloseWindow();
 	}
 
-	private async void OnHelpMenuClicked(object? sender, EventArgs e)
-		=> await DisplayHelpMessage();
+	private async void OnHelpMenuClicked(object? sender, EventArgs e) => await DisplayHelpMessage();
 	
-	private async Task<bool> SuggestSaveChanges(
-		AccountEntryCollectionEventArgs e, ButtonEnum buttonEnum)
+	private async Task<bool> SuggestSaveChanges(AccountEntryCollectionEventArgs e, ButtonEnum buttonEnum)
 	{
 		var shouldExitWithoutProcessing = false;
 		
@@ -208,8 +186,17 @@ public class MainPresenter
 	
 	private async Task CreateEncryptedContainer()
 	{
-		var encryptedFile = await _mainWindow.StorageProvider.SaveFilePickerAsync(
-			EncryptedFileCreateOptions);
+		var encryptedDataFolder = await GetEncryptedDataFolder();
+		var encryptedFileCreateOptions = new FilePickerSaveOptions
+		{
+			DefaultExtension = ".encrypted",
+			FileTypeChoices = EncryptedFileTypes,
+			ShowOverwritePrompt = true,
+			Title = "Select New Encrypted Container File",
+			SuggestedStartLocation = encryptedDataFolder
+		};
+		
+		var encryptedFile = await _mainWindow.StorageProvider.SaveFilePickerAsync(encryptedFileCreateOptions);
 		
 		if (encryptedFile is null)
 		{
@@ -238,11 +225,20 @@ public class MainPresenter
 		await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
-	
+
 	private async Task LoadEncryptedContainer()
 	{
-		var encryptedFile = (await _mainWindow.StorageProvider.OpenFilePickerAsync(
-			EncryptedFileOpenOptions)).SingleOrDefault();
+		var encryptedDataFolder = await GetEncryptedDataFolder();
+		var encryptedFileOpenOptions = new FilePickerOpenOptions
+		{
+			AllowMultiple = false,
+			FileTypeFilter = EncryptedFileTypes,
+			Title = "Select Encrypted Container File",
+			SuggestedStartLocation = encryptedDataFolder
+		};
+		
+		var encryptedFile = (await _mainWindow.StorageProvider.OpenFilePickerAsync(encryptedFileOpenOptions))
+			.SingleOrDefault();
 
 		if (encryptedFile is null)
 		{
@@ -250,8 +246,7 @@ public class MainPresenter
 		}
 
 		var inputMasterPasswordWindow = new InputMasterPasswordWindow();
-		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(
-			inputMasterPasswordWindow, _accessParams);
+		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(inputMasterPasswordWindow, _accessParams);
 
 		inputMasterPasswordWindow.DataContext = inputMasterPasswordViewModel;
 		await inputMasterPasswordWindow.ShowDialog(_mainWindow);
@@ -322,6 +317,47 @@ public class MainPresenter
 		_accessParams.FilePath = null;
 		
 		_mainWindow.ClearData();
+	}
+	
+	private async Task<IStorageFolder?> GetEncryptedDataFolder()
+		=> await _mainWindow.StorageProvider.TryGetFolderFromPathAsync(EncryptedDataFolderPath);
+
+	private static string GetEncryptedDataFolderPath()
+	{
+		var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+		var encryptedDataFolderPath = Path.Combine(userProfilePath, EncryptedDataFolderName);
+		
+		return encryptedDataFolderPath;
+	}
+	
+	private static void CreateEncryptedDataFolderIfNecessary()
+	{
+		try
+		{
+			if (!Directory.Exists(EncryptedDataFolderPath))
+			{
+				Directory.CreateDirectory(EncryptedDataFolderPath);
+			}
+		}
+		catch
+		{
+		}
+	}
+
+	private static IReadOnlyList<FilePickerFileType> GetEncryptedFileTypes()
+	{
+		var encryptedFileTypes = new List<FilePickerFileType>
+		{
+			new FilePickerFileType("Encrypted files (*.encrypted)")
+			{
+				Patterns = new List<string>
+				{
+					"*.encrypted"
+				}
+			}
+		};
+		
+		return encryptedFileTypes;
 	}
 
 	#endregion
