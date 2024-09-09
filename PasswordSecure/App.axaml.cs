@@ -1,3 +1,5 @@
+//#define FLATPAK_BUILD
+
 using Avalonia.Markup.Xaml;
 using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
@@ -34,8 +36,16 @@ public class App : Avalonia.Application
         IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
             dataAccessService);
 
+        IEncryptedDataFolderProvider encryptedDataFolderProvider;
+        #if FLATPAK_BUILD
+            encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
+        #else
+            encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
+        #endif
+
         var mainWindow = new MainWindow();
-        var mainPresenter = new MainPresenter(dataAccessServiceDecorated, assemblyVersionProvider, mainWindow);
+        var mainPresenter = new MainPresenter(
+            dataAccessServiceDecorated, assemblyVersionProvider, encryptedDataFolderProvider, mainWindow);
         
         mainWindow.Show();
     }

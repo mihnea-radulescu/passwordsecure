@@ -5,7 +5,7 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Copyright>Copyright © Mihnea Rădulescu 2024</Copyright>
-		<AssemblyVersion>1.2024.09.09</AssemblyVersion>
+		<AssemblyVersion>1.2024.09.10</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>

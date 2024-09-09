@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -20,15 +19,13 @@ public class MainPresenter
 {
 	static MainPresenter()
 	{
-		EncryptedDataFolderPath = GetEncryptedDataFolderPath();
-		CreateEncryptedDataFolderIfNecessary();
-
 		EncryptedFileTypes = GetEncryptedFileTypes();
 	}
 	
 	public MainPresenter(
 		IDataAccessService dataAccessService,
 		IAssemblyVersionProvider assemblyVersionProvider,
+		IEncryptedDataFolderProvider encryptedDataFolderProvider,
 		MainWindow mainWindow)
 	{
 		_dataAccessService = dataAccessService;
@@ -48,21 +45,23 @@ public class MainPresenter
 		_mainWindow.HelpMenuClicked += OnHelpMenuClicked;
 
 		_accessParams = new AccessParams();
+		
+		_encryptedDataFolderPath = encryptedDataFolderProvider.GetEncryptedDataFolderPath();
 	}
 
 	#region Private
-
-	private static readonly string EncryptedDataFolderPath;
+	
 	private static readonly IReadOnlyList<FilePickerFileType> EncryptedFileTypes;
 	
-	private const string EncryptedDataFolderName = "PasswordSecure";
 	private const int MinimumMasterPasswordLength = 8;
-	
+
 	private readonly IDataAccessService _dataAccessService;
 	private readonly IAssemblyVersionProvider _assemblyVersionProvider;
 
 	private readonly MainWindow _mainWindow;
 	private readonly AccessParams _accessParams;
+	
+	private readonly string _encryptedDataFolderPath;
 
 	private void OnVisualStateChanged(object? sender, EventArgs e) => _mainWindow.EnableControls();
 	
@@ -320,29 +319,7 @@ public class MainPresenter
 	}
 	
 	private async Task<IStorageFolder?> GetEncryptedDataFolder()
-		=> await _mainWindow.StorageProvider.TryGetFolderFromPathAsync(EncryptedDataFolderPath);
-
-	private static string GetEncryptedDataFolderPath()
-	{
-		var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-		var encryptedDataFolderPath = Path.Combine(userProfilePath, EncryptedDataFolderName);
-		
-		return encryptedDataFolderPath;
-	}
-	
-	private static void CreateEncryptedDataFolderIfNecessary()
-	{
-		try
-		{
-			if (!Directory.Exists(EncryptedDataFolderPath))
-			{
-				Directory.CreateDirectory(EncryptedDataFolderPath);
-			}
-		}
-		catch
-		{
-		}
-	}
+		=> await _mainWindow.StorageProvider.TryGetFolderFromPathAsync(_encryptedDataFolderPath);
 
 	private static IReadOnlyList<FilePickerFileType> GetEncryptedFileTypes()
 	{
