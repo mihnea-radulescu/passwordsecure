@@ -19,34 +19,29 @@ public class App : Avalonia.Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        IFileAccessProvider fileAccessProvider = new FileAccessProvider();
-        IDateTimeProvider dateTimeProvider = new CurrentDateTimeProvider();
         IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
-        
-        IDataSerializationService dataSerializationService = new JsonDataSerializationService();
-        IDataEncryptionService dataEncryptionService = new AesDataEncryptionService();
-        IBackupService backupService = new BackupService(fileAccessProvider, dateTimeProvider);
 
-        IDataAccessService dataAccessService = new DataAccessService(
-            fileAccessProvider,
-            dataSerializationService,
-            dataEncryptionService,
-            backupService);
+        IDataAccessService dataAccessService = DataAccessServiceProvider.Create();
 
         IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
-            dataAccessService);
+            dataAccessService
+        );
 
         IEncryptedDataFolderProvider encryptedDataFolderProvider;
-        #if FLATPAK_BUILD
-            encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
-        #else
-            encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
-        #endif
+#if FLATPAK_BUILD
+        encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
+#else
+        encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
+#endif
 
         var mainWindow = new MainWindow();
         var mainPresenter = new MainPresenter(
-            dataAccessServiceDecorated, assemblyVersionProvider, encryptedDataFolderProvider, mainWindow);
-        
+            dataAccessServiceDecorated,
+            new AssemblyVersionProvider(),
+            encryptedDataFolderProvider,
+            mainWindow
+        );
+
         mainWindow.Show();
     }
 }
