@@ -20,10 +20,14 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 		return accountEntries;
 	}
 
-	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(
+		AccessParams accessParams,
+		AccountEntryCollection accountEntryCollection,
+		bool isV1Vault)
 	{
 		var saveAccountEntriesTask = Task.Run(
-			() => _dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection));
+			() => _dataAccessService.SaveAccountEntries(
+				accessParams, accountEntryCollection, isV1Vault));
 
 		await saveAccountEntriesTask;
 	}

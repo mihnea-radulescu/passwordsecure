@@ -34,12 +34,22 @@ public class DataAccessService : IDataAccessService
 		{
 			try
 			{
-				return await ReadV2AccountEntries(accessParams);
+				var v2AccountEntries = await ReadV2AccountEntries(accessParams);
+
+				accessParams.VaultVersion = VaultVersion.V2;
+				accessParams.IsNewContainer = false;
+
+				return v2AccountEntries;
 			}
 			catch (JsonException)
 			{
 				// Probably v1 format (or corrupted)
-				return await ReadV1AccountEntries(accessParams);
+				var v1AccountEntries = await ReadV1AccountEntries(accessParams);
+
+				accessParams.VaultVersion = VaultVersion.V1;
+				accessParams.IsNewContainer = false;
+
+				return v1AccountEntries;
 			}
 		}
 		catch (CryptographicException)
@@ -52,46 +62,16 @@ public class DataAccessService : IDataAccessService
 		}
 	}
 
-	public async Task<AccountEntryCollection> ReadV1AccountEntries(AccessParams accessParams)
-	{
-		var encryptedDataAsBinary = _fileAccessProvider.ReadData(accessParams.FilePath!);
-
-		var header = new VaultHeader(VaultVersion.V1, [], []);
-		var vault = new Vault(header, encryptedDataAsBinary);
-
-		var data = _v1dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
-		var serializedData = data.ToText();
-
-		var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
-		return await Task.FromResult(accountEntries);
-	}
-
-	public async Task<AccountEntryCollection> ReadV2AccountEntries(AccessParams accessParams)
-	{
-		var vaultAsBinary = _fileAccessProvider.ReadData(accessParams.FilePath!);
-		var vaultAsText = Encoding.UTF8.GetString(vaultAsBinary);
-
-		var vault = _dataSerializationService.DeserializeVault(vaultAsText);
-		accessParams.Salt = vault.Header.Salt;
-
-		var data = _v2dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
-		var serializedData = data.ToText();
-
-		var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
-		return await Task.FromResult(accountEntries);
-	}
-
 	public async Task SaveAccountEntries(
-		AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+		AccessParams accessParams,
+		AccountEntryCollection accountEntryCollection,
+		bool isV1Vault)
 	{
 		try
 		{
-			try
+			if (!accessParams.IsNewContainer)
 			{
-				_backupService.BackupFile(accessParams.FilePath!);
-			}
-			catch (BackupException)
-			{
+				_backupService.BackupFile(accessParams.FilePath!, isV1Vault);
 			}
 
 			var serializedData = _dataSerializationService.SerializeAccountEntryCollection(
@@ -101,9 +81,13 @@ public class DataAccessService : IDataAccessService
 			var vault = _v2dataEncryptionService.EncryptDataToVault(data, accessParams.Password!);
 
 			var vaultAsText = _dataSerializationService.SerializeVault(vault);
-			var vaultAsBinary = Encoding.UTF8.GetBytes(vaultAsText);
+			var vaultAsBinary = Encoding.GetBytes(vaultAsText);
 
 			_fileAccessProvider.SaveData(accessParams.FilePath!, vaultAsBinary);
+
+			accessParams.VaultVersion = VaultVersion.V2;
+			accessParams.IsNewContainer = false;
+
 			await Task.CompletedTask;
 		}
 		catch (CryptographicException)
@@ -118,6 +102,8 @@ public class DataAccessService : IDataAccessService
 
 	#region Private
 
+	private static readonly Encoding Encoding = Encoding.UTF8;
+
 	private readonly IFileAccessProvider _fileAccessProvider;
 
 	private readonly IDataSerializationService _dataSerializationService;
@@ -130,6 +116,35 @@ public class DataAccessService : IDataAccessService
 
 	private static string FileSaveError(string filePath) =>
 		$@"Could not save data to file ""{filePath}"".";
+
+	private async Task<AccountEntryCollection> ReadV1AccountEntries(AccessParams accessParams)
+	{
+		var encryptedDataAsBinary = _fileAccessProvider.ReadData(accessParams.FilePath!);
+
+		var header = new VaultHeader(VaultVersion.V1, [], []);
+		var vault = new Vault(header, encryptedDataAsBinary);
+
+		var data = _v1dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
+		var serializedData = data.ToText();
+
+		var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
+		return await Task.FromResult(accountEntries);
+	}
+
+	private async Task<AccountEntryCollection> ReadV2AccountEntries(AccessParams accessParams)
+	{
+		var vaultAsBinary = _fileAccessProvider.ReadData(accessParams.FilePath!);
+		var vaultAsText = Encoding.GetString(vaultAsBinary);
+
+		var vault = _dataSerializationService.DeserializeVault(vaultAsText);
+		accessParams.Salt = vault.Header.Salt;
+
+		var data = _v2dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
+		var serializedData = data.ToText();
+
+		var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
+		return await Task.FromResult(accountEntries);
+	}
 
 	#endregion
 }

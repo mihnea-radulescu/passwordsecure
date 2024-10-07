@@ -33,7 +33,7 @@ public class JsonDataSerializationService : IDataSerializationService
 		=> JsonSerializer.Serialize(instance, JsonSerializerOptions);
 
 	private static T Deserialize<T>(string serializedInstance)
-		=> JsonSerializer.Deserialize<T>(serializedInstance)!;
+		=> JsonSerializer.Deserialize<T>(serializedInstance, JsonSerializerOptions)!;
 
 	#endregion
 }

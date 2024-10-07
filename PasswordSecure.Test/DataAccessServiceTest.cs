@@ -48,10 +48,13 @@ public class DataAccessServiceTest
 
 		// Act
 		var v1Entries = await _dataAccessService.ReadAccountEntries(accessParams);
-		await _dataAccessService.SaveAccountEntries(accessParams, v1Entries);
+		await _dataAccessService.SaveAccountEntries(accessParams, v1Entries, true);
 		var v2Entries = await _dataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
+		v1Entries.Should().HaveCount(1);
+		v1Entries[0].Should().Be(entries[0]);
+
 		v2Entries.Should().HaveCount(1);
 		v2Entries[0].Should().Be(entries[0]);
 	}

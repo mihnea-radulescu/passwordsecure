@@ -7,4 +7,6 @@ public interface IFileAccessProvider
 	void SaveData(string filePath, byte[] data);
 
 	void CopyFile(string sourceFilePath, string destinationFilePath);
+
+	void DeleteFile(string filePath);
 }

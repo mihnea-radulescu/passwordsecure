@@ -27,8 +27,7 @@ public class TaskDecoratorDataAccessServiceTest
 			dataSerializationService,
 			v1dataEncryptionService,
 			v2dataEncryptionService,
-			backupService
-		);
+			backupService);
 
 		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(dataAccessService);
 	}
@@ -47,11 +46,10 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -76,11 +74,10 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -122,11 +119,10 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -185,11 +181,10 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		// Assert
 		accountEntryCollection.Should().NotBeNull();
@@ -261,11 +256,10 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		accountEntryCollection[0].Name = name1Changed;
 		accountEntryCollection[0].Url = url1Changed;
@@ -274,8 +268,8 @@ public class TaskDecoratorDataAccessServiceTest
 
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollection
-		);
+			accountEntryCollection,
+			false);
 		var accountEntryCollectionChanged =
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
@@ -357,18 +351,17 @@ public class TaskDecoratorDataAccessServiceTest
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollectionReference
-		);
+			accountEntryCollectionReference,
+			false);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams
-		);
+			accessParams);
 
 		accountEntryCollection[0] = accountEntry1Changed;
 
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
 			accessParams,
-			accountEntryCollection
-		);
+			accountEntryCollection,
+			false);
 		var accountEntryCollectionChanged =
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 

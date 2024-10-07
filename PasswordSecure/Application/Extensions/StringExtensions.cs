@@ -4,8 +4,7 @@ namespace PasswordSecure.Application.Extensions;
 
 public static class StringExtensions
 {
-	public static byte[] ToByteArray(this string s)
-		=> Encoding.GetBytes(s);
+	public static byte[] ToByteArray(this string s) => Encoding.GetBytes(s);
 	
 	#region Private
 	

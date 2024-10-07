@@ -220,8 +220,12 @@ public class MainPresenter
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
 		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 
+		_accessParams.VaultVersion = VaultVersion.V2;
+		_accessParams.IsNewContainer = true;
+
 		var accountEntryCollection = new AccountEntryCollection();
-		await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+		await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection, false);
+
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 
@@ -236,8 +240,10 @@ public class MainPresenter
 			SuggestedStartLocation = encryptedDataFolder
 		};
 		
-		var encryptedFile = (await _mainWindow.StorageProvider.OpenFilePickerAsync(encryptedFileOpenOptions))
-			.SingleOrDefault();
+		var selectedEncryptedFiles = await _mainWindow.StorageProvider
+			.OpenFilePickerAsync(encryptedFileOpenOptions);
+
+		var encryptedFile = selectedEncryptedFiles.SingleOrDefault();
 
 		if (encryptedFile is null)
 		{
@@ -245,7 +251,8 @@ public class MainPresenter
 		}
 
 		var inputMasterPasswordWindow = new InputMasterPasswordWindow();
-		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(inputMasterPasswordWindow, _accessParams);
+		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(
+			inputMasterPasswordWindow, _accessParams);
 
 		inputMasterPasswordWindow.DataContext = inputMasterPasswordViewModel;
 		await inputMasterPasswordWindow.ShowDialog(_mainWindow);
@@ -259,6 +266,13 @@ public class MainPresenter
 		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 			
 		var accountEntryCollection = await _dataAccessService.ReadAccountEntries(_accessParams);
+
+		var isV1Vault = _accessParams.VaultVersion == VaultVersion.V1;
+		if (isV1Vault)
+		{
+			await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection, true);
+		}
+
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 	
@@ -268,7 +282,7 @@ public class MainPresenter
 		    _accessParams.Password is not null &&
 		    accountEntryCollection is not null)
 		{
-			await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+			await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection, false);
 			
 			_mainWindow.ResetHasChangedFlag();
 		}

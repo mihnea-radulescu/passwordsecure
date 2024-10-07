@@ -1,12 +1,12 @@
-using System;
 using System.IO;
-using PasswordSecure.Application.Exceptions;
+using System.Linq;
 using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
+using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Infrastructure.Services;
 
-public class BackupService : IBackupService
+public partial class BackupService : IBackupService
 {
 	public BackupService(
 		IFileAccessProvider fileAccessProvider,
@@ -16,7 +16,7 @@ public class BackupService : IBackupService
 		_dateTimeProvider = dateTimeProvider;
 	}
 
-	public void BackupFile(string filePath)
+	public void BackupFile(string filePath, bool isV1Vault)
 	{
 		try
 		{
@@ -25,31 +25,34 @@ public class BackupService : IBackupService
 				return;
 			}
 			
-			var (backupFolderPath, backupFilePath) = GetBackupInfo(filePath);
+			var backupInfo = GetBackupInfo(filePath);
 
-			CreateFolder(backupFolderPath);
-		
-			_fileAccessProvider.CopyFile(filePath, backupFilePath);
+			CreateFolderIfNecessary(backupInfo.BackupFolderPath);
+
+			if (isV1Vault)
+			{
+				DeleteExistingBackupFiles(backupInfo);
+			}
+			else
+			{
+				_fileAccessProvider.CopyFile(filePath, backupInfo.BackupFilePath);
+			}
 		}
-		catch (Exception ex)
+		catch
 		{
-			throw new BackupException(BackupError(filePath), ex);
 		}
 	}
 
 	#region Private
 
 	private const string BackupFolderSuffix = "Backup";
-	
-	private static string BackupError(string filePath) => $@"Could not backup file ""{filePath}"".";
 
 	private readonly IFileAccessProvider _fileAccessProvider;
 	private readonly IDateTimeProvider _dateTimeProvider;
 
-	private static bool ExistsFile(string filePath)
-		=> Path.Exists(filePath);
+    private static bool ExistsFile(string filePath) => Path.Exists(filePath);
 	
-	private static void CreateFolder(string backupFolderPath)
+	private static void CreateFolderIfNecessary(string backupFolderPath)
 	{
 		if (!Directory.Exists(backupFolderPath))
 		{
@@ -57,23 +60,50 @@ public class BackupService : IBackupService
 		}
 	}
 
-	private (string, string) GetBackupInfo(string filePath)
+	private BackupInfo GetBackupInfo(string filePath)
 	{
 		var now = _dateTimeProvider.Now;
 		
 		var fileName = Path.GetFileName(filePath);
 		var fileExtension = Path.GetExtension(fileName);
-		var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-		
+
 		var backupFolderRootPath = Path.GetDirectoryName(filePath)!;
-		var backupFolderName = $"{fileNameWithoutExtension}_{BackupFolderSuffix}";
+		var backupFolderPrefix = Path.GetFileNameWithoutExtension(fileName);
+		var backupFolderName = $"{backupFolderPrefix}_{BackupFolderSuffix}";
 		var backupFolderPath = Path.Combine(backupFolderRootPath, backupFolderName);
 
-		var backupFileName = $"{fileNameWithoutExtension}_{now}{fileExtension}";
+		var backupFileName = $"{backupFolderPrefix}_{now}{fileExtension}";
 		var backupFilePath = Path.Combine(backupFolderPath, backupFileName);
 		
-		return (backupFolderPath, backupFilePath);
+		var backupInfo = new BackupInfo(
+			backupFolderPath, backupFilePath, backupFolderPrefix, fileExtension);
+
+		return backupInfo;
 	}
-	
-	#endregion
+
+	private void DeleteExistingBackupFiles(BackupInfo backupInfo)
+	{
+		var backupFolder = new DirectoryInfo(backupInfo.BackupFolderPath);
+		
+		var backupFilesSearchPattern = $"*{backupInfo.FileExtension}";
+		var backupFiles = backupFolder.GetFiles(backupFilesSearchPattern);
+
+		var backupFilesToDelete = backupFiles
+			.Where(aBackupFile => aBackupFile.Name.StartsWith(backupInfo.BackupFolderPrefix))
+			.Select(aBackupFile => aBackupFile.FullName)
+			.ToList();
+
+		foreach (var aBackupFileToDelete in backupFilesToDelete)
+		{
+			try
+			{
+				_fileAccessProvider.DeleteFile(aBackupFileToDelete);
+			}
+			catch
+			{
+			}
+		}
+	}
+
+    #endregion
 }
