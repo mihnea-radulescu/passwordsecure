@@ -12,36 +12,36 @@ namespace PasswordSecure;
 
 public class App : Avalonia.Application
 {
-    public override void Initialize()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+	public override void Initialize()
+	{
+		AvaloniaXamlLoader.Load(this);
+	}
 
-    public override void OnFrameworkInitializationCompleted()
-    {
-        IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
+	public override void OnFrameworkInitializationCompleted()
+	{
+		IDataAccessServiceProvider dataAccessServiceProvider = new DataAccessServiceProvider();
+		IDataAccessService dataAccessService = dataAccessServiceProvider.CreateDataAccessService();
 
-        IDataAccessService dataAccessService = DataAccessServiceProvider.Create();
+		IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
+			dataAccessService);
 
-        IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
-            dataAccessService
-        );
+		IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
 
-        IEncryptedDataFolderProvider encryptedDataFolderProvider;
+		IEncryptedDataFolderProvider encryptedDataFolderProvider;
 #if FLATPAK_BUILD
-        encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
+		encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
 #else
-        encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
+		encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
 #endif
 
-        var mainWindow = new MainWindow();
-        var mainPresenter = new MainPresenter(
-            dataAccessServiceDecorated,
-            new AssemblyVersionProvider(),
-            encryptedDataFolderProvider,
-            mainWindow
-        );
+		var mainWindow = new MainWindow();
+		
+		var mainPresenter = new MainPresenter(
+			dataAccessServiceDecorated,
+			assemblyVersionProvider,
+			encryptedDataFolderProvider,
+			mainWindow);
 
-        mainWindow.Show();
-    }
+		mainWindow.Show();
+	}
 }

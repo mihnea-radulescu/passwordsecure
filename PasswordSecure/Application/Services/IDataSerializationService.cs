@@ -4,7 +4,9 @@ namespace PasswordSecure.Application.Services;
 
 public interface IDataSerializationService
 {
-	string Serialize(AccountEntryCollection accountEntryCollection);
-
-	AccountEntryCollection Deserialize(string serializedData);
+	string SerializeVault(Vault vault);
+	Vault DeserializeVault(string serializedVault);
+	
+	string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection);
+	AccountEntryCollection DeserializeAccountEntryCollection(string serializedAccountEntryCollection);
 }

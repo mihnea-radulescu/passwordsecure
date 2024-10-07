@@ -1,24 +1,17 @@
 namespace PasswordSecure.DomainModel;
 
-public class Vault
-{
-    public VaultHeader Header { get; set; }
-    public byte[] Body { get; set; }
-}
+public record Vault(VaultHeader Header, byte[] Body);
 
-
-public class VaultHeader
-{
-    public VaultVersion Version { get; set; }
-    public byte[] Salt { get; set; }
-    public byte[] IV { get; set; }
-}
+public record VaultHeader(VaultVersion Version, byte[] IV, byte[] Salt);
 
 public enum VaultVersion
 {
-    // Insecure due to weak key derivation and hard-coded IV
-    V1 = 1,
-    // Fixes hardcoded salt and IV.
-    // Contains Vault wrapper around encrypted AccountEntryCollection
-    V2 = 2,
+	NotSet = 0,
+	
+	// Insecure, due to weak key derivation and hard-coded IV.
+	V1 = 1,
+	
+	// Fixes hardcoded salt and IV.
+	// Contains Vault wrapper around encrypted AccountEntryCollection.
+	V2 = 2
 }

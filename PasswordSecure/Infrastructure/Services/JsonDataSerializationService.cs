@@ -6,15 +6,34 @@ namespace PasswordSecure.Infrastructure.Services;
 
 public class JsonDataSerializationService : IDataSerializationService
 {
-	public string Serialize(AccountEntryCollection accountEntryCollection)
+	static JsonDataSerializationService()
 	{
-		var serializedData = JsonSerializer.Serialize(accountEntryCollection);
-		return serializedData;
+		JsonSerializerOptions = new JsonSerializerOptions
+		{
+			WriteIndented = true
+		};
 	}
+	
+	public string SerializeVault(Vault vault) => Serialize(vault);
 
-	public AccountEntryCollection Deserialize(string serializedData)
-	{
-		var accountEntryCollection = JsonSerializer.Deserialize<AccountEntryCollection>(serializedData)!;
-		return accountEntryCollection;
-	}
+    public Vault DeserializeVault(string serializedVault) => Deserialize<Vault>(serializedVault);
+	
+	public string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection)
+		=> Serialize(accountEntryCollection);
+
+	public AccountEntryCollection DeserializeAccountEntryCollection(
+		string serializedAccountEntryCollection)
+		=> Deserialize<AccountEntryCollection>(serializedAccountEntryCollection);
+
+	#region Private
+
+	private static readonly JsonSerializerOptions JsonSerializerOptions;
+
+	private static string Serialize<T>(T instance)
+		=> JsonSerializer.Serialize(instance, JsonSerializerOptions);
+
+	private static T Deserialize<T>(string serializedInstance)
+		=> JsonSerializer.Deserialize<T>(serializedInstance)!;
+
+	#endregion
 }

@@ -2,15 +2,15 @@ using System.Security.Cryptography;
 using FluentAssertions;
 using Xunit;
 using PasswordSecure.Application.Extensions;
-using PasswordSecure.Infrastructure.Services.V1;
+using PasswordSecure.Infrastructure.Services;
 
-namespace PasswordSecure.Test.V1;
+namespace PasswordSecure.Test;
 
-public class AesDataEncryptionServiceTest
+public class AesV1DataEncryptionServiceTest
 {
-	public AesDataEncryptionServiceTest()
+	public AesV1DataEncryptionServiceTest()
 	{
-		_aesDataEncryptionService = new AesDataEncryptionService();
+		_aesV1DataEncryptionService = new AesV1DataEncryptionService();
 	}
 
 	[Fact]
@@ -23,8 +23,8 @@ public class AesDataEncryptionServiceTest
 		const string password = "password";
 
 		// Act
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(dataReference, password);
-		var data = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var vault = _aesV1DataEncryptionService.EncryptDataToVault(dataReference, password);
+		var data = _aesV1DataEncryptionService.DecryptDataFromVault(vault, password);
 		var serializedData = data.ToText();
 
 		// Assert
@@ -41,8 +41,8 @@ public class AesDataEncryptionServiceTest
 		const string password = "password_password_password_password";
 
 		// Act
-		var encryptedDataBytes = _aesDataEncryptionService.EncryptData(dataReference, password);
-		var data = _aesDataEncryptionService.DecryptData(encryptedDataBytes, password);
+		var vault = _aesV1DataEncryptionService.EncryptDataToVault(dataReference, password);
+		var data = _aesV1DataEncryptionService.DecryptDataFromVault(vault, password);
 		var serializedData = data.ToText();
 
 		// Assert
@@ -60,10 +60,10 @@ public class AesDataEncryptionServiceTest
 		const string decryptionPassword = "decryption password";
 
 		// Act and Assert
-		var encryptedData = _aesDataEncryptionService.EncryptData(dataReference, encryptionPassword);
+		var vault = _aesV1DataEncryptionService.EncryptDataToVault(dataReference, encryptionPassword);
 		
 		Assert.Throws<CryptographicException>(() =>
-			_aesDataEncryptionService.DecryptData(encryptedData, decryptionPassword));
+			_aesV1DataEncryptionService.DecryptDataFromVault(vault, decryptionPassword));
 	}
 	
 	[Fact]
@@ -77,15 +77,15 @@ public class AesDataEncryptionServiceTest
 		const string decryptionPassword = "decryption password_password_password_password";
 
 		// Act and Assert
-		var encryptedData = _aesDataEncryptionService.EncryptData(dataReference, encryptionPassword);
+		var vault = _aesV1DataEncryptionService.EncryptDataToVault(dataReference, encryptionPassword);
 		
 		Assert.Throws<CryptographicException>(() =>
-			_aesDataEncryptionService.DecryptData(encryptedData, decryptionPassword));
+			_aesV1DataEncryptionService.DecryptDataFromVault(vault, decryptionPassword));
 	}
 	
 	#region Private
 
-	private readonly AesDataEncryptionService _aesDataEncryptionService;
+	private readonly AesV1DataEncryptionService _aesV1DataEncryptionService;
 
 	#endregion
 }

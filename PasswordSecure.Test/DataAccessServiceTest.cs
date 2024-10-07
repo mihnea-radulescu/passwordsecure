@@ -1,58 +1,64 @@
-using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Xunit;
 using PasswordSecure.Application.Extensions;
 using PasswordSecure.Application.Services;
 using PasswordSecure.DomainModel;
 using PasswordSecure.Infrastructure.Providers;
-using Xunit;
+using PasswordSecure.Infrastructure.Services;
+using PasswordSecure.Application.Providers;
 
 namespace PasswordSecure.Test;
 
 public class DataAccessServiceTest
 {
-    private readonly IDataAccessService _dataAccessService;
+	public DataAccessServiceTest()
+	{
+		IDataAccessServiceProvider dataAccessServiceProvider = new DataAccessServiceProvider();
+		
+		_dataAccessService = dataAccessServiceProvider.CreateDataAccessService();
+	}
 
-    public DataAccessServiceTest()
-    {
-        _dataAccessService = DataAccessServiceProvider.Create();
-    }
+	[Fact]
+	public async Task UpgradeFromV1EntriestoV2Entries_ReturnsInitialData()
+	{
+		// Arrange
+		var entries = new AccountEntryCollection([
+			new AccountEntry
+			{
+				Name = "Example",
+				Url = "http://example.com",
+				User = "JoeDoe",
+				Password = "test1234!",
+			}
+		]);
+		var data = JsonSerializer.Serialize(entries).ToByteArray();
 
-    [Fact]
-    public async void UpgradeFromV1()
-    {
-        // Arrange
-        var entries = new AccountEntryCollection(
-            new List<AccountEntry>()
-            {
-                new AccountEntry
-                {
-                    Name = "Example",
-                    Url = "http://example.com",
-                    User = "JoeDoe",
-                    Password = "test1234!",
-                },
-            }
-        );
-        var data = JsonSerializer.Serialize(entries).ToByteArray();
+		var aesV1DataEncryptionService = new AesV1DataEncryptionService();
+		var accessParams = new AccessParams
+		{
+			FilePath = "upgrade.encrypted",
+			Password = "Password",
+		};
+		var vault = aesV1DataEncryptionService.EncryptDataToVault(data, accessParams.Password);
 
-        var v1Encryption = new Infrastructure.Services.V1.AesDataEncryptionService();
-        var accessParams = new AccessParams()
-        {
-            FilePath = "upgrade.encrypted",
-            Password = "Password",
-        };
-        var encryptedData = v1Encryption.EncryptData(data, accessParams.Password);
-        new FileAccessProvider().SaveData(accessParams.FilePath!, encryptedData);
+		var fileAccessProvider = new FileAccessProvider();
+		fileAccessProvider.SaveData(accessParams.FilePath!, vault.Body);
 
-        // Act
-        {
-            var entriesFromV1 = await _dataAccessService.ReadAccountEntries(accessParams);
-            await _dataAccessService.SaveAccountEntries(accessParams, entriesFromV1);
-        }
-        var upgradedEntries = await _dataAccessService.ReadAccountEntries(accessParams);
+		// Act
+		var v1Entries = await _dataAccessService.ReadAccountEntries(accessParams);
+		await _dataAccessService.SaveAccountEntries(accessParams, v1Entries);
+		var v2Entries = await _dataAccessService.ReadAccountEntries(accessParams);
 
-        // Assert
-        upgradedEntries.Should().HaveCount(1);
-    }
+		// Assert
+		v2Entries.Should().HaveCount(1);
+		v2Entries[0].Should().Be(entries[0]);
+	}
+
+	#region Private
+
+	private readonly IDataAccessService _dataAccessService;
+
+	#endregion
 }
