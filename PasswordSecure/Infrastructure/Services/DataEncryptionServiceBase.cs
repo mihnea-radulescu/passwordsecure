@@ -18,7 +18,7 @@ public abstract class DataEncryptionServiceBase : IDataEncryptionService
 			var key = GetPasswordBytes(password, salt);
 			var encryptedData = ExecuteCryptoTransform(data, iv, key, aes => aes.CreateEncryptor());
 
-			var header = new VaultHeader(VaultVersion.V2, iv, salt);
+			var header = new VaultHeader(VaultVersion, iv, salt);
 			var vault = new Vault(header, encryptedData);
 
 			return vault;
