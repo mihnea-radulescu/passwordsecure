@@ -48,6 +48,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/passwordsecure/issues</url>
 
 	<releases>
+		<release version="1.2024.10.08" date="2024-10-08">
+			<description>
+				<p>Improved compliance with security standards</p>
+			</description>
+		</release>
 		<release version="1.2024.10.02" date="2024-10-02">
 			<description>
 				<p>Updated application libraries</p>
