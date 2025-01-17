@@ -1,6 +1,5 @@
 using System.IO;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
@@ -52,8 +51,8 @@ public class TaskDecoratorDataAccessServiceTest
 			accessParams);
 
 		// Assert
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.Should().BeEmpty();
+		Assert.NotNull(accountEntryCollection);
+		Assert.Empty(accountEntryCollection);
 	}
 
 	[Fact]
@@ -80,16 +79,16 @@ public class TaskDecoratorDataAccessServiceTest
 			accessParams);
 
 		// Assert
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.Should().HaveCount(1);
+		Assert.NotNull(accountEntryCollection);
+		Assert.Single(accountEntryCollection);
 
 		var singleAccountEntry = accountEntryCollection[0];
 
-		singleAccountEntry.Should().NotBeNull();
-		singleAccountEntry.Name.Should().Be(name);
-		singleAccountEntry.Url.Should().BeEmpty();
-		singleAccountEntry.User.Should().BeEmpty();
-		singleAccountEntry.Password.Should().BeNull();
+		Assert.NotNull(singleAccountEntry);
+		Assert.Equal(name, singleAccountEntry.Name);
+		Assert.Empty(singleAccountEntry.Url);
+		Assert.Empty(singleAccountEntry.User);
+		Assert.Null(singleAccountEntry.Password);
 	}
 
 	[Fact]
@@ -125,16 +124,16 @@ public class TaskDecoratorDataAccessServiceTest
 			accessParams);
 
 		// Assert
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.Should().HaveCount(1);
+		Assert.NotNull(accountEntryCollection);
+		Assert.Single(accountEntryCollection);
 
 		var singleAccountEntry = accountEntryCollection[0];
 
-		singleAccountEntry.Should().NotBeNull();
-		singleAccountEntry.Name.Should().Be(name);
-		singleAccountEntry.Url.Should().Be(url);
-		singleAccountEntry.User.Should().Be(user);
-		singleAccountEntry.Password.Should().Be(password);
+		Assert.NotNull(singleAccountEntry);
+		Assert.Equal(name, singleAccountEntry.Name);
+		Assert.Equal(url, singleAccountEntry.Url);
+		Assert.Equal(user, singleAccountEntry.User);
+		Assert.Equal(password, singleAccountEntry.Password);
 	}
 
 	[Fact]
@@ -187,24 +186,24 @@ public class TaskDecoratorDataAccessServiceTest
 			accessParams);
 
 		// Assert
-		accountEntryCollection.Should().NotBeNull();
-		accountEntryCollection.Should().HaveCount(2);
+		Assert.NotNull(accountEntryCollection);
+		Assert.Equal(2, accountEntryCollection.Count);
 
 		var firstAccountEntry = accountEntryCollection[0];
 
-		firstAccountEntry.Should().NotBeNull();
-		firstAccountEntry.Name.Should().Be(name1);
-		firstAccountEntry.Url.Should().Be(url1);
-		firstAccountEntry.User.Should().Be(user1);
-		firstAccountEntry.Password.Should().Be(password1);
+		Assert.NotNull(firstAccountEntry);
+		Assert.Equal(name1, firstAccountEntry.Name);
+		Assert.Equal(url1, firstAccountEntry.Url);
+		Assert.Equal(user1, firstAccountEntry.User);
+		Assert.Equal(password1, firstAccountEntry.Password);
 
 		var secondAccountEntry = accountEntryCollection[1];
 
-		secondAccountEntry.Should().NotBeNull();
-		secondAccountEntry.Name.Should().Be(name2);
-		secondAccountEntry.Url.Should().Be(url2);
-		secondAccountEntry.User.Should().Be(user2);
-		secondAccountEntry.Password.Should().Be(password2);
+		Assert.NotNull(secondAccountEntry);
+		Assert.Equal(name2, secondAccountEntry.Name);
+		Assert.Equal(url2, secondAccountEntry.Url);
+		Assert.Equal(user2, secondAccountEntry.User);
+		Assert.Equal(password2, secondAccountEntry.Password);
 	}
 
 	[Fact]
@@ -274,24 +273,24 @@ public class TaskDecoratorDataAccessServiceTest
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
-		accountEntryCollectionChanged.Should().NotBeNull();
-		accountEntryCollectionChanged.Should().HaveCount(2);
+		Assert.NotNull(accountEntryCollectionChanged);
+		Assert.Equal(2, accountEntryCollectionChanged.Count);
 
-		var firstAccountEntry = accountEntryCollectionChanged[0];
+		var firstAccountEntryChanged = accountEntryCollectionChanged[0];
 
-		firstAccountEntry.Should().NotBeNull();
-		firstAccountEntry.Name.Should().Be(name1Changed);
-		firstAccountEntry.Url.Should().Be(url1Changed);
-		firstAccountEntry.User.Should().Be(user1Changed);
-		firstAccountEntry.Password.Should().Be(password1Changed);
+		Assert.NotNull(firstAccountEntryChanged);
+		Assert.Equal(name1Changed, firstAccountEntryChanged.Name);
+		Assert.Equal(url1Changed, firstAccountEntryChanged.Url);
+		Assert.Equal(user1Changed, firstAccountEntryChanged.User);
+		Assert.Equal(password1Changed, firstAccountEntryChanged.Password);
 
-		var secondAccountEntry = accountEntryCollectionChanged[1];
+		var secondAccountEntryChanged = accountEntryCollectionChanged[1];
 
-		secondAccountEntry.Should().NotBeNull();
-		secondAccountEntry.Name.Should().Be(name2);
-		secondAccountEntry.Url.Should().Be(url2);
-		secondAccountEntry.User.Should().Be(user2);
-		secondAccountEntry.Password.Should().Be(password2);
+		Assert.NotNull(secondAccountEntryChanged);
+		Assert.Equal(name2, secondAccountEntryChanged.Name);
+		Assert.Equal(url2, secondAccountEntryChanged.Url);
+		Assert.Equal(user2, secondAccountEntryChanged.User);
+		Assert.Equal(password2, secondAccountEntryChanged.Password);
 	}
 
 	[Fact]
@@ -366,24 +365,24 @@ public class TaskDecoratorDataAccessServiceTest
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
-		accountEntryCollectionChanged.Should().NotBeNull();
-		accountEntryCollectionChanged.Should().HaveCount(2);
+		Assert.NotNull(accountEntryCollectionChanged);
+		Assert.Equal(2, accountEntryCollectionChanged.Count);
 
-		var firstAccountEntry = accountEntryCollectionChanged[0];
+		var firstAccountEntryChanged = accountEntryCollectionChanged[0];
 
-		firstAccountEntry.Should().NotBeNull();
-		firstAccountEntry.Name.Should().Be(name1Changed);
-		firstAccountEntry.Url.Should().Be(url1Changed);
-		firstAccountEntry.User.Should().Be(user1Changed);
-		firstAccountEntry.Password.Should().Be(password1Changed);
+		Assert.NotNull(firstAccountEntryChanged);
+		Assert.Equal(name1Changed, firstAccountEntryChanged.Name);
+		Assert.Equal(url1Changed, firstAccountEntryChanged.Url);
+		Assert.Equal(user1Changed, firstAccountEntryChanged.User);
+		Assert.Equal(password1Changed, firstAccountEntryChanged.Password);
 
-		var secondAccountEntry = accountEntryCollectionChanged[1];
+		var secondAccountEntryChanged = accountEntryCollectionChanged[1];
 
-		secondAccountEntry.Should().NotBeNull();
-		secondAccountEntry.Name.Should().Be(name2);
-		secondAccountEntry.Url.Should().Be(url2);
-		secondAccountEntry.User.Should().Be(user2);
-		secondAccountEntry.Password.Should().Be(password2);
+		Assert.NotNull(secondAccountEntryChanged);
+		Assert.Equal(name2, secondAccountEntryChanged.Name);
+		Assert.Equal(url2, secondAccountEntryChanged.Url);
+		Assert.Equal(user2, secondAccountEntryChanged.User);
+		Assert.Equal(password2, secondAccountEntryChanged.Password);
 	}
 
 	#region Private

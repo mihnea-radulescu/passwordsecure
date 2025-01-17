@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using FluentAssertions;
 using Xunit;
 using PasswordSecure.Application.Extensions;
 using PasswordSecure.Infrastructure.Services;
@@ -28,7 +27,7 @@ public class AesV2DataEncryptionServiceTest
 		var serializedData = data.ToText();
 
 		// Assert
-		serializedData.Should().Be(serializedDataReference);
+		Assert.Equal(serializedDataReference, serializedData);
 	}
 
 	[Fact]
@@ -46,7 +45,7 @@ public class AesV2DataEncryptionServiceTest
 		var serializedData = data.ToText();
 
 		// Assert
-		serializedData.Should().Be(serializedDataReference);
+		Assert.Equal(serializedDataReference, serializedData);
 	}
 
 	[Fact]

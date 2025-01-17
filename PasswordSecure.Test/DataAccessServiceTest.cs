@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 using PasswordSecure.Application.Extensions;
 using PasswordSecure.Application.Services;
@@ -52,11 +51,11 @@ public class DataAccessServiceTest
 		var v2Entries = await _dataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
-		v1Entries.Should().HaveCount(1);
-		v1Entries[0].Should().Be(entries[0]);
+		Assert.Single(v1Entries);
+		Assert.Equal(entries[0], v1Entries[0]);
 
-		v2Entries.Should().HaveCount(1);
-		v2Entries[0].Should().Be(entries[0]);
+		Assert.Single(v2Entries);
+		Assert.Equal(entries[0], v2Entries[0]);
 	}
 
 	#region Private
