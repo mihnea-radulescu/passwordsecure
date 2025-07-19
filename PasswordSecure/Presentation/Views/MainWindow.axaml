@@ -1,16 +1,16 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="PasswordSecure.Presentation.Views.MainWindow"
-        Icon="/MainWindowIcon.ico"
-        Title="Password Secure"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="PasswordSecure.Presentation.Views.MainWindow"
+		Icon="/MainWindowIcon.ico"
+		Title="Password Secure"
 		MinWidth="800"
 		MinHeight="300"
 		Width="800"
 		Height="300"
-        WindowStartupLocation="CenterScreen"
-        Focusable="True"
-        Closing="OnClosing">
-	
+		WindowStartupLocation="CenterScreen"
+		Focusable="True"
+		Closing="OnClosing">
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
@@ -22,65 +22,65 @@
 			<MenuItem Header="_File">
 				<MenuItem Name="MenuItemNew"
 						  Header="_New"
-				          Click="OnMenuItemNewClick"/>
+						  Click="OnMenuItemNewClick"/>
 				<MenuItem Name="MenuItemOpen"
-				          Header="_Open"
-				          Click="OnMenuItemOpenClick"/>
+						  Header="_Open"
+						  Click="OnMenuItemOpenClick"/>
 				<Separator/>
 				<MenuItem Name="MenuItemSave"
-				          Header="_Save"
-				          IsEnabled="False"
-				          Click="OnMenuItemSaveClick"/>
+						  Header="_Save"
+						  IsEnabled="False"
+						  Click="OnMenuItemSaveClick"/>
 				<MenuItem Name="MenuItemClose"
-				          Header="_Close"
-				          IsEnabled="False"
-				          Click="OnMenuItemCloseClick"/>
+						  Header="_Close"
+						  IsEnabled="False"
+						  Click="OnMenuItemCloseClick"/>
 				<Separator/>
 				<MenuItem Name="MenuItemExit"
-				          Header="E_xit"
-				          Click="OnMenuItemExitClick"/>
+						  Header="E_xit"
+						  Click="OnMenuItemExitClick"/>
 			</MenuItem>
 			<MenuItem Header="_Edit">
 				<MenuItem Name="MenuItemAddNewAccountEntry"
-				          Header="_Add"
-				          Command="{Binding AddAccountEntryCommand}"/>
+						  Header="_Add"
+						  Command="{Binding AddAccountEntryCommand}"/>
 				<MenuItem Name="MenuItemDeleteAccountEntry"
-				          Header="_Delete"
-				          Command="{Binding DeleteAccountEntryCommand}"/>
+						  Header="_Delete"
+						  Command="{Binding DeleteAccountEntryCommand}"/>
 				<MenuItem Name="MenuItemSortAccountEntries"
-				          Header="_Sort"
-				          Command="{Binding SortAccountEntriesCommand}"/>
+						  Header="_Sort"
+						  Command="{Binding SortAccountEntriesCommand}"/>
 			</MenuItem>
 			<MenuItem Name="MenuItemHelp"
-			          Header="_Help"
-			          Click="OnMenuItemHelpClick"/>
+					  Header="_Help"
+					  Click="OnMenuItemHelpClick"/>
 		</Menu>
-		
+
 		<Grid Grid.Row="1">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="55*"/>
 				<ColumnDefinition Width="45*"/>
 			</Grid.ColumnDefinitions>
-			
+
 			<DataGrid Grid.Column="0"
-			          Name="DataGridAccountEntries"
-			          AutoGenerateColumns="False"
-			          CanUserReorderColumns="False"
-			          CanUserResizeColumns="True"
-			          CanUserSortColumns="True"
-			          IsReadOnly="True"
-			          SelectionMode="Single"
-			          ItemsSource="{Binding AccountEntryViewModels}"
-			          SelectedItem="{Binding SelectedAccountEntryViewModel}">
-			
+					  Name="DataGridAccountEntries"
+					  AutoGenerateColumns="False"
+					  CanUserReorderColumns="False"
+					  CanUserResizeColumns="True"
+					  CanUserSortColumns="True"
+					  IsReadOnly="True"
+					  SelectionMode="Single"
+					  ItemsSource="{Binding AccountEntryViewModels}"
+					  SelectedItem="{Binding SelectedAccountEntryViewModel}">
+
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
 					<DataGridTextColumn Header="URL" Binding="{Binding Url}"/>
 					<DataGridTextColumn Header="User" Binding="{Binding User}"/>
 				</DataGrid.Columns>
-			
+
 			</DataGrid>
-			
+
 			<Grid Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"></RowDefinition>
@@ -89,69 +89,69 @@
 					<RowDefinition Height="Auto"></RowDefinition>
 					<RowDefinition Height="Auto"></RowDefinition>
 				</Grid.RowDefinitions>
-		
+
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"></ColumnDefinition>
 					<ColumnDefinition Width="*"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				
+
 				<TextBlock Grid.Row="0"
-				           Grid.Column="0"
-				           Text="Name"/>
+						   Grid.Column="0"
+						   Text="Name"/>
 				<TextBox Grid.Row="0"
-				         Grid.Column="1"
-				         Name="TextBoxSelectedName"
-				         IsEnabled="False"
-				         Text="{Binding SelectedAccountEntryViewModel.Name}"/>
-			
+						 Grid.Column="1"
+						 Name="TextBoxSelectedName"
+						 IsEnabled="False"
+						 Text="{Binding SelectedAccountEntryViewModel.Name}"/>
+
 				<TextBlock Grid.Row="1"
-				           Grid.Column="0"
-				           Text="URL"/>
+						   Grid.Column="0"
+						   Text="URL"/>
 				<TextBox Grid.Row="1"
-				         Grid.Column="1"
-				         Name="TextBoxSelectedUrl"
-				         IsEnabled="False"
-				         Text="{Binding SelectedAccountEntryViewModel.Url}"/>
-			
+						 Grid.Column="1"
+						 Name="TextBoxSelectedUrl"
+						 IsEnabled="False"
+						 Text="{Binding SelectedAccountEntryViewModel.Url}"/>
+
 				<TextBlock Grid.Row="2"
-				           Grid.Column="0"
-				           Text="User"/>
+						   Grid.Column="0"
+						   Text="User"/>
 				<TextBox Grid.Row="2"
-				         Grid.Column="1"
-				         Name="TextBoxSelectedUser"
-				         IsEnabled="False"
-				         Text="{Binding SelectedAccountEntryViewModel.User}"/>
-			
+						 Grid.Column="1"
+						 Name="TextBoxSelectedUser"
+						 IsEnabled="False"
+						 Text="{Binding SelectedAccountEntryViewModel.User}"/>
+
 				<TextBlock Grid.Row="3"
-				           Grid.Column="0"
-				           Text="Password"/>
-				
+						   Grid.Column="0"
+						   Text="Password"/>
+
 				<StackPanel Grid.Row="3"
-				            Grid.Column="1"
-				            Orientation="Horizontal">
+							Grid.Column="1"
+							Orientation="Horizontal">
 					<Button Name="ButtonSelectedEditPassword"
-					        Content="Edit"
-					        IsEnabled="False"
-					        Command="{Binding EditPasswordCommand}"/>
+							Content="Edit"
+							IsEnabled="False"
+							Command="{Binding EditPasswordCommand}"/>
 					<Button Name="ButtonSelectedCopyPassword"
-					        Content="Copy"
-					        IsEnabled="False"
-					        Command="{Binding CopyPasswordCommand}"/>
+							Content="Copy"
+							IsEnabled="False"
+							Command="{Binding CopyPasswordCommand}"/>
 				</StackPanel>
-				
+
 				<TextBlock Grid.Row="4"
-				           Grid.Column="0"
-				           Text="Notes"/>
+						   Grid.Column="0"
+						   Text="Notes"/>
 				<TextBox Grid.Row="4"
-				         Grid.Column="1"
-				         Name="TextBoxSelectedNotes"
-				         IsEnabled="False"
-				         Text="{Binding SelectedAccountEntryViewModel.Notes}"/>
+						 Grid.Column="1"
+						 Name="TextBoxSelectedNotes"
+						 IsEnabled="False"
+						 Text="{Binding SelectedAccountEntryViewModel.Notes}"/>
 			</Grid>
 		</Grid>
-		
+
 		<TextBlock Name="TextBlockActiveFilePath"
-		           Grid.Row="2"/>
+				   Grid.Row="2"/>
 	</Grid>
 
 </Window>

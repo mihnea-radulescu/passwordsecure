@@ -12,8 +12,8 @@ public class AccountEntryCollectionEventArgs : EventArgs
 
 		HasChanged = hasChanged;
 	}
-	
+
 	public AccountEntryCollection? AccountEntryCollection { get; }
-	
+
 	public bool HasChanged { get; }
 }

@@ -9,7 +9,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 	{
 		AccountEntry = accountEntry;
 	}
-	
+
 	public AccountEntry AccountEntry { get; }
 
 	public string Name
@@ -37,7 +37,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				(accountEntry, propertyValue) => accountEntry.Url = propertyValue);
 		}
 	}
-	
+
 	public string User
 	{
 		get => AccountEntry.User;
@@ -50,7 +50,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				(accountEntry, propertyValue) => accountEntry.User = propertyValue);
 		}
 	}
-	
+
 	public string? Password
 	{
 		get => AccountEntry.Password;
@@ -63,7 +63,7 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				(accountEntry, propertyValue) => accountEntry.Password = propertyValue);
 		}
 	}
-	
+
 	public string Notes
 	{
 		get => AccountEntry.Notes;

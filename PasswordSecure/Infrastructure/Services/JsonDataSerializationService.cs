@@ -6,18 +6,10 @@ namespace PasswordSecure.Infrastructure.Services;
 
 public class JsonDataSerializationService : IDataSerializationService
 {
-	static JsonDataSerializationService()
-	{
-		JsonSerializerOptions = new JsonSerializerOptions
-		{
-			WriteIndented = true
-		};
-	}
-	
 	public string SerializeVault(Vault vault) => Serialize(vault);
 
     public Vault DeserializeVault(string serializedVault) => Deserialize<Vault>(serializedVault);
-	
+
 	public string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection)
 		=> Serialize(accountEntryCollection);
 
@@ -27,13 +19,10 @@ public class JsonDataSerializationService : IDataSerializationService
 
 	#region Private
 
-	private static readonly JsonSerializerOptions JsonSerializerOptions;
-
-	private static string Serialize<T>(T instance)
-		=> JsonSerializer.Serialize(instance, JsonSerializerOptions);
+	private static string Serialize<T>(T instance) => JsonSerializer.Serialize(instance);
 
 	private static T Deserialize<T>(string serializedInstance)
-		=> JsonSerializer.Deserialize<T>(serializedInstance, JsonSerializerOptions)!;
+		=> JsonSerializer.Deserialize<T>(serializedInstance)!;
 
 	#endregion
 }

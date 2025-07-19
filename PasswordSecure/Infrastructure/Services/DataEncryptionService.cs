@@ -6,7 +6,7 @@ using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Infrastructure.Services;
 
-public abstract class DataEncryptionServiceBase : IDataEncryptionService
+public class DataEncryptionService : IDataEncryptionService
 {
 	public Vault EncryptDataToVault(byte[] data, string password)
 	{
@@ -18,7 +18,7 @@ public abstract class DataEncryptionServiceBase : IDataEncryptionService
 			var key = GetPasswordBytes(password, salt);
 			var encryptedData = ExecuteCryptoTransform(data, iv, key, aes => aes.CreateEncryptor());
 
-			var header = new VaultHeader(VaultVersion, iv, salt);
+			var header = new VaultHeader(iv, salt);
 			var vault = new Vault(header, encryptedData);
 
 			return vault;
@@ -35,7 +35,7 @@ public abstract class DataEncryptionServiceBase : IDataEncryptionService
 		{
 			var iv = GetIvFromVault(vault);
 			var salt = GetSaltFromVault(vault);
-			
+
 			var key = GetPasswordBytes(password, salt);
 
 			var encryptedData = vault.Body;
@@ -48,27 +48,29 @@ public abstract class DataEncryptionServiceBase : IDataEncryptionService
 			throw new CryptographicException(DecryptionError, ex);
 		}
 	}
-	
-	#region Protected
 
-	protected abstract VaultVersion VaultVersion { get; }
+	#region Private
 
-	protected abstract int PasswordIterations { get; }
+	private const int KeySizeInBits = 256;
+	private const int KeySizeInBytes = KeySizeInBits / 8;
 
-	protected abstract byte[] GenerateIv();
-	protected abstract byte[] GenerateSalt();
+	private const int IvSizeInBytes = 16;
+	private const int SaltSizeInBytes = 16;
 
-	protected abstract byte[] GetIvFromVault(Vault vault);
-	protected abstract byte[] GetSaltFromVault(Vault vault);
+	// See: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2
+	private const int PasswordIterations = 600_000;
 
-	protected const int KeySizeInBits = 256;
-	protected const int KeySizeInBytes = KeySizeInBits / 8;
-
-	protected const string EncryptionError = "Could not encrypt data.";
-	protected const string DecryptionError =
+	private const string EncryptionError = "Could not encrypt data.";
+	private const string DecryptionError =
 		"Could not decrypt data. The likely cause is an incorrect password.";
 
-	protected static byte[] ExecuteCryptoTransform(
+	private static byte[] GenerateIv() => RandomNumberGenerator.GetBytes(IvSizeInBytes);
+	private static byte[] GenerateSalt() => RandomNumberGenerator.GetBytes(SaltSizeInBytes);
+
+	private static byte[] GetIvFromVault(Vault vault) => vault.Header.IV;
+	private static byte[] GetSaltFromVault(Vault vault) => vault.Header.Salt;
+
+	private static byte[] ExecuteCryptoTransform(
 		byte[] data,
 		byte[] iv,
 		byte[] key,
@@ -90,7 +92,7 @@ public abstract class DataEncryptionServiceBase : IDataEncryptionService
 		return resultData;
 	}
 
-	protected byte[] GetPasswordBytes(string password, byte[] salt)
+	private static byte[] GetPasswordBytes(string password, byte[] salt)
 	{
 		var derivedBytes = new Rfc2898DeriveBytes(
 			password, salt, PasswordIterations, HashAlgorithmName.SHA256);

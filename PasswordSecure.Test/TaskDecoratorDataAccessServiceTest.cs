@@ -17,15 +17,13 @@ public class TaskDecoratorDataAccessServiceTest
 		IDateTimeProvider dateTimeProvider = new CurrentDateTimeProvider();
 
 		IDataSerializationService dataSerializationService = new JsonDataSerializationService();
-		var v1dataEncryptionService = new AesV1DataEncryptionService();
-		var v2dataEncryptionService = new AesV2DataEncryptionService();
+		var dataEncryptionService = new DataEncryptionService();
 		IBackupService backupService = new BackupService(fileAccessProvider, dateTimeProvider);
 
 		IDataAccessService dataAccessService = new DataAccessService(
 			fileAccessProvider,
 			dataSerializationService,
-			v1dataEncryptionService,
-			v2dataEncryptionService,
+			dataEncryptionService,
 			backupService);
 
 		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(dataAccessService);
@@ -44,9 +42,7 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
@@ -72,9 +68,7 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
@@ -117,9 +111,7 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
@@ -179,9 +171,7 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
@@ -254,9 +244,7 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
@@ -266,9 +254,7 @@ public class TaskDecoratorDataAccessServiceTest
 		accountEntryCollection[0].Password = password1Changed;
 
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollection,
-			false);
+			accessParams, accountEntryCollection);
 		var accountEntryCollectionChanged =
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
@@ -349,18 +335,14 @@ public class TaskDecoratorDataAccessServiceTest
 
 		// Act
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollectionReference,
-			false);
+			accessParams, accountEntryCollectionReference);
 		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
 			accessParams);
 
 		accountEntryCollection[0] = accountEntry1Changed;
 
 		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams,
-			accountEntryCollection,
-			false);
+			accessParams, accountEntryCollection);
 		var accountEntryCollectionChanged =
 			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 

@@ -10,7 +10,7 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 	{
 		_dataAccessService = dataAccessService;
 	}
-	
+
 	public async Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams)
 	{
 		var readAccountEntriesTask = Task.Run(
@@ -21,20 +21,17 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 	}
 
 	public async Task SaveAccountEntries(
-		AccessParams accessParams,
-		AccountEntryCollection accountEntryCollection,
-		bool isV1Vault)
+		AccessParams accessParams, AccountEntryCollection accountEntryCollection)
 	{
 		var saveAccountEntriesTask = Task.Run(
-			() => _dataAccessService.SaveAccountEntries(
-				accessParams, accountEntryCollection, isV1Vault));
+			() => _dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection));
 
 		await saveAccountEntriesTask;
 	}
-	
+
 	#region Private
-	
+
 	private readonly IDataAccessService _dataAccessService;
-	
+
 	#endregion
 }

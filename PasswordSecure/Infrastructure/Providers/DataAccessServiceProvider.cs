@@ -10,18 +10,16 @@ public class DataAccessServiceProvider : IDataAccessServiceProvider
 	{
 		IDataSerializationService jsonDataSerializationService = new JsonDataSerializationService();
 
-		IDataEncryptionService aesV1DataEncryptionService = new AesV1DataEncryptionService();
-		IDataEncryptionService aesV2DataEncryptionService = new AesV2DataEncryptionService();
+		IDataEncryptionService dataEncryptionService = new DataEncryptionService();
 
 		IFileAccessProvider fileAccessProvider = new FileAccessProvider();
 		IDateTimeProvider currentDateTimeProvider = new CurrentDateTimeProvider();
 		IBackupService backupService = new BackupService(fileAccessProvider, currentDateTimeProvider);
-		
+
 		IDataAccessService dataAccessService = new DataAccessService(
 			fileAccessProvider,
 			jsonDataSerializationService,
-			aesV1DataEncryptionService,
-			aesV2DataEncryptionService,
+			dataEncryptionService,
 			backupService);
 
 		return dataAccessService;

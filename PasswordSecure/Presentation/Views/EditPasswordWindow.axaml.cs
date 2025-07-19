@@ -15,14 +15,14 @@ public partial class EditPasswordWindow : Window
 		InitializeComponent();
 
 		_isPasswordAccepted = false;
-		
+
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 	}
 	
 	#region Private
-	
+
 	public int MinimumPasswordLength { get; set; }
-	
+
 	private bool _isPasswordAccepted;
 
 	private string? _initialPassword;
@@ -30,7 +30,7 @@ public partial class EditPasswordWindow : Window
 	private void OnLoaded(object? sender, RoutedEventArgs e)
 	{
 		_initialPassword = TextBoxPassword.Text;
-		
+
 		TextBoxPassword.Focus();
 	}
 
@@ -52,13 +52,13 @@ public partial class EditPasswordWindow : Window
 			{
 				Close();
 			}
-			
+
 			e.Handled = true;
 		}
 		else if (e.Key == Key.Escape)
 		{
 			_isPasswordAccepted = false;
-			
+
 			Close();
 
 			e.Handled = true;
@@ -68,7 +68,7 @@ public partial class EditPasswordWindow : Window
 	private void OnCancelButtonClick(object? sender, RoutedEventArgs e)
 	{
 		_isPasswordAccepted = false;
-		
+
 		Close();
 	}
 
@@ -90,7 +90,7 @@ public partial class EditPasswordWindow : Window
 
 			return false;
 		}
-		
+
 		if (IsPasswordMismatch)
 		{
 			await DisplayPasswordMismatchErrorMessage();
@@ -115,7 +115,7 @@ public partial class EditPasswordWindow : Window
 			return isPasswordTooShort;
 		}
 	}
-	
+
 	private async Task DisplayPasswordTooShortErrorMessage()
 	{
 		var passwordTooShortErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
@@ -138,7 +138,7 @@ public partial class EditPasswordWindow : Window
 			{
 				TextBoxPassword.Text = null;
 			}
-			
+
 			if (TextBoxConfirmPassword.Text == string.Empty)
 			{
 				TextBoxConfirmPassword.Text = null;
@@ -153,7 +153,7 @@ public partial class EditPasswordWindow : Window
 			return isPasswordMismatch;
 		}
 	}
-	
+
 	private async Task DisplayPasswordMismatchErrorMessage()
 	{
 		var passwordMismatchErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
@@ -165,6 +165,6 @@ public partial class EditPasswordWindow : Window
 
 		await passwordMismatchErrorMessageBox.ShowWindowDialogAsync(this);
 	}
-	
+
 	#endregion
 }

@@ -15,11 +15,11 @@ public class AssemblyVersionProvider : IAssemblyVersionProvider
 
 		AssemblyVersionString = $"Version {major}.{minor}.{build}.{revision}";
 	}
-	
+
 	public string AssemblyVersionString { get; }
-	
+
 	#region Private
-	
+
 	private static readonly Version AssemblyVersion = 
 		Assembly.GetEntryAssembly()!.GetName().Version!;
 

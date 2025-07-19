@@ -1,19 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PasswordSecure.DomainModel;
-using PasswordSecure.Presentation.Views;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
 public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewModel
 {
-	public CreateMasterPasswordViewModel(
-		CreateMasterPasswordWindow createMasterPasswordWindow,
-		AccessParams accessParams)
+	public CreateMasterPasswordViewModel(AccessParams accessParams)
 	{
-		_createMasterPasswordWindow = createMasterPasswordWindow;
 		_accessParams = accessParams;
 	}
-	
+
 	public string? Password
 	{
 		get => _accessParams.Password;
@@ -26,11 +22,10 @@ public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewMode
 				(accessParams, propertyValue) => accessParams.Password = propertyValue);
 		}
 	}
-	
+
 	#region Private
 
-	private readonly CreateMasterPasswordWindow _createMasterPasswordWindow;
 	private readonly AccessParams _accessParams;
-	
+
 	#endregion
 }

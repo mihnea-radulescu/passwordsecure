@@ -11,17 +11,17 @@ public partial class InputMasterPasswordWindow : Window
 		InitializeComponent();
 
 		_isPasswordAccepted = false;
-		
+
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 	}
-	
+
 	#region Private
 
 	private bool _isPasswordAccepted;
-	
+
 	private void OnLoaded(object? sender, RoutedEventArgs e)
 		=> TextBoxPassword.Focus();
-	
+
 	private void OnClosing(object? sender, WindowClosingEventArgs e)
 	{
 		if (!_isPasswordAccepted)
@@ -29,13 +29,13 @@ public partial class InputMasterPasswordWindow : Window
 			TextBoxPassword.Text = null;
 		}
 	}
-	
+
 	private void OnKeyPressed(object? sender, KeyEventArgs e)
 	{
 		if (e.Key == Key.Enter)
 		{
 			_isPasswordAccepted = true;
-			
+
 			Close();
 
 			e.Handled = true;
@@ -43,7 +43,7 @@ public partial class InputMasterPasswordWindow : Window
 		else if (e.Key == Key.Escape)
 		{
 			_isPasswordAccepted = false;
-			
+
 			Close();
 
 			e.Handled = true;
@@ -53,7 +53,7 @@ public partial class InputMasterPasswordWindow : Window
 	private void OnCancelButtonClick(object? sender, RoutedEventArgs e)
 	{
 		_isPasswordAccepted = false;
-		
+
 		Close();
 	}
 
@@ -63,6 +63,6 @@ public partial class InputMasterPasswordWindow : Window
 
 		Close();
 	}
-	
+
 	#endregion
 }

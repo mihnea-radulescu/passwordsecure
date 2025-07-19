@@ -35,7 +35,7 @@ public class App : Avalonia.Application
 #endif
 
 		var mainWindow = new MainWindow();
-		
+
 		var mainPresenter = new MainPresenter(
 			dataAccessServiceDecorated,
 			assemblyVersionProvider,
