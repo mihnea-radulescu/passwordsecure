@@ -1,7 +1,7 @@
 # passwordsecure
 Password Secure is a cross-platform, offline password manager, using strong AES-256 encryption.
 
-It is written in C#, and targets .NET 8 on Linux and Windows.
+It is written in C#, and targets .NET 8 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework.
 
 Password Secure encrypts the user's accounts and web sites login data, using a master password.
 
