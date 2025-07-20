@@ -34,7 +34,7 @@
 	</keywords>
 
 	<launchable type="desktop-id">io.github.mihnea_radulescu.passwordsecure.desktop</launchable>
-	
+
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/passwordsecure/main/Screenshot-Dark.jpg</image>
@@ -48,6 +48,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/passwordsecure/issues</url>
 
 	<releases>
+		<release version="1.2025.07.20" date="2025-07-20">
+			<description>
+				<p>Streamlined encryption and decryption logic</p>
+			</description>
+		</release>
 		<release version="1.2024.10.08" date="2024-10-08">
 			<description>
 				<p>Improved compliance with security standards</p>

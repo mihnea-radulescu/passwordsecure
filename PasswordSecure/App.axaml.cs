@@ -19,8 +19,19 @@ public class App : Avalonia.Application
 
 	public override void OnFrameworkInitializationCompleted()
 	{
-		IDataAccessServiceProvider dataAccessServiceProvider = new DataAccessServiceProvider();
-		IDataAccessService dataAccessService = dataAccessServiceProvider.CreateDataAccessService();
+		IDataSerializationService jsonDataSerializationService = new JsonDataSerializationService();
+
+		IDataEncryptionService dataEncryptionService = new DataEncryptionService();
+
+		IFileAccessProvider fileAccessProvider = new FileAccessProvider();
+		IDateTimeProvider currentDateTimeProvider = new CurrentDateTimeProvider();
+		IBackupService backupService = new BackupService(fileAccessProvider, currentDateTimeProvider);
+
+		IDataAccessService dataAccessService = new DataAccessService(
+			fileAccessProvider,
+			jsonDataSerializationService,
+			dataEncryptionService,
+			backupService);
 
 		IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
 			dataAccessService);
