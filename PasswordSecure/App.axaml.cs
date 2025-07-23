@@ -1,5 +1,3 @@
-//#define FLATPAK_BUILD
-
 using Avalonia.Markup.Xaml;
 using PasswordSecure.Application.Providers;
 using PasswordSecure.Application.Services;
@@ -39,11 +37,18 @@ public class App : Avalonia.Application
 		IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
 
 		IEncryptedDataFolderProvider encryptedDataFolderProvider;
-#if FLATPAK_BUILD
-		encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
-#else
-		encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
-#endif
+
+		IEnvironmentSettingsProvider environmentSettingsProvider =
+			new EnvironmentSettingsProvider();
+
+		if (environmentSettingsProvider.IsInsideFlatpakContainer)
+		{
+			encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
+		}
+		else
+		{
+			encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
+		}
 
 		var mainWindow = new MainWindow();
 

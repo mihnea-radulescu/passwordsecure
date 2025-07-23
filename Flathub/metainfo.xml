@@ -48,6 +48,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/passwordsecure/issues</url>
 
 	<releases>
+		<release version="1.2025.07.23" date="2025-07-23">
+			<description>
+				<p>Streamlined build process</p>
+			</description>
+		</release>
 		<release version="1.2025.07.20" date="2025-07-20">
 			<description>
 				<p>Streamlined encryption and decryption logic</p>
