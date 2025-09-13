@@ -141,7 +141,7 @@ public class MainPresenter
 
 		_mainWindow.EnableControls();
 	}
-	
+
 	private async void OnExitMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
 	{
 		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
@@ -182,7 +182,7 @@ public class MainPresenter
 
 		return shouldExitWithoutProcessing;
 	}
-	
+
 	private async Task CreateEncryptedContainer()
 	{
 		var encryptedDataFolder = await GetEncryptedDataFolder();
@@ -290,7 +290,7 @@ public class MainPresenter
 
 		await errorMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
-	
+
 	private async Task DisplayHelpMessage()
 	{
 		var helpMessageBox = MessageBoxManager.GetMessageBoxStandard(
@@ -302,7 +302,7 @@ public class MainPresenter
 
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
-	
+
 	private async Task<ButtonResult> DisplayUnsavedChangesMessage(ButtonEnum buttonEnum)
 	{
 		var unsavedChangesMessageBox = MessageBoxManager.GetMessageBoxStandard(

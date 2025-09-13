@@ -40,7 +40,7 @@ public class DataEncryptionService : IDataEncryptionService
 
 			var encryptedData = vault.Body;
 			var data = ExecuteCryptoTransform(encryptedData, iv, key, aes => aes.CreateDecryptor());
-			
+
 			return data;
 		}
 		catch (Exception ex)

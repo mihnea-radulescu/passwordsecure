@@ -44,11 +44,18 @@ public partial class MainWindow : Window
 
 		if (isContainerLoaded)
 		{
-			var selectedAccountEntryViewModel = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
+			var selectedAccountEntryViewModel =
+				_accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
 
 			isAccountEntrySelected = selectedAccountEntryViewModel is not null;
-			canCopyPassword = isAccountEntrySelected &&
-							  !string.IsNullOrEmpty(selectedAccountEntryViewModel!.Password);
+
+			if (isAccountEntrySelected)
+			{
+				DataGridAccountEntries.ScrollIntoView(
+					DataGridAccountEntries.SelectedItem, DataGridAccountEntries.Columns[0]);
+
+				canCopyPassword = !string.IsNullOrEmpty(selectedAccountEntryViewModel!.Password);
+			}
 		}
 
 		MenuItemDeleteAccountEntry.IsEnabled = isAccountEntrySelected;
@@ -78,7 +85,7 @@ public partial class MainWindow : Window
 		_accountEntryCollectionViewModel = null;
 		DataContext = _accountEntryCollectionViewModel;
 	}
-	
+
 	public void PopulateData(AccountEntryCollection accountEntries)
 	{
 		_accountEntryCollectionViewModel = new AccountEntryCollectionViewModel(

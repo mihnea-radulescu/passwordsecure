@@ -105,7 +105,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 
 		return accountEntryViewModels;
 	}
-	
+
 	private void RegisterEventHandlers()
 	{
 		AccountEntryViewModels.CollectionChanged += OnCollectionChanged;

@@ -18,7 +18,7 @@ public partial class EditPasswordWindow : Window
 
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 	}
-	
+
 	#region Private
 
 	public int MinimumPasswordLength { get; set; }
@@ -41,7 +41,7 @@ public partial class EditPasswordWindow : Window
 			TextBoxPassword.Text = _initialPassword;
 		}
 	}
-	
+
 	private async void OnKeyPressed(object? sender, KeyEventArgs e)
 	{
 		if (e.Key == Key.Enter)
