@@ -34,7 +34,7 @@ public partial class MainWindow : Window
 	{
 		var isContainerLoaded = _accountEntryCollectionViewModel is not null;
 		var canDataBeSorted = isContainerLoaded &&
-							  _accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
+			_accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
 
 		MenuItemSave.IsEnabled = isContainerLoaded;
 		MenuItemClose.IsEnabled = isContainerLoaded;

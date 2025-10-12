@@ -145,7 +145,7 @@ public partial class EditPasswordWindow : Window
 			}
 
 			if (TextBoxPassword.Text is not null ||
-			    TextBlockConfirmPassword.Text is not null)
+				TextBlockConfirmPassword.Text is not null)
 			{
 				isPasswordMismatch = TextBoxPassword.Text != TextBoxConfirmPassword.Text;
 			}

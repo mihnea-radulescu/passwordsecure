@@ -8,7 +8,7 @@ public class JsonDataSerializationService : IDataSerializationService
 {
 	public string SerializeVault(Vault vault) => Serialize(vault);
 
-    public Vault DeserializeVault(string serializedVault) => Deserialize<Vault>(serializedVault);
+	public Vault DeserializeVault(string serializedVault) => Deserialize<Vault>(serializedVault);
 
 	public string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection)
 		=> Serialize(accountEntryCollection);
