@@ -94,10 +94,9 @@ public class DataEncryptionService : IDataEncryptionService
 
 	private static byte[] GetPasswordBytes(string password, byte[] salt)
 	{
-		var derivedBytes = new Rfc2898DeriveBytes(
-			password, salt, PasswordIterations, HashAlgorithmName.SHA256);
+		var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(
+			password, salt, PasswordIterations, HashAlgorithmName.SHA256, KeySizeInBytes);
 
-		var passwordBytes = derivedBytes.GetBytes(KeySizeInBytes);
 		return passwordBytes;
 	}
 
