@@ -84,9 +84,5 @@ public class DataEncryptionServiceTest
 		);
 	}
 
-	#region Private
-
 	private readonly DataEncryptionService _dataEncryptionService;
-
-	#endregion
 }

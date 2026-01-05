@@ -38,8 +38,7 @@ public class DataAccessService : IDataAccessService
 			var data = _dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
 			var serializedData = data.ToText();
 
-			var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(
-				serializedData);
+			var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
 
 			accessParams.IsNewContainer = false;
 
@@ -55,8 +54,7 @@ public class DataAccessService : IDataAccessService
 		}
 	}
 
-	public async Task SaveAccountEntries(
-		AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
 	{
 		try
 		{
@@ -65,8 +63,7 @@ public class DataAccessService : IDataAccessService
 				_backupService.BackupFile(accessParams.FilePath!);
 			}
 
-			var serializedData = _dataSerializationService.SerializeAccountEntryCollection(
-				accountEntryCollection);
+			var serializedData = _dataSerializationService.SerializeAccountEntryCollection(accountEntryCollection);
 			var data = serializedData.ToByteArray();
 
 			var vault = _dataEncryptionService.EncryptDataToVault(data, accessParams.Password!);
@@ -90,8 +87,6 @@ public class DataAccessService : IDataAccessService
 		}
 	}
 
-	#region Private
-
 	private static readonly Encoding Encoding = Encoding.UTF8;
 
 	private readonly IFileAccessProvider _fileAccessProvider;
@@ -100,11 +95,6 @@ public class DataAccessService : IDataAccessService
 	private readonly IDataEncryptionService _dataEncryptionService;
 	private readonly IBackupService _backupService;
 
-	private static string FileReadError(string filePath) =>
-		$@"Could not read data from file ""{filePath}"".";
-
-	private static string FileSaveError(string filePath) =>
-		$@"Could not save data to file ""{filePath}"".";
-
-	#endregion
+	private static string FileReadError(string filePath) => $@"Could not read data from file ""{filePath}"".";
+	private static string FileSaveError(string filePath) => $@"Could not save data to file ""{filePath}"".";
 }

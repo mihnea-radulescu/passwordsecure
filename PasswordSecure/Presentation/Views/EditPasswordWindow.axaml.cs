@@ -19,8 +19,6 @@ public partial class EditPasswordWindow : Window
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 	}
 
-	#region Private
-
 	public int MinimumPasswordLength { get; set; }
 
 	private bool _isPasswordAccepted;
@@ -123,6 +121,7 @@ public partial class EditPasswordWindow : Window
 			$"The password is too short.{Environment.NewLine}Minimum password length is {MinimumPasswordLength} characters.",
 			ButtonEnum.Ok,
 			MsBox.Avalonia.Enums.Icon.Error,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await passwordTooShortErrorMessageBox.ShowWindowDialogAsync(this);
@@ -144,8 +143,7 @@ public partial class EditPasswordWindow : Window
 				TextBoxConfirmPassword.Text = null;
 			}
 
-			if (TextBoxPassword.Text is not null ||
-				TextBlockConfirmPassword.Text is not null)
+			if (TextBoxPassword.Text is not null || TextBlockConfirmPassword.Text is not null)
 			{
 				isPasswordMismatch = TextBoxPassword.Text != TextBoxConfirmPassword.Text;
 			}
@@ -161,10 +159,9 @@ public partial class EditPasswordWindow : Window
 			"The password and the confirmed password do not match.",
 			ButtonEnum.Ok,
 			MsBox.Avalonia.Enums.Icon.Error,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await passwordMismatchErrorMessageBox.ShowWindowDialogAsync(this);
 	}
-
-	#endregion
 }

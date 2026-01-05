@@ -13,9 +13,7 @@ namespace PasswordSecure.Presentation.ViewModels;
 
 public class AccountEntryCollectionViewModel : ObservableObject
 {
-	public AccountEntryCollectionViewModel(
-		MainWindow mainWindow,
-		AccountEntryCollection accountEntries)
+	public AccountEntryCollectionViewModel(MainWindow mainWindow, AccountEntryCollection accountEntries)
 	{
 		_mainWindow = mainWindow;
 
@@ -87,8 +85,6 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		}
 	}
 
-	#region Private
-
 	private readonly MainWindow _mainWindow;
 
 	private AccountEntryViewModel? _selectedAccountEntryViewModel;
@@ -100,8 +96,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 			.Select(anAccountEntry => new AccountEntryViewModel(anAccountEntry))
 			.ToList();
 
-		var accountEntryViewModels = new ObservableCollection<AccountEntryViewModel>(
-			accountEntryViewModelsAsList);
+		var accountEntryViewModels = new ObservableCollection<AccountEntryViewModel>(accountEntryViewModelsAsList);
 
 		return accountEntryViewModels;
 	}
@@ -142,8 +137,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 				}
 			});
 
-	private ICommand GetSortAccountEntriesCommand()
-		=> new RelayCommand(SortAccountEntryViewModels);
+	private ICommand GetSortAccountEntriesCommand() => new RelayCommand(SortAccountEntryViewModels);
 
 	private ICommand GetEditPasswordCommand()
 		=> new RelayCommand(
@@ -157,8 +151,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 					{
 						DataContext = selectedAccountEntryViewModel
 					};
-					editPasswordWindow.TextBoxConfirmPassword.Text =
-						selectedAccountEntryViewModel.Password;
+					editPasswordWindow.TextBoxConfirmPassword.Text = selectedAccountEntryViewModel.Password;
 
 					await editPasswordWindow.ShowDialog(_mainWindow);
 
@@ -204,11 +197,7 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		RegisterEventHandlers();
 	}
 
-	private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		=> HasChanged = true;
+	private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => HasChanged = true;
 
-	private void OnAccountEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
-		=> HasChanged = true;
-
-	#endregion
+	private void OnAccountEntryPropertyChanged(object? sender, PropertyChangedEventArgs e) => HasChanged = true;
 }

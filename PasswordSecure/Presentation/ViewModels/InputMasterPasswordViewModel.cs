@@ -23,9 +23,5 @@ public class InputMasterPasswordViewModel : ObservableObject, IPasswordViewModel
 		}
 	}
 
-	#region Private
-
 	private readonly AccessParams _accessParams;
-
-	#endregion
 }

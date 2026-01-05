@@ -12,14 +12,9 @@ public class FlatpakEncryptedDataFolderProvider : IEncryptedDataFolderProvider
 			.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 			.Replace("/config", string.Empty);
 
-		var encryptedDataFolderPath = Path.Combine(
-			sandboxedApplicationPath, EncryptedDataFolderName);
+		var encryptedDataFolderPath = Path.Combine(sandboxedApplicationPath, EncryptedDataFolderName);
 		return encryptedDataFolderPath;
 	}
 
-	#region Private
-
 	private const string EncryptedDataFolderName = "EncryptedData";
-
-	#endregion
 }

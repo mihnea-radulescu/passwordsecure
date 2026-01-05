@@ -21,10 +21,7 @@ public class TaskDecoratorDataAccessServiceTest
 		IBackupService backupService = new BackupService(fileAccessProvider, dateTimeProvider);
 
 		IDataAccessService dataAccessService = new DataAccessService(
-			fileAccessProvider,
-			dataSerializationService,
-			dataEncryptionService,
-			backupService);
+			fileAccessProvider, dataSerializationService, dataEncryptionService, backupService);
 
 		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(dataAccessService);
 	}
@@ -41,10 +38,8 @@ public class TaskDecoratorDataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection();
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -67,10 +62,8 @@ public class TaskDecoratorDataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -110,10 +103,8 @@ public class TaskDecoratorDataAccessServiceTest
 		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -170,10 +161,8 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -243,20 +232,16 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		accountEntryCollection[0].Name = name1Changed;
 		accountEntryCollection[0].Url = url1Changed;
 		accountEntryCollection[0].User = user1Changed;
 		accountEntryCollection[0].Password = password1Changed;
 
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged =
-			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollectionChanged);
@@ -334,17 +319,13 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(
-			accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
+		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		accountEntryCollection[0] = accountEntry1Changed;
 
-		await _taskDecoratorDataAccessService.SaveAccountEntries(
-			accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged =
-			await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollectionChanged);
@@ -367,13 +348,9 @@ public class TaskDecoratorDataAccessServiceTest
 		Assert.Equal(password2, secondAccountEntryChanged.Password);
 	}
 
-	#region Private
-
 	private const string Password = "Master Password";
 
 	private readonly TaskDecoratorDataAccessService _taskDecoratorDataAccessService;
 
 	private static string GetFilePath(string fileName) => Path.GetFullPath(fileName);
-
-	#endregion
 }

@@ -26,20 +26,15 @@ public class App : Avalonia.Application
 		IBackupService backupService = new BackupService(fileAccessProvider, currentDateTimeProvider);
 
 		IDataAccessService dataAccessService = new DataAccessService(
-			fileAccessProvider,
-			jsonDataSerializationService,
-			dataEncryptionService,
-			backupService);
+			fileAccessProvider, jsonDataSerializationService, dataEncryptionService, backupService);
 
-		IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(
-			dataAccessService);
+		IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(dataAccessService);
 
 		IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
 
 		IEncryptedDataFolderProvider encryptedDataFolderProvider;
 
-		IEnvironmentSettingsProvider environmentSettingsProvider =
-			new EnvironmentSettingsProvider();
+		IEnvironmentSettingsProvider environmentSettingsProvider = new EnvironmentSettingsProvider();
 
 		if (environmentSettingsProvider.IsInsideFlatpakContainer)
 		{
@@ -53,10 +48,7 @@ public class App : Avalonia.Application
 		var mainWindow = new MainWindow();
 
 		var mainPresenter = new MainPresenter(
-			dataAccessServiceDecorated,
-			assemblyVersionProvider,
-			encryptedDataFolderProvider,
-			mainWindow);
+			dataAccessServiceDecorated, assemblyVersionProvider, encryptedDataFolderProvider, mainWindow);
 
 		mainWindow.Show();
 	}

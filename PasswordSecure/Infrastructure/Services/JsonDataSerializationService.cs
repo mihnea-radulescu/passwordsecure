@@ -13,16 +13,9 @@ public class JsonDataSerializationService : IDataSerializationService
 	public string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection)
 		=> Serialize(accountEntryCollection);
 
-	public AccountEntryCollection DeserializeAccountEntryCollection(
-		string serializedAccountEntryCollection)
+	public AccountEntryCollection DeserializeAccountEntryCollection(string serializedAccountEntryCollection)
 		=> Deserialize<AccountEntryCollection>(serializedAccountEntryCollection);
 
-	#region Private
-
 	private static string Serialize<T>(T instance) => JsonSerializer.Serialize(instance);
-
-	private static T Deserialize<T>(string serializedInstance)
-		=> JsonSerializer.Deserialize<T>(serializedInstance)!;
-
-	#endregion
+	private static T Deserialize<T>(string serializedInstance) => JsonSerializer.Deserialize<T>(serializedInstance)!;
 }

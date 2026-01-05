@@ -7,9 +7,7 @@ namespace PasswordSecure.Infrastructure.Services;
 
 public partial class BackupService : IBackupService
 {
-	public BackupService(
-		IFileAccessProvider fileAccessProvider,
-		IDateTimeProvider dateTimeProvider)
+	public BackupService(IFileAccessProvider fileAccessProvider, IDateTimeProvider dateTimeProvider)
 	{
 		_fileAccessProvider = fileAccessProvider;
 		_dateTimeProvider = dateTimeProvider;
@@ -33,8 +31,6 @@ public partial class BackupService : IBackupService
 		{
 		}
 	}
-
-	#region Private
 
 	private const string BackupFolderSuffix = "Backup";
 
@@ -66,11 +62,7 @@ public partial class BackupService : IBackupService
 		var backupFileName = $"{backupFolderPrefix}_{now}{fileExtension}";
 		var backupFilePath = Path.Combine(backupFolderPath, backupFileName);
 
-		var backupInfo = new BackupInfo(
-			backupFolderPath, backupFilePath, backupFolderPrefix, fileExtension);
-
+		var backupInfo = new BackupInfo(backupFolderPath, backupFilePath, backupFolderPrefix, fileExtension);
 		return backupInfo;
 	}
-
-	#endregion
 }

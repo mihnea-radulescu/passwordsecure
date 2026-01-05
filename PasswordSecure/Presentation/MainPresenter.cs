@@ -49,8 +49,6 @@ public class MainPresenter
 		_encryptedDataFolderPath = encryptedDataFolderProvider.GetEncryptedDataFolderPath();
 	}
 
-	#region Private
-
 	private static readonly IReadOnlyList<FilePickerFileType> EncryptedFileTypes;
 
 	private const int MinimumMasterPasswordLength = 8;
@@ -238,8 +236,7 @@ public class MainPresenter
 			SuggestedStartLocation = encryptedDataFolder
 		};
 
-		var selectedEncryptedFiles = await _mainWindow.StorageProvider
-			.OpenFilePickerAsync(encryptedFileOpenOptions);
+		var selectedEncryptedFiles = await _mainWindow.StorageProvider.OpenFilePickerAsync(encryptedFileOpenOptions);
 
 		var encryptedFile = selectedEncryptedFiles.SingleOrDefault();
 
@@ -286,6 +283,7 @@ public class MainPresenter
 			ex.Message,
 			ButtonEnum.Ok,
 			Icon.Error,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await errorMessageBox.ShowWindowDialogAsync(_mainWindow);
@@ -298,6 +296,7 @@ public class MainPresenter
 			_assemblyVersionProvider.AssemblyVersionString,
 			ButtonEnum.Ok,
 			Icon.Info,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
@@ -310,6 +309,7 @@ public class MainPresenter
 			"There are unsaved changes. Would you like to save them?",
 			buttonEnum,
 			Icon.Question,
+			null,
 			WindowStartupLocation.CenterOwner);
 
 		return await unsavedChangesMessageBox.ShowWindowDialogAsync(_mainWindow);
@@ -330,7 +330,7 @@ public class MainPresenter
 	{
 		var encryptedFileTypes = new List<FilePickerFileType>
 		{
-			new FilePickerFileType("Encrypted files (*.encrypted)")
+			new("Encrypted files (*.encrypted)")
 			{
 				Patterns = new List<string>
 				{
@@ -341,6 +341,4 @@ public class MainPresenter
 
 		return encryptedFileTypes;
 	}
-
-	#endregion
 }

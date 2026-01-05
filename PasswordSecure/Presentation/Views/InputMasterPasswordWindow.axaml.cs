@@ -15,12 +15,9 @@ public partial class InputMasterPasswordWindow : Window
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 	}
 
-	#region Private
-
 	private bool _isPasswordAccepted;
 
-	private void OnLoaded(object? sender, RoutedEventArgs e)
-		=> TextBoxPassword.Focus();
+	private void OnLoaded(object? sender, RoutedEventArgs e) => TextBoxPassword.Focus();
 
 	private void OnClosing(object? sender, WindowClosingEventArgs e)
 	{
@@ -63,6 +60,4 @@ public partial class InputMasterPasswordWindow : Window
 
 		Close();
 	}
-
-	#endregion
 }

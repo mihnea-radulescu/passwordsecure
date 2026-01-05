@@ -11,6 +11,4 @@ public class FileAccessProvider : IFileAccessProvider
 
 	public void CopyFile(string sourceFilePath, string destinationFilePath)
 		=> File.Copy(sourceFilePath, destinationFilePath, true);
-
-	public void DeleteFile(string filePath) => File.Delete(filePath);
 }

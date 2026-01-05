@@ -23,9 +23,5 @@ public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewMode
 		}
 	}
 
-	#region Private
-
 	private readonly AccessParams _accessParams;
-
-	#endregion
 }

@@ -49,8 +49,6 @@ public class DataEncryptionService : IDataEncryptionService
 		}
 	}
 
-	#region Private
-
 	private const int KeySizeInBits = 256;
 	private const int KeySizeInBytes = KeySizeInBits / 8;
 
@@ -61,8 +59,7 @@ public class DataEncryptionService : IDataEncryptionService
 	private const int PasswordIterations = 600_000;
 
 	private const string EncryptionError = "Could not encrypt data.";
-	private const string DecryptionError =
-		"Could not decrypt data. The likely cause is an incorrect password.";
+	private const string DecryptionError = "Could not decrypt data. The likely cause is an incorrect password.";
 
 	private static byte[] GenerateIv() => RandomNumberGenerator.GetBytes(IvSizeInBytes);
 	private static byte[] GenerateSalt() => RandomNumberGenerator.GetBytes(SaltSizeInBytes);
@@ -71,10 +68,7 @@ public class DataEncryptionService : IDataEncryptionService
 	private static byte[] GetSaltFromVault(Vault vault) => vault.Header.Salt;
 
 	private static byte[] ExecuteCryptoTransform(
-		byte[] data,
-		byte[] iv,
-		byte[] key,
-		Func<Aes, ICryptoTransform> createCryptoTransform)
+		byte[] data, byte[] iv, byte[] key, Func<Aes, ICryptoTransform> createCryptoTransform)
 	{
 		using var aes = Aes.Create();
 		aes.IV = iv;
@@ -99,6 +93,4 @@ public class DataEncryptionService : IDataEncryptionService
 
 		return passwordBytes;
 	}
-
-	#endregion
 }

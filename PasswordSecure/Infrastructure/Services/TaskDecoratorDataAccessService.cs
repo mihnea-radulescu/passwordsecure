@@ -13,15 +13,13 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 
 	public async Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams)
 	{
-		var readAccountEntriesTask = Task.Run(
-			() => _dataAccessService.ReadAccountEntries(accessParams));
+		var readAccountEntriesTask = Task.Run(() => _dataAccessService.ReadAccountEntries(accessParams));
 
 		var accountEntries = await readAccountEntriesTask;
 		return accountEntries;
 	}
 
-	public async Task SaveAccountEntries(
-		AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
 	{
 		var saveAccountEntriesTask = Task.Run(
 			() => _dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection));
@@ -29,9 +27,5 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 		await saveAccountEntriesTask;
 	}
 
-	#region Private
-
 	private readonly IDataAccessService _dataAccessService;
-
-	#endregion
 }

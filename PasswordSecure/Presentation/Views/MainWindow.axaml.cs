@@ -33,8 +33,7 @@ public partial class MainWindow : Window
 	public void EnableControls()
 	{
 		var isContainerLoaded = _accountEntryCollectionViewModel is not null;
-		var canDataBeSorted = isContainerLoaded &&
-			_accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
+		var canDataBeSorted = isContainerLoaded && _accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
 
 		MenuItemSave.IsEnabled = isContainerLoaded;
 		MenuItemClose.IsEnabled = isContainerLoaded;
@@ -44,8 +43,7 @@ public partial class MainWindow : Window
 
 		if (isContainerLoaded)
 		{
-			var selectedAccountEntryViewModel =
-				_accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
+			var selectedAccountEntryViewModel = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
 
 			isAccountEntrySelected = selectedAccountEntryViewModel is not null;
 
@@ -88,11 +86,9 @@ public partial class MainWindow : Window
 
 	public void PopulateData(AccountEntryCollection accountEntries)
 	{
-		_accountEntryCollectionViewModel = new AccountEntryCollectionViewModel(
-			this, accountEntries);
+		_accountEntryCollectionViewModel = new AccountEntryCollectionViewModel(this, accountEntries);
 
-		_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged +=
-			OnSelectedAccountEntryViewModelChanged;
+		_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged += OnSelectedAccountEntryViewModelChanged;
 		_accountEntryCollectionViewModel.PasswordChanged += OnPasswordChanged;
 
 		DataContext = _accountEntryCollectionViewModel;
@@ -102,10 +98,7 @@ public partial class MainWindow : Window
 
 	public void ResetHasChangedFlag()
 	{
-		if (_accountEntryCollectionViewModel is not null)
-		{
-			_accountEntryCollectionViewModel.HasChanged = false;
-		}
+		_accountEntryCollectionViewModel?.HasChanged = false;
 	}
 
 	public async Task CloseWindow()
@@ -115,8 +108,6 @@ public partial class MainWindow : Window
 
 		Close();
 	}
-
-	#region Private
 
 	private bool _shouldAllowWindowClose;
 
@@ -184,17 +175,13 @@ public partial class MainWindow : Window
 
 		if (_accountEntryCollectionViewModel is not null)
 		{
-			accountEntryCollection = _accountEntryCollectionViewModel
-				.ToAccountEntryCollection();
+			accountEntryCollection = _accountEntryCollectionViewModel.ToAccountEntryCollection();
 
 			hasChanged = _accountEntryCollectionViewModel.HasChanged;
 		}
 
-		var accountEntryCollectionEventArgs = new AccountEntryCollectionEventArgs(
-			accountEntryCollection, hasChanged);
+		var accountEntryCollectionEventArgs = new AccountEntryCollectionEventArgs(accountEntryCollection, hasChanged);
 
 		return accountEntryCollectionEventArgs;
 	}
-
-	#endregion
 }
