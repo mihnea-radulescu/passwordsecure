@@ -17,38 +17,42 @@ public class App : Avalonia.Application
 
 	public override void OnFrameworkInitializationCompleted()
 	{
-		IDataSerializationService jsonDataSerializationService = new JsonDataSerializationService();
+		IDataSerializationService jsonDataSerializationService =
+			new JsonDataSerializationService();
 
-		IDataEncryptionService dataEncryptionService = new DataEncryptionService();
+		IDataEncryptionService dataEncryptionService =
+			new DataEncryptionService();
 
 		IFileAccessProvider fileAccessProvider = new FileAccessProvider();
-		IDateTimeProvider currentDateTimeProvider = new CurrentDateTimeProvider();
-		IBackupService backupService = new BackupService(fileAccessProvider, currentDateTimeProvider);
+		IDateTimeProvider currentDateTimeProvider =
+			new CurrentDateTimeProvider();
+		IBackupService backupService =
+			new BackupService(fileAccessProvider, currentDateTimeProvider);
 
 		IDataAccessService dataAccessService = new DataAccessService(
-			fileAccessProvider, jsonDataSerializationService, dataEncryptionService, backupService);
+			fileAccessProvider,
+			jsonDataSerializationService,
+			dataEncryptionService,
+			backupService);
 
-		IDataAccessService dataAccessServiceDecorated = new TaskDecoratorDataAccessService(dataAccessService);
+		IDataAccessService dataAccessServiceDecorated =
+			new TaskDecoratorDataAccessService(dataAccessService);
 
-		IAssemblyVersionProvider assemblyVersionProvider = new AssemblyVersionProvider();
+		IAssemblyVersionProvider assemblyVersionProvider =
+			new AssemblyVersionProvider();
 
-		IEncryptedDataFolderProvider encryptedDataFolderProvider;
-
-		IEnvironmentSettingsProvider environmentSettingsProvider = new EnvironmentSettingsProvider();
-
-		if (environmentSettingsProvider.IsInsideFlatpakContainer)
-		{
-			encryptedDataFolderProvider = new FlatpakEncryptedDataFolderProvider();
-		}
-		else
-		{
-			encryptedDataFolderProvider = new DefaultEncryptedDataFolderProvider();
-		}
+		IEnvironmentSettingsProvider environmentSettingsProvider =
+			new EnvironmentSettingsProvider();
+		IEncryptedDataFolderProvider encryptedDataFolderProvider =
+			new EncryptedDataFolderProvider(environmentSettingsProvider);
 
 		var mainWindow = new MainWindow();
 
 		var mainPresenter = new MainPresenter(
-			dataAccessServiceDecorated, assemblyVersionProvider, encryptedDataFolderProvider, mainWindow);
+			dataAccessServiceDecorated,
+			assemblyVersionProvider,
+			encryptedDataFolderProvider,
+			mainWindow);
 
 		mainWindow.Show();
 	}

@@ -16,30 +16,44 @@ public class TaskDecoratorDataAccessServiceTest
 		IFileAccessProvider fileAccessProvider = new FileAccessProvider();
 		IDateTimeProvider dateTimeProvider = new CurrentDateTimeProvider();
 
-		IDataSerializationService dataSerializationService = new JsonDataSerializationService();
+		IDataSerializationService dataSerializationService =
+			new JsonDataSerializationService();
 		var dataEncryptionService = new DataEncryptionService();
-		IBackupService backupService = new BackupService(fileAccessProvider, dateTimeProvider);
+		IBackupService backupService = new BackupService(
+			fileAccessProvider, dateTimeProvider);
 
 		IDataAccessService dataAccessService = new DataAccessService(
-			fileAccessProvider, dataSerializationService, dataEncryptionService, backupService);
+			fileAccessProvider,
+			dataSerializationService,
+			dataEncryptionService,
+			backupService);
 
-		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(dataAccessService);
+		_taskDecoratorDataAccessService = new TaskDecoratorDataAccessService(
+			dataAccessService);
 	}
 
 	[Fact]
 	public async Task SaveAccountEntriesReadAccountEntries_NoElementCollection_ReturnsInitialData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_NoElementCollection.encrypted";
+		const string fileName =
+			"MyPasswordContainer_NoElementCollection.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		var accountEntryCollectionReference = new AccountEntryCollection();
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -50,20 +64,29 @@ public class TaskDecoratorDataAccessServiceTest
 	public async Task SaveAccountEntriesReadAccountEntries_OneElementCollectionDefaultValues_ReturnsInitialData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_OneElementCollectionDefaultValues.encrypted";
+		const string fileName =
+			"MyPasswordContainer_OneElementCollectionDefaultValues.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		const string name = "Google";
 
 		var accountEntry = new AccountEntry { Name = name };
 
-		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
+		var accountEntryCollectionReference =
+			new AccountEntryCollection { accountEntry };
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -82,10 +105,15 @@ public class TaskDecoratorDataAccessServiceTest
 	public async Task SaveAccountEntriesReadAccountEntries_OneElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_OneElementCollectionCustomValues.encrypted";
+		const string fileName =
+			"MyPasswordContainer_OneElementCollectionCustomValues.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		const string name = "Google";
 		const string url = "https://mail.google.com";
@@ -100,11 +128,15 @@ public class TaskDecoratorDataAccessServiceTest
 			Password = password,
 		};
 
-		var accountEntryCollectionReference = new AccountEntryCollection { accountEntry };
+		var accountEntryCollectionReference =
+			new AccountEntryCollection { accountEntry };
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -123,10 +155,15 @@ public class TaskDecoratorDataAccessServiceTest
 	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValues_ReturnsInitialData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
+		const string fileName =
+			"MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		const string name1 = "Google";
 		const string url1 = "https://mail.google.com";
@@ -161,8 +198,11 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollection);
@@ -189,10 +229,15 @@ public class TaskDecoratorDataAccessServiceTest
 	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryModified_ReturnsChangedData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
+		const string fileName =
+			"MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		const string name1 = "Google";
 		const string url1 = "https://mail.google.com";
@@ -232,16 +277,22 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		accountEntryCollection[0].Name = name1Changed;
 		accountEntryCollection[0].Url = url1Changed;
 		accountEntryCollection[0].User = user1Changed;
 		accountEntryCollection[0].Password = password1Changed;
 
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollectionChanged);
@@ -268,10 +319,15 @@ public class TaskDecoratorDataAccessServiceTest
 	public async Task SaveAccountEntriesReadAccountEntries_TwoElementCollectionCustomValuesOneEntryReplaced_ReturnsChangedData()
 	{
 		// Arrange
-		const string fileName = "MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
+		const string fileName =
+			"MyPasswordContainer_TwoElementCollectionDefaultValues.encrypted";
 		var filePath = GetFilePath(fileName);
 
-		var accessParams = new AccessParams { FilePath = filePath, Password = Password };
+		var accessParams = new AccessParams
+		{ 
+			FilePath = filePath,
+			Password = Password
+		};
 
 		const string name1 = "Google";
 		const string url1 = "https://mail.google.com";
@@ -319,13 +375,19 @@ public class TaskDecoratorDataAccessServiceTest
 		};
 
 		// Act
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollectionReference);
-		var accountEntryCollection = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollectionReference);
+		var accountEntryCollection =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		accountEntryCollection[0] = accountEntry1Changed;
 
-		await _taskDecoratorDataAccessService.SaveAccountEntries(accessParams, accountEntryCollection);
-		var accountEntryCollectionChanged = await _taskDecoratorDataAccessService.ReadAccountEntries(accessParams);
+		await _taskDecoratorDataAccessService.SaveAccountEntries(
+			accessParams, accountEntryCollection);
+		var accountEntryCollectionChanged =
+			await _taskDecoratorDataAccessService.ReadAccountEntries(
+				accessParams);
 
 		// Assert
 		Assert.NotNull(accountEntryCollectionChanged);
@@ -350,7 +412,9 @@ public class TaskDecoratorDataAccessServiceTest
 
 	private const string Password = "Master Password";
 
-	private readonly TaskDecoratorDataAccessService _taskDecoratorDataAccessService;
+	private readonly TaskDecoratorDataAccessService
+		_taskDecoratorDataAccessService;
 
-	private static string GetFilePath(string fileName) => Path.GetFullPath(fileName);
+	private static string GetFilePath(string fileName)
+		=> Path.GetFullPath(fileName);
 }

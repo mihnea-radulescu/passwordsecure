@@ -46,10 +46,12 @@ public class MainPresenter
 
 		_accessParams = new AccessParams();
 
-		_encryptedDataFolderPath = encryptedDataFolderProvider.GetEncryptedDataFolderPath();
+		_encryptedDataFolderPath =
+			encryptedDataFolderProvider.GetEncryptedDataFolderPath();
 	}
 
-	private static readonly IReadOnlyList<FilePickerFileType> EncryptedFileTypes;
+	private static readonly IReadOnlyList<FilePickerFileType>
+		EncryptedFileTypes;
 
 	private const int MinimumMasterPasswordLength = 8;
 
@@ -61,11 +63,14 @@ public class MainPresenter
 
 	private readonly string _encryptedDataFolderPath;
 
-	private void OnVisualStateChanged(object? sender, EventArgs e) => _mainWindow.EnableControls();
+	private void OnVisualStateChanged(object? sender, EventArgs e)
+		=> _mainWindow.EnableControls();
 
-	private async void OnNewMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnNewMenuClicked(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
+		var shouldExitWithoutProcessing =
+			await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -89,9 +94,11 @@ public class MainPresenter
 		}
 	}
 
-	private async void OnOpenMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnOpenMenuClicked(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(
+			e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -115,7 +122,8 @@ public class MainPresenter
 		}
 	}
 
-	private async void OnSaveMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnSaveMenuClicked(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
 		try
 		{
@@ -127,9 +135,11 @@ public class MainPresenter
 		}
 	}
 
-	private async void OnCloseMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnCloseMenuClicked(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
+		var shouldExitWithoutProcessing =
+			await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -140,9 +150,11 @@ public class MainPresenter
 		_mainWindow.EnableControls();
 	}
 
-	private async void OnExitMenuClicked(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnExitMenuClicked(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
-		var shouldExitWithoutProcessing = await SuggestSaveChanges(e, ButtonEnum.YesNoCancel);
+		var shouldExitWithoutProcessing = await SuggestSaveChanges(
+			e, ButtonEnum.YesNoCancel);
 		if (shouldExitWithoutProcessing)
 		{
 			return;
@@ -151,16 +163,19 @@ public class MainPresenter
 		await _mainWindow.CloseWindow();
 	}
 
-	private async void OnWindowClosing(object? sender, AccountEntryCollectionEventArgs e)
+	private async void OnWindowClosing(
+		object? sender, AccountEntryCollectionEventArgs e)
 	{
 		await SuggestSaveChanges(e, ButtonEnum.YesNo);
 
 		await _mainWindow.CloseWindow();
 	}
 
-	private async void OnHelpMenuClicked(object? sender, EventArgs e) => await DisplayHelpMessage();
+	private async void OnHelpMenuClicked(object? sender, EventArgs e)
+		=> await DisplayHelpMessage();
 
-	private async Task<bool> SuggestSaveChanges(AccountEntryCollectionEventArgs e, ButtonEnum buttonEnum)
+	private async Task<bool> SuggestSaveChanges(
+		AccountEntryCollectionEventArgs e, ButtonEnum buttonEnum)
 	{
 		var shouldExitWithoutProcessing = false;
 
@@ -193,7 +208,9 @@ public class MainPresenter
 			SuggestedStartLocation = encryptedDataFolder
 		};
 
-		var encryptedFile = await _mainWindow.StorageProvider.SaveFilePickerAsync(encryptedFileCreateOptions);
+		var encryptedFile =
+			await _mainWindow.StorageProvider.SaveFilePickerAsync(
+				encryptedFileCreateOptions);
 
 		if (encryptedFile is null)
 		{
@@ -204,7 +221,8 @@ public class MainPresenter
 		{
 			MinimumPasswordLength = MinimumMasterPasswordLength
 		};
-		var createMasterPasswordViewModel = new CreateMasterPasswordViewModel(_accessParams);
+		var createMasterPasswordViewModel = new CreateMasterPasswordViewModel(
+			_accessParams);
 
 		createMasterPasswordWindow.DataContext = createMasterPasswordViewModel;
 		await createMasterPasswordWindow.ShowDialog(_mainWindow);
@@ -220,7 +238,8 @@ public class MainPresenter
 		_accessParams.IsNewContainer = true;
 
 		var accountEntryCollection = new AccountEntryCollection();
-		await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+		await _dataAccessService.SaveAccountEntries(
+			_accessParams, accountEntryCollection);
 
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
@@ -236,7 +255,9 @@ public class MainPresenter
 			SuggestedStartLocation = encryptedDataFolder
 		};
 
-		var selectedEncryptedFiles = await _mainWindow.StorageProvider.OpenFilePickerAsync(encryptedFileOpenOptions);
+		var selectedEncryptedFiles =
+			await _mainWindow.StorageProvider.OpenFilePickerAsync(
+				encryptedFileOpenOptions);
 
 		var encryptedFile = selectedEncryptedFiles.SingleOrDefault();
 
@@ -246,7 +267,8 @@ public class MainPresenter
 		}
 
 		var inputMasterPasswordWindow = new InputMasterPasswordWindow();
-		var inputMasterPasswordViewModel = new InputMasterPasswordViewModel(_accessParams);
+		var inputMasterPasswordViewModel =
+			new InputMasterPasswordViewModel(_accessParams);
 
 		inputMasterPasswordWindow.DataContext = inputMasterPasswordViewModel;
 		await inputMasterPasswordWindow.ShowDialog(_mainWindow);
@@ -259,18 +281,21 @@ public class MainPresenter
 		_accessParams.FilePath = encryptedFile.Path.LocalPath;
 		_mainWindow.SetActiveFilePath(_accessParams.FilePath);
 
-		var accountEntryCollection = await _dataAccessService.ReadAccountEntries(_accessParams);
+		var accountEntryCollection =
+			await _dataAccessService.ReadAccountEntries(_accessParams);
 
 		_mainWindow.PopulateData(accountEntryCollection);
 	}
 
-	private async Task SaveEncryptedContainer(AccountEntryCollection? accountEntryCollection)
+	private async Task SaveEncryptedContainer(
+		AccountEntryCollection? accountEntryCollection)
 	{
 		if (_accessParams.FilePath is not null &&
 			_accessParams.Password is not null &&
 			accountEntryCollection is not null)
 		{
-			await _dataAccessService.SaveAccountEntries(_accessParams, accountEntryCollection);
+			await _dataAccessService.SaveAccountEntries(
+				_accessParams, accountEntryCollection);
 
 			_mainWindow.ResetHasChangedFlag();
 		}
@@ -302,7 +327,8 @@ public class MainPresenter
 		await helpMessageBox.ShowWindowDialogAsync(_mainWindow);
 	}
 
-	private async Task<ButtonResult> DisplayUnsavedChangesMessage(ButtonEnum buttonEnum)
+	private async Task<ButtonResult> DisplayUnsavedChangesMessage(
+		ButtonEnum buttonEnum)
 	{
 		var unsavedChangesMessageBox = MessageBoxManager.GetMessageBoxStandard(
 			"Unsaved Changes",
@@ -312,7 +338,8 @@ public class MainPresenter
 			null,
 			WindowStartupLocation.CenterOwner);
 
-		return await unsavedChangesMessageBox.ShowWindowDialogAsync(_mainWindow);
+		return await unsavedChangesMessageBox.ShowWindowDialogAsync(
+			_mainWindow);
 	}
 
 	private void ResetData()
@@ -324,7 +351,8 @@ public class MainPresenter
 	}
 
 	private async Task<IStorageFolder?> GetEncryptedDataFolder()
-		=> await _mainWindow.StorageProvider.TryGetFolderFromPathAsync(_encryptedDataFolderPath);
+		=> await _mainWindow.StorageProvider.TryGetFolderFromPathAsync(
+			_encryptedDataFolderPath);
 
 	private static IReadOnlyList<FilePickerFileType> GetEncryptedFileTypes()
 	{

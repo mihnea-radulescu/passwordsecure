@@ -8,14 +8,20 @@ public class JsonDataSerializationService : IDataSerializationService
 {
 	public string SerializeVault(Vault vault) => Serialize(vault);
 
-	public Vault DeserializeVault(string serializedVault) => Deserialize<Vault>(serializedVault);
+	public Vault DeserializeVault(string serializedVault)
+		=> Deserialize<Vault>(serializedVault);
 
-	public string SerializeAccountEntryCollection(AccountEntryCollection accountEntryCollection)
-		=> Serialize(accountEntryCollection);
+	public string SerializeAccountEntryCollection(
+		AccountEntryCollection accountEntryCollection)
+			=> Serialize(accountEntryCollection);
 
-	public AccountEntryCollection DeserializeAccountEntryCollection(string serializedAccountEntryCollection)
-		=> Deserialize<AccountEntryCollection>(serializedAccountEntryCollection);
+	public AccountEntryCollection DeserializeAccountEntryCollection(
+		string serializedAccountEntryCollection)
+			=> Deserialize<AccountEntryCollection>(
+				serializedAccountEntryCollection);
 
-	private static string Serialize<T>(T instance) => JsonSerializer.Serialize(instance);
-	private static T Deserialize<T>(string serializedInstance) => JsonSerializer.Deserialize<T>(serializedInstance)!;
+	private static string Serialize<T>(T instance)
+		=> JsonSerializer.Serialize(instance);
+	private static T Deserialize<T>(string serializedInstance)
+		=> JsonSerializer.Deserialize<T>(serializedInstance)!;
 }

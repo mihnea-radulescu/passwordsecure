@@ -18,5 +18,6 @@ public class AssemblyVersionProvider : IAssemblyVersionProvider
 
 	public string AssemblyVersionString { get; }
 
-	private static readonly Version AssemblyVersion = Assembly.GetEntryAssembly()!.GetName().Version!;
+	private static readonly Version AssemblyVersion =
+		Assembly.GetEntryAssembly()!.GetName().Version!;
 }

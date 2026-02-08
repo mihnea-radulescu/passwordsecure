@@ -11,18 +11,23 @@ public class TaskDecoratorDataAccessService : IDataAccessService
 		_dataAccessService = dataAccessService;
 	}
 
-	public async Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams)
+	public async Task<AccountEntryCollection> ReadAccountEntries(
+		AccessParams accessParams)
 	{
-		var readAccountEntriesTask = Task.Run(() => _dataAccessService.ReadAccountEntries(accessParams));
+		var readAccountEntriesTask = Task.Run(
+			() => _dataAccessService.ReadAccountEntries(accessParams));
 
 		var accountEntries = await readAccountEntriesTask;
 		return accountEntries;
 	}
 
-	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(
+		AccessParams accessParams,
+		AccountEntryCollection accountEntryCollection)
 	{
 		var saveAccountEntriesTask = Task.Run(
-			() => _dataAccessService.SaveAccountEntries(accessParams, accountEntryCollection));
+			() => _dataAccessService.SaveAccountEntries(
+				accessParams, accountEntryCollection));
 
 		await saveAccountEntriesTask;
 	}

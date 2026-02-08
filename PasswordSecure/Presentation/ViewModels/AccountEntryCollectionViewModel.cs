@@ -13,7 +13,8 @@ namespace PasswordSecure.Presentation.ViewModels;
 
 public class AccountEntryCollectionViewModel : ObservableObject
 {
-	public AccountEntryCollectionViewModel(MainWindow mainWindow, AccountEntryCollection accountEntries)
+	public AccountEntryCollectionViewModel(
+		MainWindow mainWindow, AccountEntryCollection accountEntries)
 	{
 		_mainWindow = mainWindow;
 
@@ -29,7 +30,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		CopyPasswordCommand = GetCopyPasswordCommand();
 	}
 
-	public ObservableCollection<AccountEntryViewModel> AccountEntryViewModels { get; set; }
+	public ObservableCollection<AccountEntryViewModel> AccountEntryViewModels
+		{ get; set; }
 
 	public bool HasChanged { get; set; }
 
@@ -57,7 +59,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 	public AccountEntryCollection ToAccountEntryCollection()
 	{
 		var accountEntries = AccountEntryViewModels
-			.Select(anAccountEntryViewModel => anAccountEntryViewModel.AccountEntry)
+			.Select(anAccountEntryViewModel
+						=> anAccountEntryViewModel.AccountEntry)
 			.OrderBy(anAccountEntry => anAccountEntry.Name)
 			.ToList();
 
@@ -67,11 +70,23 @@ public class AccountEntryCollectionViewModel : ObservableObject
 
 	public void FocusOnFirstAccountEntryIfAvailable()
 	{
-		var firstAccountEntryViewModel = AccountEntryViewModels.FirstOrDefault();
+		var firstAccountEntryViewModel =
+			AccountEntryViewModels.FirstOrDefault();
 
 		if (firstAccountEntryViewModel is not null)
 		{
 			SelectedAccountEntryViewModel = firstAccountEntryViewModel;
+		}
+	}
+
+	private void RegisterEventHandlers()
+	{
+		AccountEntryViewModels.CollectionChanged += OnCollectionChanged;
+
+		foreach (var anAccountEntryViewModel in AccountEntryViewModels)
+		{
+			anAccountEntryViewModel.PropertyChanged +=
+				OnAccountEntryPropertyChanged;
 		}
 	}
 
@@ -81,7 +96,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 
 		foreach (var anAccountEntryViewModel in AccountEntryViewModels)
 		{
-			anAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
+			anAccountEntryViewModel.PropertyChanged -=
+				OnAccountEntryPropertyChanged;
 		}
 	}
 
@@ -89,26 +105,18 @@ public class AccountEntryCollectionViewModel : ObservableObject
 
 	private AccountEntryViewModel? _selectedAccountEntryViewModel;
 
-	private static ObservableCollection<AccountEntryViewModel> FromAccountEntryCollection(
-		AccountEntryCollection accountEntries)
+	private static ObservableCollection<AccountEntryViewModel>
+		FromAccountEntryCollection(AccountEntryCollection accountEntries)
 	{
 		var accountEntryViewModelsAsList = accountEntries
 			.Select(anAccountEntry => new AccountEntryViewModel(anAccountEntry))
 			.ToList();
 
-		var accountEntryViewModels = new ObservableCollection<AccountEntryViewModel>(accountEntryViewModelsAsList);
+		var accountEntryViewModels =
+			new ObservableCollection<AccountEntryViewModel>(
+				accountEntryViewModelsAsList);
 
 		return accountEntryViewModels;
-	}
-
-	private void RegisterEventHandlers()
-	{
-		AccountEntryViewModels.CollectionChanged += OnCollectionChanged;
-
-		foreach (var anAccountEntryViewModel in AccountEntryViewModels)
-		{
-			anAccountEntryViewModel.PropertyChanged += OnAccountEntryPropertyChanged;
-		}
 	}
 
 	private ICommand GetAddAccountEntryCommand()
@@ -116,10 +124,12 @@ public class AccountEntryCollectionViewModel : ObservableObject
 			() =>
 			{
 				var newAccountEntry = new AccountEntry();
-				var newAccountEntryViewModel = new AccountEntryViewModel(newAccountEntry);
+				var newAccountEntryViewModel = new AccountEntryViewModel(
+					newAccountEntry);
 
 				AccountEntryViewModels.Add(newAccountEntryViewModel);
-				newAccountEntryViewModel.PropertyChanged += OnAccountEntryPropertyChanged;
+				newAccountEntryViewModel.PropertyChanged +=
+					OnAccountEntryPropertyChanged;
 
 				SelectedAccountEntryViewModel = newAccountEntryViewModel;
 			});
@@ -128,22 +138,27 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		=> new RelayCommand(
 			() =>
 			{
-				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				var selectedAccountEntryViewModel =
+					SelectedAccountEntryViewModel;
 
 				if (selectedAccountEntryViewModel is not null)
 				{
-					selectedAccountEntryViewModel.PropertyChanged -= OnAccountEntryPropertyChanged;
-					AccountEntryViewModels.Remove(selectedAccountEntryViewModel);
+					selectedAccountEntryViewModel.PropertyChanged -=
+						OnAccountEntryPropertyChanged;
+					AccountEntryViewModels.Remove(
+						selectedAccountEntryViewModel);
 				}
 			});
 
-	private ICommand GetSortAccountEntriesCommand() => new RelayCommand(SortAccountEntryViewModels);
+	private ICommand GetSortAccountEntriesCommand()
+		=> new RelayCommand(SortAccountEntryViewModels);
 
 	private ICommand GetEditPasswordCommand()
 		=> new RelayCommand(
 			async() =>
 			{
-				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				var selectedAccountEntryViewModel =
+					SelectedAccountEntryViewModel;
 
 				if (selectedAccountEntryViewModel is not null)
 				{
@@ -151,7 +166,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 					{
 						DataContext = selectedAccountEntryViewModel
 					};
-					editPasswordWindow.TextBoxConfirmPassword.Text = selectedAccountEntryViewModel.Password;
+					editPasswordWindow.TextBoxConfirmPassword.Text =
+						selectedAccountEntryViewModel.Password;
 
 					await editPasswordWindow.ShowDialog(_mainWindow);
 
@@ -163,7 +179,8 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		=> new RelayCommand(
 			async() =>
 			{
-				var selectedAccountEntryViewModel = SelectedAccountEntryViewModel;
+				var selectedAccountEntryViewModel =
+					SelectedAccountEntryViewModel;
 
 				if (selectedAccountEntryViewModel is not null)
 				{
@@ -197,7 +214,11 @@ public class AccountEntryCollectionViewModel : ObservableObject
 		RegisterEventHandlers();
 	}
 
-	private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => HasChanged = true;
+	private void OnCollectionChanged(
+		object? sender, NotifyCollectionChangedEventArgs e)
+			=> HasChanged = true;
 
-	private void OnAccountEntryPropertyChanged(object? sender, PropertyChangedEventArgs e) => HasChanged = true;
+	private void OnAccountEntryPropertyChanged(
+		object? sender, PropertyChangedEventArgs e)
+			=> HasChanged = true;
 }

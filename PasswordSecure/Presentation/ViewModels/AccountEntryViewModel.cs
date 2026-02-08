@@ -21,7 +21,8 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				AccountEntry.Name,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.Name = propertyValue);
+				(accountEntry, propertyValue)
+					=> accountEntry.Name = propertyValue);
 		}
 	}
 
@@ -34,7 +35,8 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				AccountEntry.Url,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.Url = propertyValue);
+				(accountEntry, propertyValue)
+					=> accountEntry.Url = propertyValue);
 		}
 	}
 
@@ -47,7 +49,8 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				AccountEntry.User,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.User = propertyValue);
+				(accountEntry, propertyValue)
+					=> accountEntry.User = propertyValue);
 		}
 	}
 
@@ -60,7 +63,8 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				AccountEntry.Password,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.Password = propertyValue);
+				(accountEntry, propertyValue)
+					=> accountEntry.Password = propertyValue);
 		}
 	}
 
@@ -73,7 +77,8 @@ public class AccountEntryViewModel : ObservableObject, IPasswordViewModel
 				AccountEntry.Notes,
 				value,
 				AccountEntry,
-				(accountEntry, propertyValue) => accountEntry.Notes = propertyValue);
+				(accountEntry, propertyValue)
+					=> accountEntry.Notes = propertyValue);
 		}
 	}
 }

@@ -22,7 +22,8 @@ public class DataEncryptionServiceTest
 		const string password = "password";
 
 		// Act
-		var vault = _dataEncryptionService.EncryptDataToVault(dataReference, password);
+		var vault = _dataEncryptionService.EncryptDataToVault(
+			dataReference, password);
 		var data = _dataEncryptionService.DecryptDataFromVault(vault, password);
 		var serializedData = data.ToText();
 
@@ -40,7 +41,8 @@ public class DataEncryptionServiceTest
 		const string password = "password_password_password_password";
 
 		// Act
-		var vault = _dataEncryptionService.EncryptDataToVault(dataReference, password);
+		var vault = _dataEncryptionService.EncryptDataToVault(
+			dataReference, password);
 		var data = _dataEncryptionService.DecryptDataFromVault(vault, password);
 		var serializedData = data.ToText();
 
@@ -59,10 +61,12 @@ public class DataEncryptionServiceTest
 		const string decryptionPassword = "decryption password";
 
 		// Act and Assert
-		var vault = _dataEncryptionService.EncryptDataToVault(dataReference, encryptionPassword);
+		var vault = _dataEncryptionService.EncryptDataToVault(
+			dataReference, encryptionPassword);
 
 		Assert.Throws<CryptographicException>(
-			() => _dataEncryptionService.DecryptDataFromVault(vault, decryptionPassword)
+			() => _dataEncryptionService.DecryptDataFromVault(
+				vault, decryptionPassword)
 		);
 	}
 
@@ -73,14 +77,18 @@ public class DataEncryptionServiceTest
 		const string serializedDataReference = "plain text";
 		var dataReference = serializedDataReference.ToByteArray();
 
-		const string encryptionPassword = "encryption password_password_password_password";
-		const string decryptionPassword = "decryption password_password_password_password";
+		const string encryptionPassword =
+			"encryption password_password_password_password";
+		const string decryptionPassword =
+			"decryption password_password_password_password";
 
 		// Act and Assert
-		var vault = _dataEncryptionService.EncryptDataToVault(dataReference, encryptionPassword);
+		var vault = _dataEncryptionService.EncryptDataToVault(
+			dataReference, encryptionPassword);
 
 		Assert.Throws<CryptographicException>(
-			() => _dataEncryptionService.DecryptDataFromVault(vault, decryptionPassword)
+			() => _dataEncryptionService.DecryptDataFromVault(
+				vault, decryptionPassword)
 		);
 	}
 

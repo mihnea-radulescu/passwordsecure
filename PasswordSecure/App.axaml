@@ -6,7 +6,8 @@
 	<Application.Styles>
 		<FluentTheme/>
 
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+		<StyleInclude
+			Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
 		<Style Selector="Window">
 			<Setter Property="Focusable" Value="True"/>

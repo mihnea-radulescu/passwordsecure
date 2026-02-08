@@ -22,18 +22,22 @@ public partial class MainWindow : Window
 	public event EventHandler<AccountEntryCollectionEventArgs>? NewMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? OpenMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? SaveMenuClicked;
-	public event EventHandler<AccountEntryCollectionEventArgs>? CloseMenuClicked;
+	public event EventHandler<AccountEntryCollectionEventArgs>?
+		CloseMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? ExitMenuClicked;
 	public event EventHandler<AccountEntryCollectionEventArgs>? WindowClosing;
 
 	public event EventHandler? HelpMenuClicked;
 
-	public void SetActiveFilePath(string? filePath) => TextBlockActiveFilePath.Text = filePath;
+	public void SetActiveFilePath(string? filePath)
+		=> TextBlockActiveFilePath.Text = filePath;
 
 	public void EnableControls()
 	{
 		var isContainerLoaded = _accountEntryCollectionViewModel is not null;
-		var canDataBeSorted = isContainerLoaded && _accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
+		var canDataBeSorted =
+			isContainerLoaded &&
+			_accountEntryCollectionViewModel!.AccountEntryViewModels.Count >= 2;
 
 		MenuItemSave.IsEnabled = isContainerLoaded;
 		MenuItemClose.IsEnabled = isContainerLoaded;
@@ -43,16 +47,20 @@ public partial class MainWindow : Window
 
 		if (isContainerLoaded)
 		{
-			var selectedAccountEntryViewModel = _accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
+			var selectedAccountEntryViewModel =
+				_accountEntryCollectionViewModel!.SelectedAccountEntryViewModel;
 
 			isAccountEntrySelected = selectedAccountEntryViewModel is not null;
 
 			if (isAccountEntrySelected)
 			{
 				DataGridAccountEntries.ScrollIntoView(
-					DataGridAccountEntries.SelectedItem, DataGridAccountEntries.Columns[0]);
+					DataGridAccountEntries.SelectedItem,
+					DataGridAccountEntries.Columns[0]);
 
-				canCopyPassword = !string.IsNullOrEmpty(selectedAccountEntryViewModel!.Password);
+				canCopyPassword =
+					!string.IsNullOrEmpty(
+						selectedAccountEntryViewModel!.Password);
 			}
 		}
 
@@ -67,33 +75,37 @@ public partial class MainWindow : Window
 		ButtonSelectedCopyPassword.IsEnabled = canCopyPassword;
 	}
 
+	public void PopulateData(AccountEntryCollection accountEntries)
+	{
+		_accountEntryCollectionViewModel =
+			new AccountEntryCollectionViewModel(this, accountEntries);
+
+		_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged +=
+			OnSelectedAccountEntryViewModelChanged;
+		_accountEntryCollectionViewModel.PasswordChanged += OnPasswordChanged;
+
+		DataContext = _accountEntryCollectionViewModel;
+
+		_accountEntryCollectionViewModel.FocusOnFirstAccountEntryIfAvailable();
+	}
+
 	public void ClearData()
 	{
 		SetActiveFilePath(null);
 
 		if (_accountEntryCollectionViewModel is not null)
 		{
-			_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged -=
-				OnSelectedAccountEntryViewModelChanged;
-			_accountEntryCollectionViewModel.PasswordChanged -= OnPasswordChanged;
+			_accountEntryCollectionViewModel
+				.SelectedAccountEntryViewModelChanged -=
+					OnSelectedAccountEntryViewModelChanged;
+			_accountEntryCollectionViewModel.PasswordChanged -=
+				OnPasswordChanged;
 
 			_accountEntryCollectionViewModel.UnregisterEventHandlers();
 		}
 
 		_accountEntryCollectionViewModel = null;
 		DataContext = _accountEntryCollectionViewModel;
-	}
-
-	public void PopulateData(AccountEntryCollection accountEntries)
-	{
-		_accountEntryCollectionViewModel = new AccountEntryCollectionViewModel(this, accountEntries);
-
-		_accountEntryCollectionViewModel.SelectedAccountEntryViewModelChanged += OnSelectedAccountEntryViewModelChanged;
-		_accountEntryCollectionViewModel.PasswordChanged += OnPasswordChanged;
-
-		DataContext = _accountEntryCollectionViewModel;
-
-		_accountEntryCollectionViewModel.FocusOnFirstAccountEntryIfAvailable();
 	}
 
 	public void ResetHasChangedFlag()
@@ -113,42 +125,49 @@ public partial class MainWindow : Window
 
 	private AccountEntryCollectionViewModel? _accountEntryCollectionViewModel;
 
-	private void OnSelectedAccountEntryViewModelChanged(object? sender, EventArgs e)
-		=> VisualStateChanged?.Invoke(this, EventArgs.Empty);
+	private void OnSelectedAccountEntryViewModelChanged(
+		object? sender, EventArgs e)
+			=> VisualStateChanged?.Invoke(this, EventArgs.Empty);
 
-	private void OnPasswordChanged(object? sender, EventArgs e) => EnableControls();
+	private void OnPasswordChanged(object? sender, EventArgs e)
+		=> EnableControls();
 
 	private void OnMenuItemNewClick(object? sender, RoutedEventArgs e)
 	{ 
-		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		var accountEntryCollectionEventArgs =
+			GetAccountEntryCollectionEventArgs();
 
 		NewMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
 
 	private void OnMenuItemOpenClick(object? sender, RoutedEventArgs e)
 	{ 
-		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		var accountEntryCollectionEventArgs =
+			GetAccountEntryCollectionEventArgs();
 
 		OpenMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
 
 	private void OnMenuItemSaveClick(object? sender, RoutedEventArgs e)
 	{
-		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		var accountEntryCollectionEventArgs =
+			GetAccountEntryCollectionEventArgs();
 
 		SaveMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
 
 	private void OnMenuItemCloseClick(object? sender, RoutedEventArgs e)
 	{ 
-		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		var accountEntryCollectionEventArgs =
+			GetAccountEntryCollectionEventArgs();
 
 		CloseMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
 
 	private void OnMenuItemExitClick(object? sender, RoutedEventArgs e)
 	{ 
-		var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+		var accountEntryCollectionEventArgs =
+			GetAccountEntryCollectionEventArgs();
 
 		ExitMenuClicked?.Invoke(this, accountEntryCollectionEventArgs);
 	}
@@ -159,7 +178,8 @@ public partial class MainWindow : Window
 		{
 			e.Cancel = true;
 
-			var accountEntryCollectionEventArgs = GetAccountEntryCollectionEventArgs();
+			var accountEntryCollectionEventArgs =
+				GetAccountEntryCollectionEventArgs();
 
 			WindowClosing?.Invoke(this, accountEntryCollectionEventArgs);
 		}
@@ -175,12 +195,15 @@ public partial class MainWindow : Window
 
 		if (_accountEntryCollectionViewModel is not null)
 		{
-			accountEntryCollection = _accountEntryCollectionViewModel.ToAccountEntryCollection();
+			accountEntryCollection =
+				_accountEntryCollectionViewModel.ToAccountEntryCollection();
 
 			hasChanged = _accountEntryCollectionViewModel.HasChanged;
 		}
 
-		var accountEntryCollectionEventArgs = new AccountEntryCollectionEventArgs(accountEntryCollection, hasChanged);
+		var accountEntryCollectionEventArgs =
+			new AccountEntryCollectionEventArgs(
+				accountEntryCollection, hasChanged);
 
 		return accountEntryCollectionEventArgs;
 	}

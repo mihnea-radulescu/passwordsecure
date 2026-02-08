@@ -25,20 +25,25 @@ public class DataAccessService : IDataAccessService
 		_backupService = backupService;
 	}
 
-	public async Task<AccountEntryCollection> ReadAccountEntries(AccessParams accessParams)
+	public async Task<AccountEntryCollection> ReadAccountEntries(
+		AccessParams accessParams)
 	{
 		try
 		{
-			var vaultAsBinary = _fileAccessProvider.ReadData(accessParams.FilePath!);
+			var vaultAsBinary = _fileAccessProvider.ReadData(
+				accessParams.FilePath!);
 			var vaultAsText = Encoding.GetString(vaultAsBinary);
 
 			var vault = _dataSerializationService.DeserializeVault(vaultAsText);
 			accessParams.Salt = vault.Header.Salt;
 
-			var data = _dataEncryptionService.DecryptDataFromVault(vault, accessParams.Password!);
+			var data = _dataEncryptionService.DecryptDataFromVault(
+				vault, accessParams.Password!);
 			var serializedData = data.ToText();
 
-			var accountEntries = _dataSerializationService.DeserializeAccountEntryCollection(serializedData);
+			var accountEntries =
+				_dataSerializationService.DeserializeAccountEntryCollection(
+					serializedData);
 
 			accessParams.IsNewContainer = false;
 
@@ -50,11 +55,14 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new DataAccessException(FileReadError(accessParams.FilePath!), ex);
+			throw new DataAccessException(
+				FileReadError(accessParams.FilePath!), ex);
 		}
 	}
 
-	public async Task SaveAccountEntries(AccessParams accessParams, AccountEntryCollection accountEntryCollection)
+	public async Task SaveAccountEntries(
+		AccessParams accessParams,
+		AccountEntryCollection accountEntryCollection)
 	{
 		try
 		{
@@ -63,10 +71,13 @@ public class DataAccessService : IDataAccessService
 				_backupService.BackupFile(accessParams.FilePath!);
 			}
 
-			var serializedData = _dataSerializationService.SerializeAccountEntryCollection(accountEntryCollection);
+			var serializedData =
+				_dataSerializationService.SerializeAccountEntryCollection(
+					accountEntryCollection);
 			var data = serializedData.ToByteArray();
 
-			var vault = _dataEncryptionService.EncryptDataToVault(data, accessParams.Password!);
+			var vault = _dataEncryptionService.EncryptDataToVault(
+				data, accessParams.Password!);
 
 			var vaultAsText = _dataSerializationService.SerializeVault(vault);
 			var vaultAsBinary = Encoding.GetBytes(vaultAsText);
@@ -83,7 +94,8 @@ public class DataAccessService : IDataAccessService
 		}
 		catch (Exception ex)
 		{
-			throw new DataAccessException(FileSaveError(accessParams.FilePath!), ex);
+			throw new DataAccessException(
+				FileSaveError(accessParams.FilePath!), ex);
 		}
 	}
 
@@ -95,6 +107,8 @@ public class DataAccessService : IDataAccessService
 	private readonly IDataEncryptionService _dataEncryptionService;
 	private readonly IBackupService _backupService;
 
-	private static string FileReadError(string filePath) => $@"Could not read data from file ""{filePath}"".";
-	private static string FileSaveError(string filePath) => $@"Could not save data to file ""{filePath}"".";
+	private static string FileReadError(string filePath)
+		=> $@"Could not read data from file ""{filePath}"".";
+	private static string FileSaveError(string filePath)
+		=> $@"Could not save data to file ""{filePath}"".";
 }

@@ -19,7 +19,8 @@ public class InputMasterPasswordViewModel : ObservableObject, IPasswordViewModel
 				_accessParams.Password,
 				value,
 				_accessParams,
-				(accessParams, propertyValue) => accessParams.Password = propertyValue);
+				(accessParams, propertyValue)
+					=> accessParams.Password = propertyValue);
 		}
 	}
 

@@ -16,7 +16,8 @@ public class DataEncryptionService : IDataEncryptionService
 			var salt = GenerateSalt();
 
 			var key = GetPasswordBytes(password, salt);
-			var encryptedData = ExecuteCryptoTransform(data, iv, key, aes => aes.CreateEncryptor());
+			var encryptedData = ExecuteCryptoTransform(
+				data, iv, key, aes => aes.CreateEncryptor());
 
 			var header = new VaultHeader(iv, salt);
 			var vault = new Vault(header, encryptedData);
@@ -39,7 +40,8 @@ public class DataEncryptionService : IDataEncryptionService
 			var key = GetPasswordBytes(password, salt);
 
 			var encryptedData = vault.Body;
-			var data = ExecuteCryptoTransform(encryptedData, iv, key, aes => aes.CreateDecryptor());
+			var data = ExecuteCryptoTransform(
+				encryptedData, iv, key, aes => aes.CreateDecryptor());
 
 			return data;
 		}
@@ -59,16 +61,22 @@ public class DataEncryptionService : IDataEncryptionService
 	private const int PasswordIterations = 600_000;
 
 	private const string EncryptionError = "Could not encrypt data.";
-	private const string DecryptionError = "Could not decrypt data. The likely cause is an incorrect password.";
+	private const string DecryptionError =
+		"Could not decrypt data. The likely cause is an incorrect password.";
 
-	private static byte[] GenerateIv() => RandomNumberGenerator.GetBytes(IvSizeInBytes);
-	private static byte[] GenerateSalt() => RandomNumberGenerator.GetBytes(SaltSizeInBytes);
+	private static byte[] GenerateIv()
+		=> RandomNumberGenerator.GetBytes(IvSizeInBytes);
+	private static byte[] GenerateSalt()
+		=> RandomNumberGenerator.GetBytes(SaltSizeInBytes);
 
 	private static byte[] GetIvFromVault(Vault vault) => vault.Header.IV;
 	private static byte[] GetSaltFromVault(Vault vault) => vault.Header.Salt;
 
 	private static byte[] ExecuteCryptoTransform(
-		byte[] data, byte[] iv, byte[] key, Func<Aes, ICryptoTransform> createCryptoTransform)
+		byte[] data,
+		byte[] iv,
+		byte[] key,
+		Func<Aes, ICryptoTransform> createCryptoTransform)
 	{
 		using var aes = Aes.Create();
 		aes.IV = iv;
@@ -77,7 +85,8 @@ public class DataEncryptionService : IDataEncryptionService
 
 		using var dataStream = new MemoryStream();
 		using var encryptor = createCryptoTransform(aes);
-		using (var cryptoStream = new CryptoStream(dataStream, encryptor, CryptoStreamMode.Write))
+		using (var cryptoStream = new CryptoStream(
+			dataStream, encryptor, CryptoStreamMode.Write))
 		{
 			cryptoStream.Write(data);
 		}
@@ -89,7 +98,11 @@ public class DataEncryptionService : IDataEncryptionService
 	private static byte[] GetPasswordBytes(string password, byte[] salt)
 	{
 		var passwordBytes = Rfc2898DeriveBytes.Pbkdf2(
-			password, salt, PasswordIterations, HashAlgorithmName.SHA256, KeySizeInBytes);
+			password,
+			salt,
+			PasswordIterations,
+			HashAlgorithmName.SHA256,
+			KeySizeInBytes);
 
 		return passwordBytes;
 	}

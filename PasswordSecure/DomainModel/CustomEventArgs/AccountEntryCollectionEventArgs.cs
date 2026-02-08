@@ -4,7 +4,8 @@ namespace PasswordSecure.DomainModel.CustomEventArgs;
 
 public class AccountEntryCollectionEventArgs : EventArgs
 {
-	public AccountEntryCollectionEventArgs(AccountEntryCollection? accountEntryCollection, bool hasChanged)
+	public AccountEntryCollectionEventArgs(
+		AccountEntryCollection? accountEntryCollection, bool hasChanged)
 	{
 		AccountEntryCollection = accountEntryCollection;
 

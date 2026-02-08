@@ -3,7 +3,8 @@ using PasswordSecure.DomainModel;
 
 namespace PasswordSecure.Presentation.ViewModels;
 
-public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewModel
+public class CreateMasterPasswordViewModel
+	: ObservableObject, IPasswordViewModel
 {
 	public CreateMasterPasswordViewModel(AccessParams accessParams)
 	{
@@ -19,7 +20,8 @@ public class CreateMasterPasswordViewModel : ObservableObject, IPasswordViewMode
 				_accessParams.Password,
 				value,
 				_accessParams,
-				(accessParams, propertyValue) => accessParams.Password = propertyValue);
+				(accessParams, propertyValue)
+					=> accessParams.Password = propertyValue);
 		}
 	}
 
