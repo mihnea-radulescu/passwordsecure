@@ -1,9 +1,17 @@
 #!/bin/sh
 
-dotnet publish PasswordSecure/PasswordSecure.csproj --output publish/linux-arm64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime linux-arm64
+project_file=PasswordSecure/PasswordSecure.csproj
 
-dotnet publish PasswordSecure/PasswordSecure.csproj --output publish/linux-x64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime linux-x64
+platform_linux_arm64=linux-arm64
+platform_linux_x64=linux-x64
 
-dotnet publish PasswordSecure/PasswordSecure.csproj --output publish/win-arm64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime win-arm64
+platform_windows_arm64=win-arm64
+platform_windows_x64=win-x64
 
-dotnet publish PasswordSecure/PasswordSecure.csproj --output publish/win-x64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime win-x64
+dotnet publish $project_file --output publish/$platform_linux_arm64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime $platform_linux_arm64
+
+dotnet publish $project_file --output publish/$platform_linux_x64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime $platform_linux_x64
+
+dotnet publish $project_file --output publish/$platform_windows_arm64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime $platform_windows_arm64
+
+dotnet publish $project_file --output publish/$platform_windows_x64 -p:DebugType=none -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true --configuration Release --framework net10.0 --runtime $platform_windows_x64
