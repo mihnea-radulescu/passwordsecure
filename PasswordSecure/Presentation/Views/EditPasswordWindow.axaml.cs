@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using PasswordSecure.Presentation.Controls.MessageBoxControl;
 
@@ -14,8 +13,6 @@ public partial class EditPasswordWindow : Window
 		InitializeComponent();
 
 		_isPasswordAccepted = false;
-
-		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
 
 	public int MinimumPasswordLength { get; set; }
@@ -36,29 +33,6 @@ public partial class EditPasswordWindow : Window
 		if (!_isPasswordAccepted)
 		{
 			TextBoxPassword.Text = _initialPassword;
-		}
-	}
-
-	private async void OnKeyPressing(object? sender, KeyEventArgs e)
-	{
-		if (e.Key == Key.Enter)
-		{
-			_isPasswordAccepted = await CanContinue();
-
-			if (_isPasswordAccepted)
-			{
-				Close();
-			}
-
-			e.Handled = true;
-		}
-		else if (e.Key == Key.Escape)
-		{
-			_isPasswordAccepted = false;
-
-			Close();
-
-			e.Handled = true;
 		}
 	}
 

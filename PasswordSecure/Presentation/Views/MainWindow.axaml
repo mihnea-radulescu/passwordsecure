@@ -4,9 +4,9 @@
 		Icon="/MainWindowIcon.ico"
 		Title="Password Secure"
 		MinWidth="800"
-		MinHeight="300"
+		MinHeight="400"
 		Width="800"
-		Height="300"
+		Height="400"
 		WindowStartupLocation="CenterScreen"
 		Closing="OnClosing">
 
@@ -18,40 +18,40 @@
 		</Grid.RowDefinitions>
 
 		<Menu Grid.Row="0">
-			<MenuItem Header="_File">
+			<MenuItem Header="File">
 				<MenuItem Name="MenuItemNew"
-						  Header="_New"
+						  Header="New"
 						  Click="OnMenuItemNewClick"/>
 				<MenuItem Name="MenuItemOpen"
-						  Header="_Open"
+						  Header="Open"
 						  Click="OnMenuItemOpenClick"/>
 				<Separator/>
 				<MenuItem Name="MenuItemSave"
-						  Header="_Save"
+						  Header="Save"
 						  IsEnabled="False"
 						  Click="OnMenuItemSaveClick"/>
 				<MenuItem Name="MenuItemClose"
-						  Header="_Close"
+						  Header="Close"
 						  IsEnabled="False"
 						  Click="OnMenuItemCloseClick"/>
 				<Separator/>
 				<MenuItem Name="MenuItemExit"
-						  Header="E_xit"
+						  Header="Exit"
 						  Click="OnMenuItemExitClick"/>
 			</MenuItem>
-			<MenuItem Header="_Edit">
+			<MenuItem Header="Edit">
 				<MenuItem Name="MenuItemAddNewAccountEntry"
-						  Header="_Add"
+						  Header="Add"
 						  Command="{Binding AddAccountEntryCommand}"/>
 				<MenuItem Name="MenuItemDeleteAccountEntry"
-						  Header="_Delete"
+						  Header="Delete"
 						  Command="{Binding DeleteAccountEntryCommand}"/>
 				<MenuItem Name="MenuItemSortAccountEntries"
-						  Header="_Sort"
+						  Header="Sort"
 						  Command="{Binding SortAccountEntriesCommand}"/>
 			</MenuItem>
 			<MenuItem Name="MenuItemHelp"
-					  Header="_Help"
+					  Header="Help"
 					  Click="OnMenuItemHelpClick"/>
 		</Menu>
 
@@ -144,6 +144,9 @@
 				<TextBox Grid.Row="4"
 						 Grid.Column="1"
 						 Name="TextBoxSelectedNotes"
+						 MinLines="8"
+						 MaxLines="8"
+						 AcceptsReturn="True"
 						 IsEnabled="False"
 						 Text="{Binding SelectedAccountEntryViewModel.Notes}"/>
 			</Grid>

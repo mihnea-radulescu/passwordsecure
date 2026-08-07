@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace PasswordSecure.Presentation.Views;
@@ -11,8 +10,6 @@ public partial class InputMasterPasswordWindow : Window
 		InitializeComponent();
 
 		_isPasswordAccepted = false;
-
-		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
 
 	private bool _isPasswordAccepted;
@@ -25,26 +22,6 @@ public partial class InputMasterPasswordWindow : Window
 		if (!_isPasswordAccepted)
 		{
 			TextBoxPassword.Text = null;
-		}
-	}
-
-	private void OnKeyPressing(object? sender, KeyEventArgs e)
-	{
-		if (e.Key == Key.Enter)
-		{
-			_isPasswordAccepted = true;
-
-			Close();
-
-			e.Handled = true;
-		}
-		else if (e.Key == Key.Escape)
-		{
-			_isPasswordAccepted = false;
-
-			Close();
-
-			e.Handled = true;
 		}
 	}
 

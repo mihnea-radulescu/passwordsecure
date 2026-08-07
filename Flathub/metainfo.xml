@@ -45,6 +45,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.08.08" date="2026-08-08">
+			<description>
+				<ul>
+					<li>Made the Notes section multi-line</li>
+					<li>Updated application framework and libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.07.10" date="2026-07-10">
 			<description>
 				<p>Updated application libraries</p>
