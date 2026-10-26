@@ -5,18 +5,31 @@
 	<id>io.github.mihnea_radulescu.passwordsecure</id>
 
 	<name>Password Secure</name>
-	<summary>Offline password manager, using strong AES-256 encryption</summary>
+	<summary>Offline password manager</summary>
 
 	<developer id="io.github.mihnea_radulescu">
 		<name>Mihnea Rădulescu</name>
 	</developer>
+
 	<content_rating type="oars-1.1" />
 
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 
+	<supports>
+		<control>keyboard</control>
+		<control>pointing</control>
+		<control>touch</control>
+	</supports>
+
+	<launchable type="desktop-id">io.github.mihnea_radulescu.passwordsecure.desktop</launchable>
+
+	<url type="homepage">https://github.com/mihnea-radulescu/passwordsecure</url>
+	<url type="bugtracker">https://github.com/mihnea-radulescu/passwordsecure/issues</url>
+	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
+
 	<description>
-		<p>Password Secure encrypts the user's accounts and web sites login data, using a master password.</p>
+		<p>Password Secure is an offline password manager powered by strong AES-256 encryption, which secures the user's accounts and web sites login data under a master password.</p>
 		<p>Features:</p>
 		<ul>
 			<li>state-of-the-art AES-256 symmetric-key encryption</li>
@@ -26,8 +39,6 @@
 			<li>automatic clipboard clearing on application exit</li>
 		</ul>
 	</description>
-
-	<launchable type="desktop-id">io.github.mihnea_radulescu.passwordsecure.desktop</launchable>
 
 	<screenshots>
 		<screenshot type="default">
@@ -39,10 +50,6 @@
 			<caption>Main view - light mode</caption>
 		</screenshot>
 	</screenshots>
-
-	<url type="homepage">https://github.com/mihnea-radulescu/passwordsecure</url>
-	<url type="bugtracker">https://github.com/mihnea-radulescu/passwordsecure/issues</url>
-	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
 		<release version="1.2026.08.08" date="2026-08-08">
