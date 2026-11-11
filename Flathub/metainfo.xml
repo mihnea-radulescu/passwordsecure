@@ -52,6 +52,14 @@
 	</screenshots>
 
 	<releases>
+		<release version="1.2026.11.11" date="2026-11-11">
+			<description>
+				<ul>
+					<li>Updated application framework and libraries</li>
+					<li>Updated Flatpak runtime</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.08.08" date="2026-08-08">
 			<description>
 				<ul>
